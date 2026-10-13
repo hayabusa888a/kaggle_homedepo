@@ -1,0 +1,14 @@
+# Kaggle raw data (download separately)
+input/*
+!input/.gitkeep
+
+# processed data / caches
+data/processed/*
+data/features/*
+!data/processed/.gitkeep
+!data/features/.gitkeep
+
+# notebooks / python
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
