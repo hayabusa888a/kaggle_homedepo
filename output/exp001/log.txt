@@ -1,0 +1,25 @@
+2026-10-13 22:01:31 [load data] 0.8s
+2026-10-13 22:01:31 train: (74067, 6), test: (166693, 5)
+2026-10-13 22:01:51 [tfidf features] 20.0s
+2026-10-13 22:01:51 features: ['cos_title', 'cos_desc']
+2026-10-13 22:01:51 feature stats (train):
+        cos_title    cos_desc
+count  74067.0000  74067.0000
+mean       0.2680      0.1396
+std        0.1946      0.1253
+min        0.0000      0.0000
+25%        0.1143      0.0406
+50%        0.2499      0.1129
+75%        0.4068      0.2086
+max        1.0000      0.8178
+2026-10-13 22:01:51 fold 0: rmse=0.50918 best_iter=60
+2026-10-13 22:01:51 fold 1: rmse=0.50585 best_iter=60
+2026-10-13 22:01:51 fold 2: rmse=0.50621 best_iter=54
+2026-10-13 22:01:52 fold 3: rmse=0.49902 best_iter=44
+2026-10-13 22:01:52 fold 4: rmse=0.50863 best_iter=80
+2026-10-13 22:01:52 CV rmse: 0.50579
+2026-10-13 22:01:52 (reference) predict mean only: 0.53398
+2026-10-13 22:01:52 feature importance (gain):
+cos_title    15811.8
+cos_desc      4009.9
+2026-10-13 22:01:52 saved: C:\kaggle_homedepo\output\exp001
