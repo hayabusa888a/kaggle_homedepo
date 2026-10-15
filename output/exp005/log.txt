@@ -1,0 +1,78 @@
+2026-10-15 16:52:40 [load data] 0.9s
+2026-10-15 16:52:54 llm spell: 3592 queries, 0 cached, 3592 to process
+2026-10-15 16:58:10 llm spell: 300/3592 (8%) elapsed 5.3min eta 57.7min fallback 1 | e.g. [('electric fireplacewater heaters', 'electric fire place water heaters'), ('ceiling mounted lighting fixures', 'ceiling mounted lighting fixtures'), ('tools bloowers', 'tools blowers')]
+2026-10-15 17:03:06 llm spell: 600/3592 (17%) elapsed 10.2min eta 50.8min fallback 1 | e.g. [('ge profile 30 inch charcoal folters', 'ge profile 30 inch charcoal filters'), ('48  vanity choc', '48 inch vanity choc'), ('marlin noce tile', 'marble noce tile')]
+2026-10-15 17:08:06 llm spell: 900/3592 (25%) elapsed 15.2min eta 45.4min fallback 1 | e.g. [('rolling barn dorr hardware', 'rolling barn door hardware'), ('huricane panel caps', 'hurricane panel caps'), ('barbque grill temperature guage', 'barbecue grill temperature gauge')]
+2026-10-15 17:13:05 llm spell: 1200/3592 (33%) elapsed 20.2min eta 40.2min fallback 1 | e.g. [('curtin rods', 'curtain rods'), ('galvanized pipeized vent ducts', 'galvanized pipe vent ducts'), ('edge glued rounda', 'edge glued round')]
+2026-10-15 17:15:42 llm spell: 1500/3592 (42%) elapsed 22.8min eta 31.8min fallback 1 | e.g. [('vinyl flooring that clicks togther', 'vinyl flooring that clicks together'), ('contact  grib  paper', 'contact paper'), ('knape vogt baseket', 'knape & vogt basket')]
+2026-10-15 17:17:43 llm spell: 1800/3592 (50%) elapsed 24.8min eta 24.7min fallback 1 | e.g. [('vynel wall tiles', 'vinyl wall tiles'), ('presusre treated  post', 'pressure treated post'), ('LAWN LEAF VACUM', 'LAWN LEAF VACUUM')]
+2026-10-15 17:19:51 llm spell: 2100/3592 (58%) elapsed 26.9min eta 19.1min fallback 1 | e.g. [('Porach Light', 'porch light'), ('brissell zing vacuum bags', 'bristol zing vacuum bags'), ('toillet', 'toilet')]
+2026-10-15 17:24:43 llm spell: 2400/3592 (67%) elapsed 31.8min eta 15.8min fallback 1 | e.g. [("7' hex hed bolt", "7' hex head bolt"), ('filerts fans', 'filters fans'), ('vent fllters', 'vent filters')]
+2026-10-15 17:29:44 llm spell: 2700/3592 (75%) elapsed 36.8min eta 12.2min fallback 1 | e.g. [('brakers', 'brakers -> breakers'), ('square d double brakers', 'square d double breakers'), ('capital cap for colum', 'capital cap for column')]
+2026-10-15 17:34:47 llm spell: 3000/3592 (84%) elapsed 41.9min eta 8.3min fallback 1 | e.g. [('rust oleam pinters touch black', 'rust oleum painters touch black'), ('apron sink firecaly two bowl', 'apron sink fireclay two bowl'), ('condesate pump', 'condensate pump')]
+2026-10-15 17:39:47 llm spell: 3300/3592 (92%) elapsed 46.9min eta 4.1min fallback 1 | e.g. [('shluter', 'schluter'), ('circular saw rrip fence', 'circular saw rip fence'), ('HEATED TOLIET SEAT', 'heated toilet seat')]
+2026-10-15 17:44:47 llm spell: 3592/3592 (100%) elapsed 51.9min eta 0.0min fallback 1 | e.g. [('forced air vents covrs', 'forced air vents covers'), ('kitchen sink and fawcet black dual mount', 'kitchen sink and faucet black dual mount'), ('dimmable fluoreecent', 'dimmable fluorescent')]
+2026-10-15 17:44:47 llm targets: 3592, changed: 3034, rows with changed query: 10.53%
+2026-10-15 17:44:47 [llm spell] 3127.1s
+2026-10-15 17:45:05 [preprocess] 18.0s
+2026-10-15 17:45:05 example: 'angl bracket' | 'simpson strong tie strongti 12 gaug angl'
+2026-10-15 17:45:05 example: 'l bracket' | 'simpson strong tie strongti 12 gaug angl'
+2026-10-15 17:45:05 example: 'mdf 3 4' | 'hous of fara 3 4 in x 3 in x 8 ft mdf flute case'
+2026-10-15 17:45:31 [tfidf features] 25.9s
+2026-10-15 17:45:31 vocab size: 101355, n_features: 202712
+2026-10-15 17:45:31 cos_title == 0 (train): 7.781%
+2026-10-15 17:45:31 feature stats (train):
+        cos_title    cos_desc
+count  74067.0000  74067.0000
+mean       0.3236      0.2032
+std        0.1849      0.1477
+min        0.0000      0.0000
+25%        0.1881      0.0887
+50%        0.3243      0.1826
+75%        0.4523      0.2946
+max        1.0000      0.9000
+2026-10-15 17:45:42 [fold 0] 10.4s
+2026-10-15 17:45:42 fold 0: rmse=0.48488 best_iter=407
+2026-10-15 17:45:53 [fold 1] 10.8s
+2026-10-15 17:45:53 fold 1: rmse=0.48133 best_iter=398
+2026-10-15 17:46:01 [fold 2] 8.0s
+2026-10-15 17:46:01 fold 2: rmse=0.48477 best_iter=243
+2026-10-15 17:46:08 [fold 3] 7.9s
+2026-10-15 17:46:08 fold 3: rmse=0.47661 best_iter=232
+2026-10-15 17:46:19 [fold 4] 10.2s
+2026-10-15 17:46:19 fold 4: rmse=0.48483 best_iter=368
+2026-10-15 17:46:19 CV rmse: 0.48250
+2026-10-15 17:46:19 oof pred std: 0.2324, test pred std: 0.2299
+2026-10-15 17:46:19 features used (gain > 0): 2378
+2026-10-15 17:46:19 feature importance top 30 (gain):
+cos_title       22920.7
+cos_desc         4963.6
+q_for             669.9
+t_for             472.3
+q_light           405.7
+t_in              324.2
+q_to              190.4
+q_sink            183.0
+q_cabinet         176.8
+q_faucet          169.0
+q_replac          166.9
+q_bathroom        163.8
+t_pack            159.6
+q_shower          158.3
+t_gas             156.9
+q_in              150.2
+q_door            145.7
+q_tile            141.5
+t_kit             135.9
+t_cover           131.2
+q_set             129.6
+q_1               126.7
+q_closetmaid      125.5
+q_2               118.3
+t_1               115.5
+q_flouresc        115.2
+q_5               114.3
+t_of              112.5
+q_air             112.5
+q_outlet          110.4
+2026-10-15 17:46:19 saved: C:\kaggle_homedepo\output\exp005
