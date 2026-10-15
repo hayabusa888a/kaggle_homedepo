@@ -17,19 +17,29 @@ def rowwise_cosine(a: sparse.csr_matrix, b: sparse.csr_matrix) -> np.ndarray:
     return np.asarray(a.multiply(b).sum(axis=1)).ravel()
 
 
-def tfidf_cosine_features(df: pd.DataFrame) -> pd.DataFrame:
-    """train + test を結合した df を受け取り、検索語と商品テキストの TF-IDF コサイン類似度を返す"""
+def tfidf_vectors(df: pd.DataFrame) -> tuple[dict[str, sparse.csr_matrix], np.ndarray]:
+    """train + test を結合した df を受け取り、検索語・タイトル・説明文の TF-IDF ベクトルと語彙を返す"""
     vectorizer = TfidfVectorizer()  # 既定値: 小文字化あり、2文字以上の単語、語彙の絞り込みなし
     vectorizer.fit(build_corpus(df))
+    vecs = {
+        "query": vectorizer.transform(df["search_term"]),
+        "title": vectorizer.transform(df["product_title"]),
+        "desc": vectorizer.transform(df["product_description"]),
+    }
+    return vecs, vectorizer.get_feature_names_out()
 
-    query_vec = vectorizer.transform(df["search_term"])
-    title_vec = vectorizer.transform(df["product_title"])
-    desc_vec = vectorizer.transform(df["product_description"])
 
+def cosine_features(vecs: dict[str, sparse.csr_matrix], index: pd.Index) -> pd.DataFrame:
+    """検索語と商品テキストの TF-IDF コサイン類似度"""
     return pd.DataFrame(
         {
-            "cos_title": rowwise_cosine(query_vec, title_vec),
-            "cos_desc": rowwise_cosine(query_vec, desc_vec),
+            "cos_title": rowwise_cosine(vecs["query"], vecs["title"]),
+            "cos_desc": rowwise_cosine(vecs["query"], vecs["desc"]),
         },
-        index=df.index,
+        index=index,
     )
+
+
+def tfidf_cosine_features(df: pd.DataFrame) -> pd.DataFrame:
+    vecs, _ = tfidf_vectors(df)
+    return cosine_features(vecs, df.index)

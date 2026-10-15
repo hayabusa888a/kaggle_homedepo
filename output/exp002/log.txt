@@ -1,0 +1,50 @@
+2026-10-15 14:45:03 [load data] 1.8s
+2026-10-15 14:45:03 train: (74067, 6), test: (166693, 5)
+2026-10-15 14:45:43 [tfidf features] 40.5s
+2026-10-15 14:45:43 vocab size: 277401, n_features: 554804
+2026-10-15 14:45:43 nonzero per row (train): query=3.03, title=10.41
+2026-10-15 14:45:57 [fold 0] 13.9s
+2026-10-15 14:45:57 fold 0: rmse=0.49855 best_iter=421
+2026-10-15 14:46:08 [fold 1] 10.5s
+2026-10-15 14:46:08 fold 1: rmse=0.49578 best_iter=263
+2026-10-15 14:46:19 [fold 2] 11.4s
+2026-10-15 14:46:19 fold 2: rmse=0.49832 best_iter=347
+2026-10-15 14:46:31 [fold 3] 11.3s
+2026-10-15 14:46:31 fold 3: rmse=0.48950 best_iter=355
+2026-10-15 14:46:44 [fold 4] 13.8s
+2026-10-15 14:46:44 fold 4: rmse=0.49685 best_iter=425
+2026-10-15 14:46:44 CV rmse: 0.49581
+2026-10-15 14:46:44 oof pred std: 0.2036, test pred std: 0.2013
+2026-10-15 14:46:44 features used (gain > 0): 2619
+2026-10-15 14:46:45 feature importance top 30 (gain):
+cos_title        15649.1
+cos_desc          3606.5
+q_for              602.7
+t_for              434.7
+t_in               307.9
+q_to               232.4
+q_lighting         218.8
+q_doors            179.5
+q_bathroom         171.9
+q_lights           171.0
+q_replacement      169.5
+t_ft               162.8
+q_cabinets         162.1
+t_gas              161.4
+q_led              153.0
+q_shower           145.3
+q_sinks            142.4
+q_rugs             140.6
+q_vanity           135.0
+t_of               131.7
+q_light            128.0
+t_lithium          125.0
+t_tape             123.0
+q_tiles            118.7
+q_air              117.6
+t_kit              117.2
+q_faucets          116.5
+q_the              110.1
+t_with             109.2
+t_pack             105.8
+2026-10-15 14:46:45 saved: C:\kaggle_homedepo\output\exp002
