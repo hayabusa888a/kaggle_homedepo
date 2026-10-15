@@ -17,9 +17,10 @@ def rowwise_cosine(a: sparse.csr_matrix, b: sparse.csr_matrix) -> np.ndarray:
     return np.asarray(a.multiply(b).sum(axis=1)).ravel()
 
 
-def tfidf_vectors(df: pd.DataFrame) -> tuple[dict[str, sparse.csr_matrix], np.ndarray]:
+def tfidf_vectors(df: pd.DataFrame, **vectorizer_kwargs) -> tuple[dict[str, sparse.csr_matrix], np.ndarray]:
     """train + test を結合した df を受け取り、検索語・タイトル・説明文の TF-IDF ベクトルと語彙を返す"""
-    vectorizer = TfidfVectorizer()  # 既定値: 小文字化あり、2文字以上の単語、語彙の絞り込みなし
+    # 既定値: 小文字化あり、2文字以上の単語、語彙の絞り込みなし
+    vectorizer = TfidfVectorizer(**vectorizer_kwargs)
     vectorizer.fit(build_corpus(df))
     vecs = {
         "query": vectorizer.transform(df["search_term"]),

@@ -1,0 +1,63 @@
+2026-10-15 14:58:46 [load data] 1.5s
+2026-10-15 14:59:10 [preprocess] 23.6s
+2026-10-15 14:59:10 example: 'angl bracket' | 'simpson strong tie strongti 12 gaug angl'
+2026-10-15 14:59:10 example: 'l bracket' | 'simpson strong tie strongti 12 gaug angl'
+2026-10-15 14:59:10 example: 'mdf 3 4' | 'hous of fara 3 4 in x 3 in x 8 ft mdf flute case'
+2026-10-15 14:59:46 [tfidf features] 36.4s
+2026-10-15 14:59:46 vocab size: 103632, n_features: 207266
+2026-10-15 14:59:46 cos_title == 0 (train): 8.801%
+2026-10-15 14:59:46 feature stats (train):
+        cos_title    cos_desc
+count  74067.0000  74067.0000
+mean       0.3053      0.1911
+std        0.1877      0.1469
+min        0.0000      0.0000
+25%        0.1608      0.0756
+50%        0.3019      0.1671
+75%        0.4386      0.2811
+max        1.0000      0.9000
+2026-10-15 14:59:57 [fold 0] 10.3s
+2026-10-15 14:59:57 fold 0: rmse=0.48897 best_iter=362
+2026-10-15 15:00:08 [fold 1] 11.4s
+2026-10-15 15:00:08 fold 1: rmse=0.48452 best_iter=422
+2026-10-15 15:00:17 [fold 2] 8.7s
+2026-10-15 15:00:17 fold 2: rmse=0.48767 best_iter=277
+2026-10-15 15:00:25 [fold 3] 8.6s
+2026-10-15 15:00:25 fold 3: rmse=0.47843 best_iter=274
+2026-10-15 15:00:36 [fold 4] 10.6s
+2026-10-15 15:00:36 fold 4: rmse=0.48964 best_iter=388
+2026-10-15 15:00:36 CV rmse: 0.48587
+2026-10-15 15:00:36 oof pred std: 0.2263, test pred std: 0.2242
+2026-10-15 15:00:36 features used (gain > 0): 2458
+2026-10-15 15:00:36 feature importance top 30 (gain):
+cos_title       21126.5
+cos_desc         4518.7
+q_for             648.8
+t_for             486.3
+q_light           398.6
+t_in              364.4
+q_to              227.6
+q_2               198.6
+q_replac          176.1
+q_in              172.3
+t_gas             167.3
+q_faucet          165.4
+q_1               159.8
+q_5               156.4
+q_sink            147.3
+q_tile            145.2
+q_cabinet         145.0
+t_1               143.4
+t_pack            140.6
+t_kit             133.5
+q_shower          131.5
+q_set             129.2
+q_door            115.1
+q_bathroom        113.3
+q_ft              112.5
+t_cover           111.8
+t_roll            108.9
+q_outlet          108.8
+q_flouresc        105.7
+q_closetmaid      104.8
+2026-10-15 15:00:36 saved: C:\kaggle_homedepo\output\exp003
