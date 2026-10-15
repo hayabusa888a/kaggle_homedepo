@@ -1,0 +1,66 @@
+2026-10-15 15:06:35 [load data] 2.7s
+2026-10-15 15:07:04 [spell dictionary] 29.1s
+2026-10-15 15:07:38 [preprocess] 33.1s
+2026-10-15 15:07:38 corrected words: 3684, rows with corrected query: 14.01%
+2026-10-15 15:07:38 correction examples: [('steele', 'steel'), ('mowe', 'more'), ('sprkinler', 'sprinkler'), ('rainbird', 'rain bird'), ('flexlock', 'flex lock'), ('ourdoor', 'outdoor'), ('teir', 'their'), ('toliet', 'toilet'), ('stell', 'steel'), ('fece', 'fee'), ('outdoorlounge', 'outdoor lounge'), ('outdoorfurniture', 'outdoor furniture'), ('wiremesh', 'wire mesh'), ('pricepfister', 'price pfister'), ('glaciar', 'glacier'), ('toiled', 'toilet'), ('glacie', 'glacier'), ('tiolet', 'toilet'), ('handycap', 'handy cap'), ('tolet', 'toilet'), ('wayer', 'water'), ('rheum', 'rheem'), ('basemetnt', 'basement'), ('rustollum', 'rustoleum'), ('heaterconditioner', 'heater conditioner'), ('spliter', 'splinter'), ('condit', 'conduit'), ('berh', 'behr'), ('deckpaint', 'deck paint'), ('thower', 'tower')]
+2026-10-15 15:07:38 example: 'angl bracket' | 'simpson strong tie strongti 12 gaug angl'
+2026-10-15 15:07:38 example: 'l bracket' | 'simpson strong tie strongti 12 gaug angl'
+2026-10-15 15:07:38 example: 'mdf 3 4' | 'hous of fara 3 4 in x 3 in x 8 ft mdf flute case'
+2026-10-15 15:08:27 [tfidf features] 49.6s
+2026-10-15 15:08:27 vocab size: 100793, n_features: 201588
+2026-10-15 15:08:27 cos_title == 0 (train): 7.428%
+2026-10-15 15:08:27 feature stats (train):
+        cos_title    cos_desc
+count  74067.0000  74067.0000
+mean       0.3277      0.2052
+std        0.1835      0.1473
+min        0.0000      0.0000
+25%        0.1949      0.0915
+50%        0.3287      0.1848
+75%        0.4549      0.2967
+max        1.0000      0.9000
+2026-10-15 15:08:39 [fold 0] 11.0s
+2026-10-15 15:08:39 fold 0: rmse=0.48334 best_iter=374
+2026-10-15 15:08:48 [fold 1] 8.9s
+2026-10-15 15:08:48 fold 1: rmse=0.48045 best_iter=273
+2026-10-15 15:08:56 [fold 2] 8.3s
+2026-10-15 15:08:56 fold 2: rmse=0.48664 best_iter=230
+2026-10-15 15:09:06 [fold 3] 10.5s
+2026-10-15 15:09:06 fold 3: rmse=0.47629 best_iter=365
+2026-10-15 15:09:17 [fold 4] 10.9s
+2026-10-15 15:09:17 fold 4: rmse=0.48379 best_iter=361
+2026-10-15 15:09:17 CV rmse: 0.48211
+2026-10-15 15:09:17 oof pred std: 0.2324, test pred std: 0.2292
+2026-10-15 15:09:17 features used (gain > 0): 2363
+2026-10-15 15:09:17 feature importance top 30 (gain):
+cos_title       22750.0
+cos_desc         4936.4
+q_for             649.9
+t_for             456.6
+q_light           456.1
+t_in              335.4
+q_sink            195.9
+q_cabinet         177.8
+q_faucet          176.8
+q_to              176.0
+t_gas             170.0
+q_door            167.9
+q_bathroom        160.8
+t_pack            157.0
+q_tile            156.4
+q_set             153.2
+q_replac          151.6
+t_kit             144.5
+q_shower          137.0
+q_in              133.5
+q_air             133.5
+q_1               130.8
+q_closetmaid      128.1
+q_outlet          125.3
+t_1               120.7
+t_cover           117.4
+q_2               113.0
+q_screw           108.1
+q_5               107.5
+t_of              101.3
+2026-10-15 15:09:17 saved: C:\kaggle_homedepo\output\exp004
