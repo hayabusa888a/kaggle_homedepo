@@ -1,0 +1,95 @@
+2026-10-16 13:19:35 [load data] 2.3s
+2026-10-16 13:19:50 [spell dictionary] 15.1s
+2026-10-16 13:20:17 [preprocess] 27.3s
+2026-10-16 13:20:40 [tfidf features] 22.7s
+2026-10-16 13:20:47 [match features] 7.1s
+2026-10-16 13:20:49 [brand features] 2.5s
+2026-10-16 13:21:28 [bm25 features] 38.5s
+2026-10-16 13:21:53 [char ngram features] 25.1s
+2026-10-16 13:21:56 [attr match features] 2.9s
+2026-10-16 13:21:57 vocab size: 100793, n_features: 201620 (dense 34)
+2026-10-16 13:21:57 relevance by has_attr:
+           mean  count
+has_attr              
+0         2.522  17520
+1         2.338  56547
+2026-10-16 13:21:57 new feature stats (train):
+                    count    mean    std  min    25%    50%     75%     max
+bm25_title        74067.0  10.140  5.508  0.0  6.652  9.962  13.379  52.797
+bm25_title_norm   74067.0   0.674  0.340  0.0  0.438  0.676   0.954   1.654
+bm25_desc         74067.0  10.046  6.195  0.0  5.802  9.667  13.791  51.843
+bm25_desc_norm    74067.0   0.871  0.489  0.0  0.514  0.866   1.255   2.004
+bm25_attr         74067.0   6.477  6.123  0.0  0.000  5.911  10.543  46.523
+bm25_attr_norm    74067.0   0.489  0.442  0.0  0.000  0.459   0.820   1.937
+char_cos_title    74067.0   0.352  0.184  0.0  0.224  0.354   0.479   1.000
+n_match_attr      74067.0   1.562  1.444  0.0  0.000  1.000   2.000  12.000
+ratio_match_attr  74067.0   0.455  0.372  0.0  0.000  0.500   0.750   1.000
+has_attr          74067.0   0.763  0.425  0.0  1.000  1.000   1.000   1.000
+2026-10-16 13:21:57 corr with relevance (train):
+bm25_title           0.278
+bm25_title_norm      0.360
+bm25_desc            0.244
+bm25_desc_norm       0.299
+bm25_attr            0.059
+bm25_attr_norm       0.075
+char_cos_title       0.364
+n_match_attr         0.029
+ratio_match_attr     0.066
+has_attr            -0.146
+cos_title            0.365
+ratio_match_title    0.362
+2026-10-16 13:22:03 [fold 0] 6.6s
+2026-10-16 13:22:03 fold 0: rmse=0.46572 best_iter=150
+2026-10-16 13:22:10 [fold 1] 7.2s
+2026-10-16 13:22:10 fold 1: rmse=0.46464 best_iter=203
+2026-10-16 13:22:18 [fold 2] 7.3s
+2026-10-16 13:22:18 fold 2: rmse=0.46705 best_iter=220
+2026-10-16 13:22:26 [fold 3] 8.2s
+2026-10-16 13:22:26 fold 3: rmse=0.45650 best_iter=261
+2026-10-16 13:22:36 [fold 4] 10.1s
+2026-10-16 13:22:36 fold 4: rmse=0.46535 best_iter=314
+2026-10-16 13:22:36 CV rmse: 0.46387
+2026-10-16 13:22:36 oof pred std: 0.2608, test pred std: 0.2579
+2026-10-16 13:22:36 features used (gain > 0): 1881
+2026-10-16 13:22:36 feature importance top 40 (gain):
+ratio_match_title     19465.8
+char_cos_title         5648.8
+cos_desc               3793.4
+cos_title              3036.2
+q_n_words              1824.2
+bm25_title             1649.0
+q_n_chars              1391.7
+ratio_match_desc       1196.7
+ratio_number_title      683.9
+bm25_desc               545.1
+d_n_words               492.8
+has_attr                490.8
+ratio_bigram_title      462.7
+last_in_desc            430.9
+bm25_title_norm         423.6
+bm25_desc_norm          407.0
+last_in_title           386.7
+t_for                   353.3
+ratio_match_attr        311.7
+q_for                   281.8
+q_bathroom              271.0
+n_match_title           239.0
+q_light                 230.4
+brand_in_query          220.7
+n_match_any             184.6
+t_gas                   173.1
+bm25_attr               136.5
+bm25_attr_norm          129.3
+t_in                    126.3
+t_cover                 117.3
+q_to                    116.5
+t_n_words               115.0
+q_outlet                112.9
+q_sink                  108.6
+q_door                  101.6
+q_wire                  100.7
+t_roll                  100.4
+q_set                    98.2
+q_batteri                95.6
+q_n_numbers              85.2
+2026-10-16 13:22:36 saved: C:\kaggle_homedepo\output\exp007

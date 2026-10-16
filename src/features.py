@@ -130,3 +130,56 @@ def brand_features(df: pd.DataFrame, product_brand: pd.Series, mention_purity: f
             "other_brand_in_query": int(has_brand and any(x != b and not _contains_phrase(b, x) for x in m)),
         })
     return pd.DataFrame(rows, index=df.index)
+
+
+def bm25_features(df: pd.DataFrame, fields: dict[str, str], token_pattern: str,
+                  k1: float = 1.2, b: float = 0.75) -> pd.DataFrame:
+    """検索語と各フィールドの BM25 スコア。IDF と平均文書長は商品単位（product_uid でユニーク）で計算する。
+    fields は {特徴量名の接尾辞: 列名}"""
+    from sklearn.feature_extraction.text import CountVectorizer
+
+    out = {}
+    products = df.drop_duplicates("product_uid")
+    for name, col in fields.items():
+        cv = CountVectorizer(token_pattern=token_pattern)
+        docs_p = cv.fit_transform(products[col])
+        n_docs = docs_p.shape[0]
+        doc_freq = np.asarray((docs_p > 0).sum(axis=0)).ravel()
+        idf = np.log(1 + (n_docs - doc_freq + 0.5) / (doc_freq + 0.5))
+        avgdl = docs_p.sum(axis=1).mean()
+
+        tf = cv.transform(df[col]).tocsr().astype(np.float64)
+        dl = np.asarray(tf.sum(axis=1)).ravel()
+        # 非ゼロ要素ごとに tf * (k1 + 1) / (tf + k1 * (1 - b + b * dl / avgdl)) * idf を計算する
+        row_norm = k1 * (1 - b + b * dl / avgdl)
+        rows = np.repeat(np.arange(tf.shape[0]), np.diff(tf.indptr))
+        tf.data = tf.data * (k1 + 1) / (tf.data + row_norm[rows]) * idf[tf.indices]
+
+        query = cv.transform(df["search_term"])
+        query.data[:] = 1  # 検索語の単語は重複を数えない
+        out[f"bm25_{name}"] = np.asarray(query.multiply(tf).sum(axis=1)).ravel()
+        # 検索語の単語の IDF の合計で割った値（検索語の長さの影響を除いた、0〜k1+1 の範囲のスコア）
+        q_idf = np.asarray(query.multiply(idf[np.newaxis, :]).sum(axis=1)).ravel()
+        out[f"bm25_{name}_norm"] = np.divide(out[f"bm25_{name}"], q_idf, out=np.zeros_like(q_idf), where=q_idf > 0)
+    return pd.DataFrame(out, index=df.index)
+
+
+def char_cosine_features(df: pd.DataFrame, ngram_range: tuple[int, int] = (3, 5)) -> pd.DataFrame:
+    """検索語とタイトルの、文字 n-gram の TF-IDF コサイン類似度（残ったスペルミスや表記揺れに強い）"""
+    vectorizer = TfidfVectorizer(analyzer="char_wb", ngram_range=ngram_range, min_df=2, sublinear_tf=True)
+    vectorizer.fit(pd.concat([df["search_term"].drop_duplicates(), df["product_title"].drop_duplicates()]))
+    return pd.DataFrame(
+        {"char_cos_title": rowwise_cosine(vectorizer.transform(df["search_term"]),
+                                          vectorizer.transform(df["product_title"]))},
+        index=df.index,
+    )
+
+
+def attr_match_features(df: pd.DataFrame) -> pd.DataFrame:
+    """前処理済みの attr_text 列（商品の属性値の連結）と検索語の単語一致"""
+    rows = []
+    for q, a in zip(df["search_term"], df["attr_text"]):
+        qw, aset = _tokens(q), set(_tokens(a))
+        n = sum(w in aset for w in qw)
+        rows.append({"n_match_attr": n, "ratio_match_attr": n / max(len(qw), 1), "has_attr": int(bool(aset))})
+    return pd.DataFrame(rows, index=df.index)

@@ -16,6 +16,13 @@ def load_data() -> tuple[pd.DataFrame, pd.DataFrame]:
     return train, test
 
 
+def load_attribute_texts() -> pd.Series:
+    """attributes.csv の属性値を商品ごとに連結し、product_uid -> テキスト の Series で返す"""
+    attr = pd.read_csv(INPUT_DIR / "attributes.csv", encoding=ENCODING).dropna(subset=["product_uid", "value"])
+    attr = attr.astype({"product_uid": int, "value": str})
+    return attr.groupby("product_uid")["value"].agg(" ".join)
+
+
 def load_brands() -> pd.Series:
     """attributes.csv の MFG Brand Name を product_uid -> ブランド名 の Series で返す（"Unbranded" と欠損は除く）"""
     attr = pd.read_csv(INPUT_DIR / "attributes.csv", encoding=ENCODING)
