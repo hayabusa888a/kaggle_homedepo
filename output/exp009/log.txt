@@ -1,0 +1,114 @@
+2026-10-16 15:10:39 [load data] 2.9s
+2026-10-16 15:10:55 [spell dictionary] 16.6s
+2026-10-16 15:10:57 embed query: 24431 unique, 0 cached, 24431 to process
+2026-10-16 15:12:53 embed query: 10000/24431 (41%) elapsed 1.9min eta 2.8min
+2026-10-16 15:15:01 embed query: 20000/24431 (82%) elapsed 4.1min eta 0.9min
+2026-10-16 15:16:00 embed query: 24431/24431 (100%) elapsed 5.1min eta 0.0min
+2026-10-16 15:16:01 embed title: 120453 unique, 0 cached, 120453 to process
+2026-10-16 15:18:11 embed title: 10000/120453 (8%) elapsed 2.2min eta 24.1min
+2026-10-16 15:20:21 embed title: 20000/120453 (17%) elapsed 4.3min eta 21.8min
+2026-10-16 15:22:33 embed title: 30000/120453 (25%) elapsed 6.5min eta 19.7min
+2026-10-16 15:24:42 embed title: 40000/120453 (33%) elapsed 8.7min eta 17.5min
+2026-10-16 15:26:55 embed title: 50000/120453 (42%) elapsed 10.9min eta 15.4min
+2026-10-16 15:29:08 embed title: 60000/120453 (50%) elapsed 13.1min eta 13.2min
+2026-10-16 15:31:20 embed title: 70000/120453 (58%) elapsed 15.3min eta 11.0min
+2026-10-16 15:33:33 embed title: 80000/120453 (66%) elapsed 17.5min eta 8.9min
+2026-10-16 15:35:46 embed title: 90000/120453 (75%) elapsed 19.8min eta 6.7min
+2026-10-16 15:37:57 embed title: 100000/120453 (83%) elapsed 21.9min eta 4.5min
+2026-10-16 15:40:09 embed title: 110000/120453 (91%) elapsed 24.1min eta 2.3min
+2026-10-16 15:42:16 embed title: 120000/120453 (100%) elapsed 26.3min eta 0.1min
+2026-10-16 15:42:25 embed title: 120453/120453 (100%) elapsed 26.4min eta 0.0min
+2026-10-16 15:42:26 embed desc: 110128 unique, 0 cached, 110128 to process
+2026-10-16 15:47:37 embed desc: 10000/110128 (9%) elapsed 5.2min eta 51.9min
+2026-10-16 15:53:48 embed desc: 20000/110128 (18%) elapsed 11.4min eta 51.2min
+2026-10-16 15:58:23 embed desc: 30000/110128 (27%) elapsed 16.0min eta 42.6min
+2026-10-16 16:02:41 embed desc: 40000/110128 (36%) elapsed 20.3min eta 35.5min
+2026-10-16 16:06:52 embed desc: 50000/110128 (45%) elapsed 24.4min eta 29.4min
+2026-10-16 16:10:56 embed desc: 60000/110128 (54%) elapsed 28.5min eta 23.8min
+2026-10-16 16:15:04 embed desc: 70000/110128 (64%) elapsed 32.6min eta 18.7min
+2026-10-16 16:20:16 embed desc: 80000/110128 (73%) elapsed 37.8min eta 14.2min
+2026-10-16 16:24:42 embed desc: 90000/110128 (82%) elapsed 42.3min eta 9.5min
+2026-10-16 16:28:59 embed desc: 100000/110128 (91%) elapsed 46.5min eta 4.7min
+2026-10-16 16:33:16 embed desc: 110000/110128 (100%) elapsed 50.8min eta 0.1min
+2026-10-16 16:33:26 embed desc: 110128/110128 (100%) elapsed 51.0min eta 0.0min
+2026-10-16 16:33:26 embed brand: 4284 unique, 0 cached, 4284 to process
+2026-10-16 16:34:57 embed brand: 4284/4284 (100%) elapsed 1.5min eta 0.0min
+2026-10-16 16:34:59 [embeddings] 5043.5s
+2026-10-16 16:35:26 [preprocess] 27.4s
+2026-10-16 16:35:46 [tfidf features] 20.1s
+2026-10-16 16:35:52 [match features] 6.1s
+2026-10-16 16:35:54 [brand features] 1.8s
+2026-10-16 16:36:25 [bm25 features] 31.0s
+2026-10-16 16:36:43 [char ngram features] 18.0s
+2026-10-16 16:36:45 [attr match features] 2.2s
+2026-10-16 16:37:01 vocab size: 100793, n_features: 203159 (dense 37)
+2026-10-16 16:37:01 new feature stats (train):
+                 count   mean    std    min    25%    50%    75%    max
+emb_cos_title  74067.0  0.657  0.084  0.288  0.604  0.663  0.718  0.914
+emb_cos_desc   74067.0  0.645  0.087  0.294  0.591  0.653  0.708  0.893
+emb_cos_brand  54243.0  0.416  0.117  0.189  0.337  0.382  0.461  0.887
+2026-10-16 16:37:01 corr with relevance (train):
+emb_cos_title        0.428
+emb_cos_desc         0.352
+emb_cos_brand        0.119
+cos_title            0.365
+ratio_match_title    0.362
+2026-10-16 16:37:42 [fold 0] 40.9s
+2026-10-16 16:37:42 fold 0: rmse=0.45507 best_iter=307
+2026-10-16 16:38:23 [fold 1] 41.5s
+2026-10-16 16:38:23 fold 1: rmse=0.45428 best_iter=277
+2026-10-16 16:39:06 [fold 2] 42.8s
+2026-10-16 16:39:06 fold 2: rmse=0.45634 best_iter=279
+2026-10-16 16:39:47 [fold 3] 41.0s
+2026-10-16 16:39:47 fold 3: rmse=0.44507 best_iter=233
+2026-10-16 16:40:33 [fold 4] 46.3s
+2026-10-16 16:40:33 fold 4: rmse=0.45223 best_iter=302
+2026-10-16 16:40:34 CV rmse: 0.45262
+2026-10-16 16:40:34 oof pred std: 0.2741, test pred std: 0.2723
+2026-10-16 16:40:34 features used (gain > 0): 2127
+2026-10-16 16:40:34 query emb: used 768 columns, total gain 20356.0
+2026-10-16 16:40:34 title emb: used 768 columns, total gain 10547.2
+2026-10-16 16:40:34 query tfidf: used 172 columns, total gain 3942.3
+2026-10-16 16:40:34 title tfidf: used 389 columns, total gain 1347.1
+2026-10-16 16:40:34 feature importance top 40 (gain):
+emb_cos_title         25741.8
+ratio_match_title      8542.9
+emb_cos_desc           4838.2
+q_n_words              1735.1
+q_n_chars              1184.7
+cos_title              1152.1
+char_cos_title          994.8
+ratio_number_title      797.4
+ratio_match_desc        654.3
+last_in_title           408.6
+emb_cos_brand           379.0
+ratio_bigram_title      378.4
+bm25_title              344.6
+has_attr                319.1
+q_for                   269.4
+t_for                   233.8
+et_632                  183.9
+ratio_match_attr        179.8
+last_in_desc            173.1
+bm25_title_norm         152.7
+n_match_title           141.3
+eq_362                  129.4
+bm25_desc               120.5
+eq_73                   117.2
+eq_587                  108.8
+et_269                   99.1
+eq_579                   98.2
+eq_641                   91.6
+eq_17                    90.0
+et_161                   89.0
+eq_181                   84.9
+d_n_words                81.5
+eq_30                    81.2
+eq_38                    80.2
+et_97                    79.7
+eq_622                   77.9
+eq_749                   73.8
+cos_desc                 73.6
+eq_684                   70.5
+eq_639                   70.5
+2026-10-16 16:40:34 saved: C:\kaggle_homedepo\output\exp009
