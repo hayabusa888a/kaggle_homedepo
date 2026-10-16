@@ -1,0 +1,80 @@
+2026-10-16 14:38:36 [load data] 2.7s
+2026-10-16 14:38:50 [spell dictionary] 14.8s
+2026-10-16 14:39:16 [preprocess] 25.3s
+2026-10-16 14:39:40 [tfidf features] 24.1s
+2026-10-16 14:39:47 [match features] 7.5s
+2026-10-16 14:39:49 [brand features] 2.0s
+2026-10-16 14:40:36 [bm25 features] 46.8s
+2026-10-16 14:40:57 [char ngram features] 21.2s
+2026-10-16 14:41:00 [attr match features] 2.4s
+2026-10-16 14:41:00 vocab size: 100793, n_features: 302414 (dense 35)
+2026-10-16 14:41:00 relevance by has_attr:
+           mean  count
+has_attr              
+0         2.522  17520
+1         2.338  56547
+2026-10-16 14:41:00 new feature stats (train):
+                  count   mean    std  min  25%  50%  75%  max
+cos_brand       74067.0  0.083  0.215  0.0  0.0  0.0  0.0  1.0
+brand_in_query  54243.0  0.122  0.327  0.0  0.0  0.0  0.0  1.0
+2026-10-16 14:41:00 corr with relevance (train):
+cos_brand            0.070
+brand_in_query       0.103
+cos_title            0.365
+ratio_match_title    0.362
+2026-10-16 14:41:07 [fold 0] 6.5s
+2026-10-16 14:41:07 fold 0: rmse=0.46576 best_iter=135
+2026-10-16 14:41:16 [fold 1] 9.5s
+2026-10-16 14:41:16 fold 1: rmse=0.46425 best_iter=308
+2026-10-16 14:41:23 [fold 2] 6.9s
+2026-10-16 14:41:23 fold 2: rmse=0.46697 best_iter=162
+2026-10-16 14:41:34 [fold 3] 10.8s
+2026-10-16 14:41:34 fold 3: rmse=0.45601 best_iter=365
+2026-10-16 14:41:43 [fold 4] 9.4s
+2026-10-16 14:41:43 fold 4: rmse=0.46513 best_iter=301
+2026-10-16 14:41:43 CV rmse: 0.46364
+2026-10-16 14:41:43 oof pred std: 0.2616, test pred std: 0.2586
+2026-10-16 14:41:43 features used (gain > 0): 2150
+2026-10-16 14:41:43 brand vector: used 108 columns, total gain 388.5, top {'b_home': 34.6, 'b_product': 30.3, 'b_control': 22.0, 'b_line': 16.8, 'b_on': 14.9, 'b_rubbermaid': 11.3, 'b_wall': 11.1, 'b_ms': 11.0, 'b_wire': 10.8, 'b_pet': 9.4}
+2026-10-16 14:41:43 feature importance top 40 (gain):
+ratio_match_title     19433.3
+char_cos_title         5688.7
+cos_desc               3809.5
+cos_title              3084.5
+q_n_words              1841.8
+bm25_title             1645.0
+q_n_chars              1394.2
+ratio_match_desc       1222.5
+ratio_number_title      681.8
+bm25_desc               554.0
+d_n_words               497.1
+has_attr                479.9
+ratio_bigram_title      479.0
+bm25_title_norm         443.4
+last_in_desc            431.9
+bm25_desc_norm          403.8
+last_in_title           397.9
+t_for                   354.4
+ratio_match_attr        319.2
+q_for                   287.5
+q_bathroom              272.4
+n_match_title           234.4
+q_light                 226.2
+brand_in_query          212.1
+n_match_any             193.0
+t_gas                   175.9
+bm25_attr               153.6
+t_in                    151.9
+bm25_attr_norm          148.7
+t_n_words               118.2
+t_cover                 114.4
+q_outlet                112.5
+q_to                    111.6
+q_sink                  110.8
+q_door                  109.0
+t_roll                  104.9
+q_wire                  102.0
+q_set                    99.9
+q_batteri                94.5
+q_n_numbers              94.5
+2026-10-16 14:41:44 saved: C:\kaggle_homedepo\output\exp008

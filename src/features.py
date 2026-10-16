@@ -19,16 +19,15 @@ def rowwise_cosine(a: sparse.csr_matrix, b: sparse.csr_matrix) -> np.ndarray:
     return np.asarray(a.multiply(b).sum(axis=1)).ravel()
 
 
-def tfidf_vectors(df: pd.DataFrame, **vectorizer_kwargs) -> tuple[dict[str, sparse.csr_matrix], np.ndarray]:
-    """train + test を結合した df を受け取り、検索語・タイトル・説明文の TF-IDF ベクトルと語彙を返す"""
+def tfidf_vectors(df: pd.DataFrame, extra_cols: dict[str, str] | None = None,
+                  **vectorizer_kwargs) -> tuple[dict[str, sparse.csr_matrix], np.ndarray]:
+    """train + test を結合した df を受け取り、検索語・タイトル・説明文の TF-IDF ベクトルと語彙を返す。
+    extra_cols（{キー: 列名}）を渡すと、その列も同じ vectorizer で変換して返す"""
     # 既定値: 小文字化あり、2文字以上の単語、語彙の絞り込みなし
     vectorizer = TfidfVectorizer(**vectorizer_kwargs)
     vectorizer.fit(build_corpus(df))
-    vecs = {
-        "query": vectorizer.transform(df["search_term"]),
-        "title": vectorizer.transform(df["product_title"]),
-        "desc": vectorizer.transform(df["product_description"]),
-    }
+    cols = {"query": "search_term", "title": "product_title", "desc": "product_description", **(extra_cols or {})}
+    vecs = {key: vectorizer.transform(df[col]) for key, col in cols.items()}
     return vecs, vectorizer.get_feature_names_out()
 
 
