@@ -532,7 +532,7 @@ exp007 からの変更点だけを書く。
 | **CV** | **0.46364** | | 0.46387 |
 | **Private LB** | 未提出 | | 0.46273 |
 
-- `cos_brand`：平均 0.083、75% 点まで 0（検索語とブランド名が一語でも重なる行は 13% 程度）。relevance との相関 0.070（`brand_in_query` は 0.103）
+- `cos_brand`：平均 0.083、75% 点まで 0（大半の行で検索語とブランド名が重ならない）。relevance との相関 0.070（`brand_in_query` は 0.103）
 - 重要度：`cos_brand` は上位 40 位に入らなかった。`brand_in_query` は 25 位（212）
 - ブランドのベクトル：分岐に使われたのは 108 列、gain の合計は 389（`cos_title` 1つで 3,085）。上位は `b_home` 35、`b_product` 30、`b_control` 22、`b_line` 17、`b_on` 15、`b_rubbermaid` 11 …
 
