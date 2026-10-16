@@ -1,0 +1,106 @@
+2026-10-16 17:15:39 [load data] 2.6s
+2026-10-16 17:15:53 [spell dictionary] 14.7s
+2026-10-16 17:15:55 embed query: 24431 unique, 0 cached, 24431 to process
+2026-10-16 17:16:05 embed query: device=NVIDIA GeForce RTX 5070 Laptop GPU todo=24431 cached=0
+2026-10-16 17:16:28 embed query: 20000/24431 (82%) elapsed 0.4min eta 0.1min gpu_mem 0.7GB
+2026-10-16 17:16:33 embed query: 24431/24431 (100%) elapsed 0.5min eta 0.0min gpu_mem 0.7GB
+2026-10-16 17:16:35 embed title: 120453 unique, 0 cached, 120453 to process
+2026-10-16 17:16:45 embed title: device=NVIDIA GeForce RTX 5070 Laptop GPU todo=120453 cached=0
+2026-10-16 17:17:22 embed title: 20000/120453 (17%) elapsed 0.6min eta 3.1min gpu_mem 0.8GB
+2026-10-16 17:17:58 embed title: 40000/120453 (33%) elapsed 1.2min eta 2.4min gpu_mem 0.8GB
+2026-10-16 17:18:34 embed title: 60000/120453 (50%) elapsed 1.8min eta 1.8min gpu_mem 0.8GB
+2026-10-16 17:19:10 embed title: 80000/120453 (66%) elapsed 2.4min eta 1.2min gpu_mem 0.8GB
+2026-10-16 17:19:46 embed title: 100000/120453 (83%) elapsed 3.0min eta 0.6min gpu_mem 0.8GB
+2026-10-16 17:20:22 embed title: 120000/120453 (100%) elapsed 3.6min eta 0.0min gpu_mem 0.8GB
+2026-10-16 17:20:24 embed title: 120453/120453 (100%) elapsed 3.6min eta 0.0min gpu_mem 0.8GB
+2026-10-16 17:20:26 embed desc: 110128 unique, 0 cached, 110128 to process
+2026-10-16 17:20:37 embed desc: device=NVIDIA GeForce RTX 5070 Laptop GPU todo=110128 cached=0
+2026-10-16 17:25:55 embed desc: 20000/110128 (18%) elapsed 5.3min eta 23.9min gpu_mem 1.0GB
+2026-10-16 17:31:06 embed desc: 40000/110128 (36%) elapsed 10.5min eta 18.4min gpu_mem 1.0GB
+2026-10-16 17:36:12 embed desc: 60000/110128 (54%) elapsed 15.6min eta 13.0min gpu_mem 1.0GB
+2026-10-16 17:41:18 embed desc: 80000/110128 (73%) elapsed 20.7min eta 7.8min gpu_mem 1.0GB
+2026-10-16 17:46:09 embed desc: 100000/110128 (91%) elapsed 25.5min eta 2.6min gpu_mem 1.0GB
+2026-10-16 17:48:29 embed desc: 110128/110128 (100%) elapsed 27.9min eta 0.0min gpu_mem 1.0GB
+2026-10-16 17:48:33 embed brand: 4284 unique, 0 cached, 4284 to process
+2026-10-16 17:48:44 embed brand: device=NVIDIA GeForce RTX 5070 Laptop GPU todo=4284 cached=0
+2026-10-16 17:48:47 embed brand: 4284/4284 (100%) elapsed 0.1min eta 0.0min gpu_mem 0.7GB
+2026-10-16 17:48:50 [embeddings] 1976.5s
+2026-10-16 17:49:15 [preprocess] 24.7s
+2026-10-16 17:49:35 [tfidf features] 20.2s
+2026-10-16 17:49:41 [match features] 6.1s
+2026-10-16 17:49:43 [brand features] 1.9s
+2026-10-16 17:50:15 [bm25 features] 31.8s
+2026-10-16 17:50:34 [char ngram features] 19.3s
+2026-10-16 17:50:37 [attr match features] 2.7s
+2026-10-16 17:51:03 vocab size: 100793, n_features: 204695 (dense 37)
+2026-10-16 17:51:03 new feature stats (train):
+                 count   mean    std    min    25%    50%    75%    max
+emb_cos_title  74067.0  0.675  0.101  0.261  0.614  0.688  0.749  0.959
+emb_cos_desc   74067.0  0.662  0.102  0.233  0.602  0.677  0.736  0.920
+emb_cos_brand  54243.0  0.494  0.133  0.237  0.395  0.451  0.571  0.969
+2026-10-16 17:51:03 corr with relevance (train):
+emb_cos_title        0.408
+emb_cos_desc         0.361
+emb_cos_brand        0.127
+cos_title            0.365
+ratio_match_title    0.362
+2026-10-16 17:52:08 [fold 0] 64.4s
+2026-10-16 17:52:08 fold 0: rmse=0.44645 best_iter=246
+2026-10-16 17:53:14 [fold 1] 66.3s
+2026-10-16 17:53:14 fold 1: rmse=0.44747 best_iter=266
+2026-10-16 17:54:34 [fold 2] 79.7s
+2026-10-16 17:54:34 fold 2: rmse=0.44698 best_iter=417
+2026-10-16 17:56:00 [fold 3] 86.3s
+2026-10-16 17:56:00 fold 3: rmse=0.44046 best_iter=406
+2026-10-16 17:57:19 [fold 4] 79.5s
+2026-10-16 17:57:19 fold 4: rmse=0.44782 best_iter=371
+2026-10-16 17:57:19 CV rmse: 0.44584
+2026-10-16 17:57:19 oof pred std: 0.2861, test pred std: 0.2849
+2026-10-16 17:57:19 features used (gain > 0): 3556
+2026-10-16 17:57:19 query emb: used 1024 columns, total gain 19053.3
+2026-10-16 17:57:19 title emb: used 1024 columns, total gain 9326.8
+2026-10-16 17:57:20 desc emb: used 1024 columns, total gain 8425.0
+2026-10-16 17:57:20 query tfidf: used 153 columns, total gain 3676.0
+2026-10-16 17:57:20 title tfidf: used 301 columns, total gain 898.6
+2026-10-16 17:57:20 feature importance top 40 (gain):
+emb_cos_title         19264.2
+ratio_match_title     16135.0
+emb_cos_desc           5947.2
+q_n_words              2122.5
+cos_title              1790.7
+char_cos_title         1601.4
+q_n_chars               945.3
+ratio_number_title      819.1
+ratio_bigram_title      510.6
+bm25_title              473.9
+emb_cos_brand           463.9
+ratio_match_desc        445.1
+has_attr                388.3
+eq_1020                 197.8
+t_for                   177.8
+eq_135                  169.8
+last_in_title           158.5
+bm25_desc               151.1
+ratio_match_attr        146.2
+eq_929                  114.6
+eq_554                  111.1
+et_787                  105.5
+eq_818                   98.5
+eq_548                   97.7
+cos_desc                 95.6
+eq_593                   93.4
+eq_341                   91.0
+eq_200                   86.9
+eq_414                   86.2
+eq_864                   85.1
+eq_117                   84.4
+eq_340                   78.9
+eq_553                   77.6
+q_for                    75.9
+last_in_desc             75.0
+eq_343                   73.7
+eq_30                    71.8
+eq_378                   70.8
+et_192                   70.6
+eq_138                   69.9
+2026-10-16 17:57:20 saved: C:\kaggle_homedepo\output\exp010

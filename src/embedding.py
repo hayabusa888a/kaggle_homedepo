@@ -68,3 +68,44 @@ def embed_texts(texts: pd.Series, prefix: str, cache_path: Path, model: str = "n
     # コサイン類似度を内積で計算できるように L2 正規化する
     vectors = vectors / np.maximum(np.linalg.norm(vectors, axis=1, keepdims=True), 1e-12)
     return vectors[texts.map(index).to_numpy()]
+
+
+GPU_PYTHON = Path(__file__).resolve().parents[1] / ".venv-gpu" / "Scripts" / "python.exe"
+EMBED_SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "embed_st.py"
+
+
+def embed_texts_gpu(texts: pd.Series, prefix: str, cache_path: Path, model: str,
+                    batch_size: int = 128, logger=None) -> np.ndarray:
+    """embed_texts と同じことを、GPU 用の仮想環境の sentence-transformers（PyTorch）で行う。
+    キャッシュにないテキストだけを scripts/embed_st.py に渡し、結果（L2 正規化済み）を texts の行順で返す"""
+    import subprocess
+
+    uniq = texts.drop_duplicates().tolist()
+    known = set()
+    if cache_path.exists():
+        known = set(np.load(cache_path, allow_pickle=False)["texts"].tolist())
+    todo = [t for t in uniq if t not in known]
+    if logger:
+        logger.info(f"embed {cache_path.stem}: {len(uniq)} unique, {len(uniq) - len(todo)} cached, {len(todo)} to process")
+    if todo:
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        todo_path = cache_path.with_suffix(".todo.json")
+        todo_path.write_text(json.dumps(todo, ensure_ascii=False), encoding="utf-8")
+        cmd = [str(GPU_PYTHON), str(EMBED_SCRIPT), "--model", model, "--input", str(todo_path),
+               "--cache", str(cache_path), "--prefix", prefix, "--batch-size", str(batch_size)]
+        with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+                              encoding="utf-8", errors="replace") as proc:
+            for line in proc.stdout:
+                line = line.rstrip()
+                # 進捗の行（"12000/110128 ..." と "device=..."）だけを残し、ライブラリの警告などは捨てる
+                if logger and (line[:1].isdigit() or line.startswith("device=")):
+                    logger.info(f"embed {cache_path.stem}: {line}")
+        if proc.returncode != 0:
+            raise RuntimeError(f"embed_st.py failed (exit {proc.returncode})")
+        todo_path.unlink()
+
+    data = np.load(cache_path, allow_pickle=False)
+    index = {t: i for i, t in enumerate(data["texts"].tolist())}
+    vectors = data["vectors"]
+    vectors = vectors / np.maximum(np.linalg.norm(vectors, axis=1, keepdims=True), 1e-12)
+    return vectors[texts.map(index).to_numpy()]
