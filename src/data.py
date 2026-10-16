@@ -14,3 +14,11 @@ def load_data() -> tuple[pd.DataFrame, pd.DataFrame]:
     train = train.merge(desc, on="product_uid", how="left")
     test = test.merge(desc, on="product_uid", how="left")
     return train, test
+
+
+def load_brands() -> pd.Series:
+    """attributes.csv の MFG Brand Name を product_uid -> ブランド名 の Series で返す（"Unbranded" と欠損は除く）"""
+    attr = pd.read_csv(INPUT_DIR / "attributes.csv", encoding=ENCODING)
+    brand = attr.loc[attr["name"] == "MFG Brand Name", ["product_uid", "value"]].dropna()
+    brand = brand[brand["value"].str.strip().str.lower() != "unbranded"]
+    return brand.astype({"product_uid": int}).set_index("product_uid")["value"]
