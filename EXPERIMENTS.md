@@ -23,6 +23,7 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 | exp011 | 2026-10-17 | exp009（nomic）＋ 説明文の埋め込みベクトル（exp010 とはモデルだけが異なる） | 0.45252 | 未提出 | [exp/exp011_nomic_desc_vec.py](exp/exp011_nomic_desc_vec.py) |
 | exp012 | 2026-10-17 | exp010（mxbai）から説明文の埋め込みベクトルを外す | 0.44593 | 未提出 | [exp/exp012_mxbai_no_desc_vec.py](exp/exp012_mxbai_no_desc_vec.py) |
 | exp013 | 2026-10-17 | exp012 ＋ cross-encoder（ms-marco-MiniLM-L-6-v2）のスコア（検索語 × タイトル・説明文） | 0.44496 | 未提出 | [exp/exp013_rerank_minilm.py](exp/exp013_rerank_minilm.py) |
+| exp014 | 2026-10-17 | exp012 ＋ cross-encoder（mxbai-rerank-base-v1）のスコア（検索語 × タイトル・説明文） | 0.44025 | 未提出 | [exp/exp014_rerank_mxbai.py](exp/exp014_rerank_mxbai.py) |
 
 ## 共通の前提
 
@@ -878,4 +879,50 @@ exp012 に次の 2 つの特徴量を加える。それ以外は exp012 と同�
 - `ce_title` は relevance との相関が 0.429 で、**train 全体でこれまでで最も高い**単独の特徴量になった。重要度も 1 位で、2 位の 3.5 倍
 - その代わりに、`ratio_match_title`（16,173 → 1,272）や `emb_cos_title`（19,200 → 7,721）の重要度が大きく下がった。cross-encoder のスコアは、単語一致と埋め込みの類似度が持っていた情報の多くを 1 つにまとめた形になっていて、新しく加わった情報はその一部にとどまるため、CV の改善は小さかったと考えられる
 - MiniLM は軽量（2,200 万パラメータ）なので、より精度の高い mxbai-rerank-base-v1（exp014）で改善が大きくなるかを確かめる
+
+---
+
+## exp014：exp012 + cross-encoder（mxbai-rerank-base-v1）
+
+### 目的
+
+exp013 の MiniLM（2,200 万パラメータ）を、モデルの比較で最も相関が高かった mxbai-rerank-base-v1（1.8 億パラメータ）に置き換えたときの効果を測る。
+
+### 方法
+
+exp013 からモデルだけを変える（`ce_title`、`ce_desc` を mxbai-rerank-base-v1 で計算）。それ以外は exp013 と同じ。
+
+- キャッシュ：`data/processed/rerank_mxbai_base/`
+- 所要時間：51 分（タイトル 8.5 分、説明文 42 分）
+- このモデルのスコアは、sentence-transformers がモデルの設定に従って 0〜1 に変換して出力する（MiniLM はロジットのまま、−11〜10 程度）。木のモデルは値の単調な変換に影響されないので、結果には関係しない
+
+### 結果
+
+| fold | RMSE | 停止ラウンド | exp013 の RMSE | exp012 の RMSE |
+|---|---|---|---|---|
+| 0 | 0.44067 | 356 | 0.44473 | 0.44643 |
+| 1 | 0.44193 | 285 | 0.44596 | 0.44829 |
+| 2 | 0.44340 | 186 | 0.44787 | 0.44653 |
+| 3 | 0.43344 | 327 | 0.43993 | 0.44060 |
+| 4 | 0.44172 | 421 | 0.44625 | 0.44778 |
+| **CV** | **0.44025** | | 0.44496 | 0.44593 |
+| **Private LB** | 未提出 | | 未提出 | 未提出 |
+
+- 予測値の標準偏差：oof 0.296、test 0.295（exp013 は 0.288、0.287）
+
+**relevance との相関（train 全体）**
+
+| 特徴量 | exp014（mxbai-rerank） | exp013（MiniLM） |
+|---|---|---|
+| `ce_title` | **0.433** | 0.429 |
+| `ce_desc` | **0.404** | 0.370 |
+
+特徴量重要度（gain）の上位：**`ce_title` 33,026**、`emb_cos_title` 7,892、**`ce_desc` 4,616**、`ratio_match_title` 2,367、`emb_cos_desc` 1,953、`q_n_chars` 1,122、`ratio_number_title` 1,115 …
+
+### 考察
+
+- CV が exp012 から 0.0057、exp013（MiniLM）から 0.0047 改善し、5 fold すべてで両方より良くなった
+- MiniLM との差は、特に**説明文のスコア**に出ている（相関 0.370 → 0.404、重要度 1,609 → 4,616）。モデルの比較（2,000 ペア）でも、説明文では mxbai-rerank が 2 位に大差を付けていた。長い文を読んで関連を判断する力の差と考えられる
+- `ce_title` の相関の差は小さい（0.429 → 0.433）が、重要度は 27,294 → 33,026 と増えた。相関（直線的な関係）では表れない、細かい順位の付け方の質が上がったと考えられる（比較のときの Spearman 相関は 0.428 → 0.489）
+- 計算時間は MiniLM の約 5 倍（10 分 → 51 分）だが、それに見合う改善があった
 

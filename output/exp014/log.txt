@@ -1,0 +1,118 @@
+2026-10-17 11:52:52 [load data] 2.6s
+2026-10-17 11:53:10 [spell dictionary] 18.2s
+2026-10-17 11:53:11 embed query: 24431 unique, 24431 cached, 0 to process
+2026-10-17 11:53:12 embed title: 120453 unique, 120453 cached, 0 to process
+2026-10-17 11:53:18 embed desc: 110128 unique, 110128 cached, 0 to process
+2026-10-17 11:53:22 embed brand: 4284 unique, 4284 cached, 0 to process
+2026-10-17 11:53:23 [embeddings] 13.3s
+2026-10-17 11:53:23 rerank title: 236614 unique pairs, 0 cached, 236614 to process
+2026-10-17 11:53:37 rerank title: device=NVIDIA GeForce RTX 5070 Laptop GPU todo=236614 cached=0
+2026-10-17 11:54:06 rerank title: 20000/236614 (8%) elapsed 0.5min eta 5.3min
+2026-10-17 11:54:32 rerank title: 40000/236614 (17%) elapsed 0.9min eta 4.5min
+2026-10-17 11:54:59 rerank title: 60000/236614 (25%) elapsed 1.4min eta 4.0min
+2026-10-17 11:55:26 rerank title: 80000/236614 (34%) elapsed 1.8min eta 3.6min
+2026-10-17 11:55:53 rerank title: 100000/236614 (42%) elapsed 2.3min eta 3.1min
+2026-10-17 11:56:19 rerank title: 120000/236614 (51%) elapsed 2.7min eta 2.6min
+2026-10-17 11:56:45 rerank title: 140000/236614 (59%) elapsed 3.1min eta 2.2min
+2026-10-17 11:57:12 rerank title: 160000/236614 (68%) elapsed 3.6min eta 1.7min
+2026-10-17 12:00:02 rerank title: 180000/236614 (76%) elapsed 6.4min eta 2.0min
+2026-10-17 12:00:57 rerank title: 200000/236614 (85%) elapsed 7.3min eta 1.3min
+2026-10-17 12:01:27 rerank title: 220000/236614 (93%) elapsed 7.8min eta 0.6min
+2026-10-17 12:01:50 rerank title: 236614/236614 (100%) elapsed 8.2min eta 0.0min
+2026-10-17 12:01:52 rerank desc: 229000 unique pairs, 0 cached, 229000 to process
+2026-10-17 12:02:06 rerank desc: device=NVIDIA GeForce RTX 5070 Laptop GPU todo=229000 cached=0
+2026-10-17 12:05:53 rerank desc: 20000/229000 (9%) elapsed 3.8min eta 39.5min
+2026-10-17 12:09:26 rerank desc: 40000/229000 (17%) elapsed 7.3min eta 34.6min
+2026-10-17 12:12:55 rerank desc: 60000/229000 (26%) elapsed 10.8min eta 30.5min
+2026-10-17 12:16:38 rerank desc: 80000/229000 (35%) elapsed 14.5min eta 27.1min
+2026-10-17 12:20:32 rerank desc: 100000/229000 (44%) elapsed 18.4min eta 23.8min
+2026-10-17 12:24:20 rerank desc: 120000/229000 (52%) elapsed 22.2min eta 20.2min
+2026-10-17 12:27:58 rerank desc: 140000/229000 (61%) elapsed 25.9min eta 16.4min
+2026-10-17 12:31:36 rerank desc: 160000/229000 (70%) elapsed 29.5min eta 12.7min
+2026-10-17 12:35:12 rerank desc: 180000/229000 (79%) elapsed 33.1min eta 9.0min
+2026-10-17 12:38:47 rerank desc: 200000/229000 (87%) elapsed 36.7min eta 5.3min
+2026-10-17 12:42:25 rerank desc: 220000/229000 (96%) elapsed 40.3min eta 1.6min
+2026-10-17 12:44:06 rerank desc: 229000/229000 (100%) elapsed 42.0min eta 0.0min
+2026-10-17 12:44:18 [rerank] 3055.3s
+2026-10-17 12:44:45 [preprocess] 26.3s
+2026-10-17 12:45:11 [tfidf features] 26.5s
+2026-10-17 12:45:19 [match features] 7.7s
+2026-10-17 12:45:21 [brand features] 2.2s
+2026-10-17 12:45:58 [bm25 features] 36.4s
+2026-10-17 12:46:18 [char ngram features] 20.0s
+2026-10-17 12:46:20 [attr match features] 2.6s
+2026-10-17 12:46:35 vocab size: 100793, n_features: 203673 (dense 39)
+2026-10-17 12:46:35 new feature stats (train):
+                 count   mean    std    min    25%    50%    75%    max
+ce_title       74067.0  0.284  0.330  0.001  0.018  0.101  0.542  0.997
+ce_desc        74067.0  0.363  0.370  0.001  0.027  0.182  0.752  0.999
+emb_cos_title  74067.0  0.675  0.101  0.261  0.614  0.688  0.749  0.959
+emb_cos_desc   74067.0  0.662  0.102  0.233  0.602  0.677  0.736  0.920
+emb_cos_brand  54243.0  0.494  0.133  0.237  0.395  0.451  0.571  0.969
+2026-10-17 12:46:35 corr with relevance (train):
+ce_title             0.433
+ce_desc              0.404
+emb_cos_title        0.408
+emb_cos_desc         0.361
+emb_cos_brand        0.127
+cos_title            0.365
+ratio_match_title    0.362
+2026-10-17 12:47:31 [fold 0] 55.9s
+2026-10-17 12:47:31 fold 0: rmse=0.44067 best_iter=356
+2026-10-17 12:48:25 [fold 1] 54.0s
+2026-10-17 12:48:25 fold 1: rmse=0.44193 best_iter=285
+2026-10-17 12:49:12 [fold 2] 47.0s
+2026-10-17 12:49:12 fold 2: rmse=0.44340 best_iter=186
+2026-10-17 12:50:09 [fold 3] 56.6s
+2026-10-17 12:50:09 fold 3: rmse=0.43344 best_iter=327
+2026-10-17 12:51:13 [fold 4] 64.1s
+2026-10-17 12:51:13 fold 4: rmse=0.44172 best_iter=421
+2026-10-17 12:51:13 CV rmse: 0.44025
+2026-10-17 12:51:13 oof pred std: 0.2964, test pred std: 0.2947
+2026-10-17 12:51:13 features used (gain > 0): 2622
+2026-10-17 12:51:13 query emb: used 1024 columns, total gain 18499.4
+2026-10-17 12:51:13 title emb: used 1024 columns, total gain 12584.4
+2026-10-17 12:51:13 query tfidf: used 159 columns, total gain 2353.7
+2026-10-17 12:51:13 title tfidf: used 384 columns, total gain 1116.1
+2026-10-17 12:51:13 feature importance top 40 (gain):
+ce_title              33025.8
+emb_cos_title          7891.5
+ce_desc                4615.6
+ratio_match_title      2367.0
+emb_cos_desc           1953.1
+q_n_chars              1121.6
+ratio_number_title     1114.7
+char_cos_title          649.8
+q_n_words               626.0
+cos_title               612.8
+last_in_title           479.8
+has_attr                344.2
+emb_cos_brand           239.6
+t_for                   182.1
+eq_929                  160.2
+eq_414                  137.9
+eq_135                  122.6
+eq_593                  117.0
+eq_554                  110.0
+eq_548                  108.2
+eq_1020                 107.6
+ratio_match_desc         99.7
+et_409                   98.2
+q_for                    96.8
+cos_desc                 96.6
+bm25_title_norm          94.2
+et_787                   88.3
+eq_567                   87.7
+eq_854                   79.5
+ratio_bigram_title       77.0
+eq_330                   73.3
+et_90                    66.9
+bm25_attr                64.6
+eq_546                   64.6
+bm25_title               63.1
+et_16                    62.0
+eq_818                   61.7
+et_34                    60.9
+eq_864                   58.4
+et_522                   57.7
+2026-10-17 12:51:13 saved: C:\kaggle_homedepo\output\exp014
