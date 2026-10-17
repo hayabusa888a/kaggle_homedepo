@@ -1,0 +1,86 @@
+2026-10-17 10:42:21 [load data] 3.3s
+2026-10-17 10:42:39 [spell dictionary] 17.9s
+2026-10-17 10:42:40 embed query: 24431 unique, 24431 cached, 0 to process
+2026-10-17 10:42:42 embed title: 120453 unique, 120453 cached, 0 to process
+2026-10-17 10:42:49 embed desc: 110128 unique, 110128 cached, 0 to process
+2026-10-17 10:42:50 embed brand: 4284 unique, 4284 cached, 0 to process
+2026-10-17 10:42:52 [embeddings] 12.8s
+2026-10-17 10:43:18 [preprocess] 25.7s
+2026-10-17 10:43:41 [tfidf features] 23.6s
+2026-10-17 10:43:48 [match features] 7.2s
+2026-10-17 10:43:51 [brand features] 2.3s
+2026-10-17 10:44:26 [bm25 features] 34.9s
+2026-10-17 10:44:46 [char ngram features] 20.0s
+2026-10-17 10:44:48 [attr match features] 2.8s
+2026-10-17 10:45:09 vocab size: 100793, n_features: 203927 (dense 37)
+2026-10-17 10:45:09 new feature stats (train):
+                 count   mean    std    min    25%    50%    75%    max
+emb_cos_title  74067.0  0.657  0.084  0.288  0.604  0.663  0.718  0.914
+emb_cos_desc   74067.0  0.645  0.087  0.294  0.591  0.653  0.708  0.893
+emb_cos_brand  54243.0  0.416  0.117  0.189  0.337  0.382  0.461  0.887
+2026-10-17 10:45:09 corr with relevance (train):
+emb_cos_title        0.428
+emb_cos_desc         0.352
+emb_cos_brand        0.119
+cos_title            0.365
+ratio_match_title    0.362
+2026-10-17 10:46:04 [fold 0] 54.4s
+2026-10-17 10:46:04 fold 0: rmse=0.45486 best_iter=250
+2026-10-17 10:47:01 [fold 1] 57.4s
+2026-10-17 10:47:01 fold 1: rmse=0.45444 best_iter=269
+2026-10-17 10:47:59 [fold 2] 58.0s
+2026-10-17 10:47:59 fold 2: rmse=0.45573 best_iter=312
+2026-10-17 10:49:04 [fold 3] 64.8s
+2026-10-17 10:49:04 fold 3: rmse=0.44541 best_iter=385
+2026-10-17 10:50:07 [fold 4] 63.5s
+2026-10-17 10:50:07 fold 4: rmse=0.45210 best_iter=355
+2026-10-17 10:50:07 CV rmse: 0.45252
+2026-10-17 10:50:07 oof pred std: 0.2758, test pred std: 0.2733
+2026-10-17 10:50:07 features used (gain > 0): 2844
+2026-10-17 10:50:07 query emb: used 768 columns, total gain 18922.2
+2026-10-17 10:50:07 title emb: used 768 columns, total gain 8233.5
+2026-10-17 10:50:07 desc emb: used 768 columns, total gain 7585.9
+2026-10-17 10:50:07 query tfidf: used 171 columns, total gain 3996.1
+2026-10-17 10:50:07 title tfidf: used 341 columns, total gain 1170.1
+2026-10-17 10:50:07 feature importance top 40 (gain):
+emb_cos_title         25645.9
+ratio_match_title      8637.4
+emb_cos_desc           4867.2
+q_n_words              1747.4
+q_n_chars              1206.9
+cos_title              1171.3
+char_cos_title          974.6
+ratio_number_title      797.5
+ratio_match_desc        632.2
+last_in_title           409.6
+ratio_bigram_title      385.2
+emb_cos_brand           353.1
+has_attr                323.2
+bm25_title              322.4
+q_for                   266.3
+t_for                   231.6
+last_in_desc            175.5
+ratio_match_attr        172.4
+n_match_title           153.5
+et_632                  146.8
+bm25_title_norm         135.5
+bm25_desc               121.4
+eq_362                  113.2
+eq_73                   112.4
+eq_579                  111.8
+eq_38                    96.0
+eq_587                   93.3
+ed_535                   92.2
+eq_641                   86.9
+eq_17                    85.4
+et_269                   79.9
+ed_752                   78.1
+eq_469                   77.9
+eq_527                   77.3
+cos_desc                 76.2
+eq_30                    75.7
+eq_261                   75.0
+et_161                   74.4
+ed_632                   74.0
+eq_708                   74.0
+2026-10-17 10:50:08 saved: C:\kaggle_homedepo\output\exp011
