@@ -1,0 +1,141 @@
+2026-10-17 13:27:37 [load data] 2.8s
+2026-10-17 13:27:57 [spell dictionary] 19.7s
+2026-10-17 13:27:58 embed query: 24431 unique, 24431 cached, 0 to process
+2026-10-17 13:27:59 embed title: 120453 unique, 120453 cached, 0 to process
+2026-10-17 13:28:05 embed desc: 110128 unique, 110128 cached, 0 to process
+2026-10-17 13:28:08 embed brand: 4284 unique, 4284 cached, 0 to process
+2026-10-17 13:28:10 [embeddings] 12.7s
+2026-10-17 13:28:10 rerank title: 236614 unique pairs, 236614 cached, 0 to process
+2026-10-17 13:28:23 rerank desc: 229000 unique pairs, 229000 cached, 0 to process
+2026-10-17 13:28:28 [rerank] 18.6s
+2026-10-17 13:28:55 [preprocess] 27.2s
+2026-10-17 13:29:18 [tfidf features] 23.1s
+2026-10-17 13:29:26 [match features] 7.1s
+2026-10-17 13:29:28 [brand features] 2.2s
+2026-10-17 13:30:05 [bm25 features] 37.4s
+2026-10-17 13:30:26 [char ngram features] 20.5s
+2026-10-17 13:30:29 [attr match features] 3.4s
+2026-10-17 13:30:44 vocab size: 100793, n_features: 203673 (dense 39)
+2026-10-17 13:30:44 new feature stats (train):
+                 count   mean    std    min    25%    50%    75%    max
+ce_title       74067.0  0.284  0.330  0.001  0.018  0.101  0.542  0.997
+ce_desc        74067.0  0.363  0.370  0.001  0.027  0.182  0.752  0.999
+emb_cos_title  74067.0  0.675  0.101  0.261  0.614  0.688  0.749  0.959
+emb_cos_desc   74067.0  0.662  0.102  0.233  0.602  0.677  0.736  0.920
+emb_cos_brand  54243.0  0.494  0.133  0.237  0.395  0.451  0.571  0.969
+2026-10-17 13:30:44 corr with relevance (train):
+ce_title             0.433
+ce_desc              0.404
+emb_cos_title        0.408
+emb_cos_desc         0.361
+emb_cos_brand        0.127
+cos_title            0.365
+ratio_match_title    0.362
+2026-10-17 13:33:21 trial 0: rmse=0.44161 params={'num_leaves': 31, 'min_child_samples': 20, 'feature_fraction': 1.0, 'bagging_fraction': 1.0, 'lambda_l1': 0.001, 'lambda_l2': 0.001}
+2026-10-17 13:35:51 trial 1: rmse=0.44149 params={'num_leaves': 42, 'min_child_samples': 173, 'feature_fraction': 0.7587945476302645, 'bagging_fraction': 0.7993292420985183, 'lambda_l1': 0.004207988669606638, 'lambda_l2': 0.004207053950287938}
+2026-10-17 13:38:12 trial 2: rmse=0.44103 params={'num_leaves': 17, 'min_child_samples': 133, 'feature_fraction': 0.6410035105688879, 'bagging_fraction': 0.8540362888980227, 'lambda_l1': 0.0012087541473056963, 'lambda_l2': 7.579479953348009}
+2026-10-17 13:40:52 trial 3: rmse=0.44831 params={'num_leaves': 158, 'min_child_samples': 18, 'feature_fraction': 0.26364247048639056, 'bagging_fraction': 0.5917022549267169, 'lambda_l1': 0.016480446427978974, 'lambda_l2': 0.12561043700013558}
+2026-10-17 13:43:32 trial 4: rmse=0.44280 params={'num_leaves': 50, 'min_child_samples': 23, 'feature_fraction': 0.6506676052501416, 'bagging_fraction': 0.569746930326021, 'lambda_l1': 0.01474275315991467, 'lambda_l2': 0.029204338471814112}
+2026-10-17 13:45:47 trial 5: rmse=0.44294 params={'num_leaves': 54, 'min_child_samples': 104, 'feature_fraction': 0.2797064039425238, 'bagging_fraction': 0.7571172192068059, 'lambda_l1': 0.23423849847112907, 'lambda_l2': 0.0015339162591163618}
+2026-10-17 13:48:20 trial 6: rmse=0.44311 params={'num_leaves': 83, 'min_child_samples': 16, 'feature_fraction': 0.1585464336867516, 'bagging_fraction': 0.9744427686266666, 'lambda_l1': 7.2866537374910445, 'lambda_l2': 1.7123375973163988}
+2026-10-17 13:51:17 trial 7: rmse=0.44211 params={'num_leaves': 35, 'min_child_samples': 13, 'feature_fraction': 0.7158097238609412, 'bagging_fraction': 0.7200762468698007, 'lambda_l1': 0.003077180271250686, 'lambda_l2': 0.09565499215943825}
+2026-10-17 13:53:38 trial 8: rmse=0.44098 params={'num_leaves': 16, 'min_child_samples': 152, 'feature_fraction': 0.3329019834400152, 'bagging_fraction': 0.831261142176991, 'lambda_l1': 0.017654048052495083, 'lambda_l2': 0.12030178871154672}
+2026-10-17 13:57:50 trial 9: rmse=0.44195 params={'num_leaves': 70, 'min_child_samples': 17, 'feature_fraction': 0.9726261649881027, 'bagging_fraction': 0.8875664116805573, 'lambda_l1': 5.727904470799623, 'lambda_l2': 3.7958531426706403}
+2026-10-17 14:00:17 trial 10: rmse=0.44056 params={'num_leaves': 16, 'min_child_samples': 143, 'feature_fraction': 0.273466418887838, 'bagging_fraction': 0.8886185629157466, 'lambda_l1': 1.6994548387478847, 'lambda_l2': 0.05267156173535894}
+2026-10-17 14:02:45 trial 11: rmse=0.44115 params={'num_leaves': 15, 'min_child_samples': 153, 'feature_fraction': 0.23897938251771983, 'bagging_fraction': 0.8982564730010701, 'lambda_l1': 0.6780796017496505, 'lambda_l2': 0.08877137370969702}
+2026-10-17 14:05:16 trial 12: rmse=0.44310 params={'num_leaves': 40, 'min_child_samples': 107, 'feature_fraction': 0.10634092647639842, 'bagging_fraction': 0.9592503947514064, 'lambda_l1': 1.864197991589161, 'lambda_l2': 0.05536307363658939}
+2026-10-17 14:07:50 trial 13: rmse=0.44076 params={'num_leaves': 19, 'min_child_samples': 173, 'feature_fraction': 0.39469092198783196, 'bagging_fraction': 0.9296147948437692, 'lambda_l1': 0.01645917293744929, 'lambda_l2': 0.010406631768642635}
+2026-10-17 14:10:25 trial 14: rmse=0.44049 params={'num_leaves': 19, 'min_child_samples': 186, 'feature_fraction': 0.3484310443408997, 'bagging_fraction': 0.942908945859541, 'lambda_l1': 1.9436808816321027, 'lambda_l2': 0.004759958270304831}
+2026-10-17 14:13:05 trial 15: rmse=0.44033 params={'num_leaves': 20, 'min_child_samples': 126, 'feature_fraction': 0.284324572815143, 'bagging_fraction': 0.9225967757406888, 'lambda_l1': 5.071078325332041, 'lambda_l2': 0.002773907356061504}
+2026-10-17 14:15:42 trial 16: rmse=0.44108 params={'num_leaves': 32, 'min_child_samples': 148, 'feature_fraction': 0.2452045921497304, 'bagging_fraction': 0.999514842291837, 'lambda_l1': 5.4599543286237004, 'lambda_l2': 0.0015627940379657394}
+2026-10-17 14:18:17 trial 17: rmse=0.44067 params={'num_leaves': 19, 'min_child_samples': 130, 'feature_fraction': 0.2410637656797885, 'bagging_fraction': 0.8331652105106753, 'lambda_l1': 1.482710584039491, 'lambda_l2': 0.0015410370221470497}
+2026-10-17 14:21:20 trial 18: rmse=0.44051 params={'num_leaves': 15, 'min_child_samples': 163, 'feature_fraction': 0.5951487953172808, 'bagging_fraction': 0.9928993949800946, 'lambda_l1': 0.7835895712352778, 'lambda_l2': 0.0011756569341004645}
+2026-10-17 14:24:09 trial 19: rmse=0.44048 params={'num_leaves': 19, 'min_child_samples': 100, 'feature_fraction': 0.38422094843234633, 'bagging_fraction': 0.9510882315989723, 'lambda_l1': 3.713838136089194, 'lambda_l2': 0.009471827854846774}
+2026-10-17 14:27:02 trial 20: rmse=0.44006 params={'num_leaves': 15, 'min_child_samples': 66, 'feature_fraction': 0.3136763356113579, 'bagging_fraction': 0.9252144229403493, 'lambda_l1': 9.04067224246189, 'lambda_l2': 0.004600545339775671}
+2026-10-17 14:29:59 trial 21: rmse=0.44049 params={'num_leaves': 22, 'min_child_samples': 62, 'feature_fraction': 0.2854184234487246, 'bagging_fraction': 0.940793982846667, 'lambda_l1': 4.129391060240123, 'lambda_l2': 0.003449239426208446}
+2026-10-17 14:32:36 trial 22: rmse=0.44128 params={'num_leaves': 15, 'min_child_samples': 100, 'feature_fraction': 0.15849159394602957, 'bagging_fraction': 0.9556327492618225, 'lambda_l1': 0.4319179559025036, 'lambda_l2': 0.013133117830583048}
+2026-10-17 14:35:44 trial 23: rmse=0.44036 params={'num_leaves': 21, 'min_child_samples': 82, 'feature_fraction': 0.5414396157348522, 'bagging_fraction': 0.9143278225906245, 'lambda_l1': 2.9836714059378284, 'lambda_l2': 0.0031935594276059935}
+2026-10-17 14:38:53 trial 24: rmse=0.44095 params={'num_leaves': 34, 'min_child_samples': 151, 'feature_fraction': 0.4613681821154209, 'bagging_fraction': 0.8689449525154114, 'lambda_l1': 9.105613709699883, 'lambda_l2': 0.0070960777686773216}
+2026-10-17 14:42:13 trial 25: rmse=0.44047 params={'num_leaves': 20, 'min_child_samples': 54, 'feature_fraction': 0.5642100278157209, 'bagging_fraction': 0.8922117855403969, 'lambda_l1': 2.311680402559947, 'lambda_l2': 0.002550935465457246}
+2026-10-17 14:45:29 trial 26: rmse=0.44057 params={'num_leaves': 23, 'min_child_samples': 78, 'feature_fraction': 0.6101959249462743, 'bagging_fraction': 0.9733934945937041, 'lambda_l1': 1.639620812117897, 'lambda_l2': 0.007687495570872258}
+2026-10-17 14:48:29 trial 27: rmse=0.44062 params={'num_leaves': 18, 'min_child_samples': 90, 'feature_fraction': 0.49410367010977596, 'bagging_fraction': 0.9494814026252208, 'lambda_l1': 1.2200382354441266, 'lambda_l2': 0.042284309298910104}
+2026-10-17 14:51:16 trial 28: rmse=0.44096 params={'num_leaves': 18, 'min_child_samples': 73, 'feature_fraction': 0.2817296217434738, 'bagging_fraction': 0.8408341648556998, 'lambda_l1': 3.885493906359749, 'lambda_l2': 0.008881506356729364}
+2026-10-17 14:54:10 trial 29: rmse=0.44024 params={'num_leaves': 19, 'min_child_samples': 146, 'feature_fraction': 0.33177960456365496, 'bagging_fraction': 0.8342675482822475, 'lambda_l1': 6.053423420167571, 'lambda_l2': 0.00360354322868247}
+2026-10-17 14:54:10 [optuna] 5006.4s
+2026-10-17 14:54:10 best trial 20: rmse=0.44006 params={'num_leaves': 15, 'min_child_samples': 66, 'feature_fraction': 0.3136763356113579, 'bagging_fraction': 0.9252144229403493, 'lambda_l1': 9.04067224246189, 'lambda_l2': 0.004600545339775671}
+2026-10-17 14:54:10 baseline trial 0 (default params, lr=0.1): rmse=0.44161
+2026-10-17 14:54:10 --- default params, lr=0.02
+2026-10-17 14:55:52 [fold 0] 102.3s
+2026-10-17 14:55:52 fold 0: rmse=0.43993 best_iter=618
+2026-10-17 14:57:52 [fold 1] 120.0s
+2026-10-17 14:57:52 fold 1: rmse=0.44195 best_iter=848
+2026-10-17 14:59:38 [fold 2] 105.7s
+2026-10-17 14:59:38 fold 2: rmse=0.44357 best_iter=670
+2026-10-17 15:01:55 [fold 3] 136.7s
+2026-10-17 15:01:55 fold 3: rmse=0.43321 best_iter=1118
+2026-10-17 15:03:55 [fold 4] 120.2s
+2026-10-17 15:03:55 fold 4: rmse=0.44080 best_iter=898
+2026-10-17 15:03:55 CV rmse: 0.43991
+2026-10-17 15:03:55 oof pred std: 0.2957, test pred std: 0.2945
+2026-10-17 15:03:55 [final default params] 585.1s
+2026-10-17 15:03:55 --- best params, lr=0.02: {'objective': 'regression', 'metric': 'rmse', 'learning_rate': 0.02, 'num_leaves': 15, 'min_child_samples': 66, 'seed': 42, 'verbose': -1, 'feature_fraction': 0.3136763356113579, 'bagging_fraction': 0.9252144229403493, 'lambda_l1': 9.04067224246189, 'lambda_l2': 0.004600545339775671, 'bagging_freq': 1}
+2026-10-17 15:05:04 [fold 0] 68.7s
+2026-10-17 15:05:04 fold 0: rmse=0.43924 best_iter=1312
+2026-10-17 15:06:10 [fold 1] 66.4s
+2026-10-17 15:06:10 fold 1: rmse=0.44078 best_iter=1318
+2026-10-17 15:07:28 [fold 2] 77.7s
+2026-10-17 15:07:28 fold 2: rmse=0.44071 best_iter=1989
+2026-10-17 15:08:40 [fold 3] 71.9s
+2026-10-17 15:08:40 fold 3: rmse=0.43181 best_iter=1738
+2026-10-17 15:09:48 [fold 4] 67.7s
+2026-10-17 15:09:48 fold 4: rmse=0.43946 best_iter=1517
+2026-10-17 15:09:48 CV rmse: 0.43841
+2026-10-17 15:09:48 oof pred std: 0.2970, test pred std: 0.2962
+2026-10-17 15:09:48 [final best params] 352.6s
+2026-10-17 15:09:48 features used (gain > 0): 2149
+2026-10-17 15:09:48 query emb: used 1024 columns, total gain 36654.3
+2026-10-17 15:09:48 title emb: used 1024 columns, total gain 21163.0
+2026-10-17 15:09:48 query tfidf: used 16 columns, total gain 4838.3
+2026-10-17 15:09:48 title tfidf: used 53 columns, total gain 626.6
+2026-10-17 15:09:48 feature importance top 40 (gain):
+ce_title              34567.5
+ce_desc               20123.0
+emb_cos_title         17822.3
+ratio_match_title     12044.9
+emb_cos_desc           8845.4
+cos_title              5192.5
+bm25_title_norm        3466.0
+char_cos_title         3064.0
+ratio_number_title     2509.5
+q_n_chars              2315.0
+q_n_words              2205.1
+ratio_match_desc       2089.3
+last_in_title          1907.9
+cos_desc               1199.0
+bm25_title             1035.4
+emb_cos_brand           710.9
+n_match_title           687.6
+ratio_bigram_title      675.7
+has_attr                601.3
+bm25_desc               568.6
+last_in_desc            565.7
+bm25_desc_norm          532.0
+first_in_title          451.6
+t_for                   382.1
+ratio_match_attr        352.7
+eq_929                  334.1
+n_match_desc            315.8
+eq_135                  274.6
+et_409                  237.8
+bm25_attr               219.5
+n_match_any             216.5
+eq_567                  210.6
+brand_in_query          197.3
+et_787                  189.9
+eq_554                  188.9
+eq_414                  187.6
+eq_1020                 180.6
+eq_548                  174.7
+eq_546                  163.2
+eq_818                  158.3
+2026-10-17 15:09:48 saved: C:\kaggle_homedepo\output\exp016
