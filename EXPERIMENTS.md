@@ -24,6 +24,7 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 | exp012 | 2026-10-17 | exp010（mxbai）から説明文の埋め込みベクトルを外す | 0.44593 | 未提出 | [exp/exp012_mxbai_no_desc_vec.py](exp/exp012_mxbai_no_desc_vec.py) |
 | exp013 | 2026-10-17 | exp012 ＋ cross-encoder（ms-marco-MiniLM-L-6-v2）のスコア（検索語 × タイトル・説明文） | 0.44496 | 未提出 | [exp/exp013_rerank_minilm.py](exp/exp013_rerank_minilm.py) |
 | exp014 | 2026-10-17 | exp012 ＋ cross-encoder（mxbai-rerank-base-v1）のスコア（検索語 × タイトル・説明文） | 0.44025 | 未提出 | [exp/exp014_rerank_mxbai.py](exp/exp014_rerank_mxbai.py) |
+| exp015 | 2026-10-17 | exp014 ＋ MiniLM のスコアも両方入れる | 0.44011 | 未提出 | [exp/exp015_rerank_both.py](exp/exp015_rerank_both.py) |
 
 ## 共通の前提
 
@@ -925,4 +926,36 @@ exp013 からモデルだけを変える（`ce_title`、`ce_desc` を mxbai-rera
 - MiniLM との差は、特に**説明文のスコア**に出ている（相関 0.370 → 0.404、重要度 1,609 → 4,616）。モデルの比較（2,000 ペア）でも、説明文では mxbai-rerank が 2 位に大差を付けていた。長い文を読んで関連を判断する力の差と考えられる
 - `ce_title` の相関の差は小さい（0.429 → 0.433）が、重要度は 27,294 → 33,026 と増えた。相関（直線的な関係）では表れない、細かい順位の付け方の質が上がったと考えられる（比較のときの Spearman 相関は 0.428 → 0.489）
 - 計算時間は MiniLM の約 5 倍（10 分 → 51 分）だが、それに見合う改善があった
+
+---
+
+## exp015：exp014 + MiniLM のスコアも両方入れる
+
+### 目的
+
+種類の違う cross-encoder のスコアを組み合わせると、互いの弱点を補えるかを確かめる。
+
+### 方法
+
+exp014（mxbai-rerank-base-v1 の `ce_title`、`ce_desc`）に、exp013 の MiniLM のスコア（`ce_minilm_title`、`ce_minilm_desc`）を加える。スコアはキャッシュを使い、計算し直さない。それ以外は exp014 と同じ。
+
+### 結果
+
+| fold | RMSE | 停止ラウンド | exp014 の RMSE |
+|---|---|---|---|
+| 0 | 0.44060 | 289 | 0.44067 |
+| 1 | 0.44212 | 267 | 0.44193 |
+| 2 | 0.44328 | 379 | 0.44340 |
+| 3 | 0.43262 | 349 | 0.43344 |
+| 4 | 0.44187 | 367 | 0.44172 |
+| **CV** | **0.44011** | | 0.44025 |
+| **Private LB** | 未提出 | | 未提出 |
+
+特徴量重要度（gain）：`ce_title` 30,241、`emb_cos_title` 7,463、`ce_desc` 4,549、**`ce_minilm_title` 4,298**、`emb_cos_desc` 2,255 … **`ce_minilm_desc` 380**
+
+### 考察
+
+- CV の差は −0.0001 で、fold ごとにも良くなったり悪くなったりしており、**効果はほぼない**
+- MiniLM のタイトルのスコアは重要度 4 位（4,298）で使われているが、その分 `ce_title`（33,026 → 30,241）などの重要度が下がっただけで、新しい情報はほとんど加わっていない。2 つの cross-encoder は、同じ種類の情報（ペアを同時に読んだ関連度）を出しているためと考えられる
+- 列を増やしても精度が変わらないので、ハイパーパラメータの調整（exp016）は、構成の単純な **exp014 を基準**にして行う
 

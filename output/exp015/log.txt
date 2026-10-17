@@ -1,0 +1,98 @@
+2026-10-17 13:18:08 [load data] 2.8s
+2026-10-17 13:18:28 [spell dictionary] 20.0s
+2026-10-17 13:18:29 embed query: 24431 unique, 24431 cached, 0 to process
+2026-10-17 13:18:30 embed title: 120453 unique, 120453 cached, 0 to process
+2026-10-17 13:18:36 embed desc: 110128 unique, 110128 cached, 0 to process
+2026-10-17 13:18:39 embed brand: 4284 unique, 4284 cached, 0 to process
+2026-10-17 13:18:41 [embeddings] 12.6s
+2026-10-17 13:18:41 rerank title: 236614 unique pairs, 236614 cached, 0 to process
+2026-10-17 13:18:53 rerank desc: 229000 unique pairs, 229000 cached, 0 to process
+2026-10-17 13:18:59 rerank title: 236614 unique pairs, 236614 cached, 0 to process
+2026-10-17 13:19:11 rerank desc: 229000 unique pairs, 229000 cached, 0 to process
+2026-10-17 13:19:17 [rerank] 35.9s
+2026-10-17 13:19:51 [preprocess] 34.0s
+2026-10-17 13:20:13 [tfidf features] 22.4s
+2026-10-17 13:20:20 [match features] 7.5s
+2026-10-17 13:20:23 [brand features] 2.3s
+2026-10-17 13:21:02 [bm25 features] 39.3s
+2026-10-17 13:21:24 [char ngram features] 22.2s
+2026-10-17 13:21:28 [attr match features] 3.2s
+2026-10-17 13:21:43 vocab size: 100793, n_features: 203675 (dense 41)
+2026-10-17 13:21:43 new feature stats (train):
+                   count   mean    std     min    25%    50%    75%     max
+ce_title         74067.0  0.284  0.330   0.001  0.018  0.101  0.542   0.997
+ce_desc          74067.0  0.363  0.370   0.001  0.027  0.182  0.752   0.999
+ce_minilm_title  74067.0  0.474  5.790 -11.508 -3.600  1.648  5.539   9.688
+ce_minilm_desc   74067.0 -0.479  5.829 -11.500 -5.012  0.364  4.453  10.781
+emb_cos_title    74067.0  0.675  0.101   0.261  0.614  0.688  0.749   0.959
+emb_cos_desc     74067.0  0.662  0.102   0.233  0.602  0.677  0.736   0.920
+emb_cos_brand    54243.0  0.494  0.133   0.237  0.395  0.451  0.571   0.969
+2026-10-17 13:21:43 corr with relevance (train):
+ce_title             0.433
+ce_desc              0.404
+ce_minilm_title      0.429
+ce_minilm_desc       0.370
+emb_cos_title        0.408
+emb_cos_desc         0.361
+emb_cos_brand        0.127
+cos_title            0.365
+ratio_match_title    0.362
+2026-10-17 13:22:38 [fold 0] 54.6s
+2026-10-17 13:22:38 fold 0: rmse=0.44060 best_iter=289
+2026-10-17 13:23:27 [fold 1] 49.7s
+2026-10-17 13:23:27 fold 1: rmse=0.44212 best_iter=267
+2026-10-17 13:24:25 [fold 2] 57.8s
+2026-10-17 13:24:25 fold 2: rmse=0.44328 best_iter=379
+2026-10-17 13:25:22 [fold 3] 56.6s
+2026-10-17 13:25:22 fold 3: rmse=0.43262 best_iter=349
+2026-10-17 13:26:20 [fold 4] 58.1s
+2026-10-17 13:26:20 fold 4: rmse=0.44187 best_iter=367
+2026-10-17 13:26:20 CV rmse: 0.44011
+2026-10-17 13:26:20 oof pred std: 0.2979, test pred std: 0.2953
+2026-10-17 13:26:20 features used (gain > 0): 2634
+2026-10-17 13:26:20 query emb: used 1024 columns, total gain 19104.5
+2026-10-17 13:26:20 title emb: used 1024 columns, total gain 13084.7
+2026-10-17 13:26:20 query tfidf: used 146 columns, total gain 2539.1
+2026-10-17 13:26:20 title tfidf: used 406 columns, total gain 1149.6
+2026-10-17 13:26:20 feature importance top 40 (gain):
+ce_title              30241.4
+emb_cos_title          7462.9
+ce_desc                4549.0
+ce_minilm_title        4297.8
+emb_cos_desc           2254.7
+ratio_match_title      1660.3
+q_n_chars              1023.6
+ratio_number_title      956.2
+q_n_words               912.8
+char_cos_title          516.2
+last_in_title           454.7
+ce_minilm_desc          380.2
+emb_cos_brand           260.3
+has_attr                253.5
+cos_title               243.9
+t_for                   176.2
+eq_929                  154.1
+eq_135                  148.7
+eq_548                  122.2
+eq_554                  119.3
+eq_414                  114.2
+eq_593                  108.0
+eq_1020                 107.0
+et_787                   95.9
+et_409                   94.1
+q_for                    92.9
+ratio_match_desc         83.3
+eq_567                   80.5
+eq_864                   66.5
+eq_30                    66.2
+eq_546                   64.0
+et_34                    63.0
+et_90                    62.5
+eq_818                   61.6
+et_545                   61.2
+eq_854                   60.8
+et_16                    60.0
+et_320                   59.5
+eq_330                   59.3
+eq_997                   58.8
+2026-10-17 13:26:20 saved: C:\kaggle_homedepo\output\exp015
