@@ -182,3 +182,17 @@ def attr_match_features(df: pd.DataFrame) -> pd.DataFrame:
         n = sum(w in aset for w in qw)
         rows.append({"n_match_attr": n, "ratio_match_attr": n / max(len(qw), 1), "has_attr": int(bool(aset))})
     return pd.DataFrame(rows, index=df.index)
+
+
+def group_relative_features(feats: pd.DataFrame, group_key: pd.Series, cols: list[str], prefix: str = "grp") -> pd.DataFrame:
+    """同じグループ（例: 同じ検索語）の中で比べた相対的な値を作る。ラベルは使わず、特徴量だけを集計する。
+    各列について「平均との差」「最大値との差」「グループ内の順位（大きいほど 1 に近い割合）」と、グループの大きさを返す"""
+    g = feats[cols].groupby(group_key.to_numpy())
+    out = {f"{prefix}_size": g[cols[0]].transform("size").to_numpy()}
+    mean, gmax = g.transform("mean"), g.transform("max")
+    rank = g.rank(pct=True, method="average")
+    for c in cols:
+        out[f"{prefix}_{c}_diff_mean"] = (feats[c] - mean[c]).to_numpy()
+        out[f"{prefix}_{c}_diff_max"] = (feats[c] - gmax[c]).to_numpy()
+        out[f"{prefix}_{c}_rank"] = rank[c].to_numpy()
+    return pd.DataFrame(out, index=feats.index)
