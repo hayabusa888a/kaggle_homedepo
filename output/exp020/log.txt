@@ -1,0 +1,197 @@
+2026-10-18 20:19:38 [load data] 2.0s
+2026-10-18 20:19:50 [spell dictionary] 12.3s
+2026-10-18 20:19:51 embed query: 24431 unique, 24431 cached, 0 to process
+2026-10-18 20:19:52 embed title: 120453 unique, 120453 cached, 0 to process
+2026-10-18 20:19:57 embed desc: 110128 unique, 110128 cached, 0 to process
+2026-10-18 20:20:00 embed brand: 4284 unique, 4284 cached, 0 to process
+2026-10-18 20:20:02 [embeddings] 11.5s
+2026-10-18 20:20:02 rerank title: 236614 unique pairs, 236614 cached, 0 to process
+2026-10-18 20:20:12 rerank desc: 229000 unique pairs, 229000 cached, 0 to process
+2026-10-18 20:20:17 [rerank] 15.1s
+2026-10-18 20:20:37 [preprocess] 19.5s
+2026-10-18 20:20:54 [tfidf features] 17.6s
+2026-10-18 20:21:00 [match features] 5.8s
+2026-10-18 20:21:02 [brand features] 1.7s
+2026-10-18 20:21:30 [bm25 features] 28.1s
+2026-10-18 20:21:46 [char ngram features] 15.9s
+2026-10-18 20:21:48 [attr match features] 2.2s
+2026-10-18 20:21:55 finetune: fold 0: cached
+2026-10-18 20:22:00 finetune: fold 1: cached
+2026-10-18 20:22:06 finetune: fold 2: cached
+2026-10-18 20:22:11 finetune: fold 3: cached
+2026-10-18 20:22:16 finetune: fold 4: cached
+2026-10-18 20:22:17 finetuned cross-encoder standalone oof rmse: 0.44997
+2026-10-18 20:22:17 [finetune cross-encoder] 29.3s
+2026-10-18 20:22:24 finetune: device=NVIDIA GeForce RTX 5070 Laptop GPU fold=0 train=59253 valid=14814 test=165859
+2026-10-18 20:25:32 finetune: step 400/3704 epoch 0.22 loss 0.5739 elapsed 3.1min eta 25.2min
+2026-10-18 20:27:03 finetune: step 600/3704 epoch 0.32 loss 0.5709 elapsed 4.6min eta 23.7min
+2026-10-18 20:28:36 finetune: step 800/3704 epoch 0.43 loss 0.5694 elapsed 6.1min eta 22.2min
+2026-10-18 20:30:08 finetune: step 1000/3704 epoch 0.54 loss 0.5702 elapsed 7.7min eta 20.7min
+2026-10-18 20:31:37 finetune: step 1200/3704 epoch 0.65 loss 0.5648 elapsed 9.1min eta 19.0min
+2026-10-18 20:33:05 finetune: step 1400/3704 epoch 0.76 loss 0.5658 elapsed 10.6min eta 17.5min
+2026-10-18 20:34:34 finetune: step 1600/3704 epoch 0.86 loss 0.5657 elapsed 12.1min eta 15.9min
+2026-10-18 20:36:03 finetune: step 1800/3704 epoch 0.97 loss 0.5564 elapsed 13.6min eta 14.4min
+2026-10-18 20:37:32 finetune: step 2000/3704 epoch 1.08 loss 0.5498 elapsed 15.0min eta 12.8min
+2026-10-18 20:39:00 finetune: step 2200/3704 epoch 1.19 loss 0.5545 elapsed 16.5min eta 11.3min
+2026-10-18 20:40:29 finetune: step 2400/3704 epoch 1.30 loss 0.5533 elapsed 18.0min eta 9.8min
+2026-10-18 20:41:58 finetune: step 2600/3704 epoch 1.40 loss 0.5471 elapsed 19.5min eta 8.3min
+2026-10-18 20:43:27 finetune: step 2800/3704 epoch 1.51 loss 0.5493 elapsed 21.0min eta 6.8min
+2026-10-18 20:44:56 finetune: step 3000/3704 epoch 1.62 loss 0.5496 elapsed 22.5min eta 5.3min
+2026-10-18 20:46:25 finetune: step 3200/3704 epoch 1.73 loss 0.5442 elapsed 23.9min eta 3.8min
+2026-10-18 20:47:54 finetune: step 3400/3704 epoch 1.84 loss 0.5498 elapsed 25.4min eta 2.3min
+2026-10-18 20:49:22 finetune: step 3600/3704 epoch 1.94 loss 0.5513 elapsed 26.9min eta 0.8min
+2026-10-18 20:58:58 finetune: fold 0: done, standalone rmse=0.44316 pred_std=0.1867 pearson=0.5797
+2026-10-18 20:59:05 finetune: device=NVIDIA GeForce RTX 5070 Laptop GPU fold=1 train=59253 valid=14814 test=165859
+2026-10-18 21:01:32 finetune: step 400/3704 epoch 0.22 loss 0.5736 elapsed 2.4min eta 19.6min
+2026-10-18 21:02:43 finetune: step 600/3704 epoch 0.32 loss 0.5695 elapsed 3.5min eta 18.3min
+2026-10-18 21:03:54 finetune: step 800/3704 epoch 0.43 loss 0.5673 elapsed 4.7min eta 17.2min
+2026-10-18 21:05:05 finetune: step 1000/3704 epoch 0.54 loss 0.5652 elapsed 5.9min eta 16.0min
+2026-10-18 21:06:15 finetune: step 1200/3704 epoch 0.65 loss 0.5584 elapsed 7.1min eta 14.8min
+2026-10-18 21:07:26 finetune: step 1400/3704 epoch 0.76 loss 0.5593 elapsed 8.3min eta 13.6min
+2026-10-18 21:08:37 finetune: step 1600/3704 epoch 0.86 loss 0.5637 elapsed 9.4min eta 12.4min
+2026-10-18 21:09:48 finetune: step 1800/3704 epoch 0.97 loss 0.5682 elapsed 10.6min eta 11.2min
+2026-10-18 21:10:58 finetune: step 2000/3704 epoch 1.08 loss 0.5525 elapsed 11.8min eta 10.1min
+2026-10-18 21:12:09 finetune: step 2200/3704 epoch 1.19 loss 0.5473 elapsed 13.0min eta 8.9min
+2026-10-18 21:13:20 finetune: step 2400/3704 epoch 1.30 loss 0.5503 elapsed 14.2min eta 7.7min
+2026-10-18 21:14:30 finetune: step 2600/3704 epoch 1.40 loss 0.5433 elapsed 15.3min eta 6.5min
+2026-10-18 21:15:41 finetune: step 2800/3704 epoch 1.51 loss 0.5424 elapsed 16.5min eta 5.3min
+2026-10-18 21:16:52 finetune: step 3000/3704 epoch 1.62 loss 0.5469 elapsed 17.7min eta 4.2min
+2026-10-18 21:18:03 finetune: step 3200/3704 epoch 1.73 loss 0.5504 elapsed 18.9min eta 3.0min
+2026-10-18 21:19:14 finetune: step 3400/3704 epoch 1.84 loss 0.5482 elapsed 20.1min eta 1.8min
+2026-10-18 21:20:24 finetune: step 3600/3704 epoch 1.94 loss 0.5564 elapsed 21.2min eta 0.6min
+2026-10-18 21:34:19 finetune: fold 1: done, standalone rmse=0.44526 pred_std=0.1834 pearson=0.5663
+2026-10-18 21:34:26 finetune: device=NVIDIA GeForce RTX 5070 Laptop GPU fold=2 train=59254 valid=14813 test=165859
+2026-10-18 21:36:50 finetune: step 400/3704 epoch 0.22 loss 0.5805 elapsed 2.3min eta 19.2min
+2026-10-18 21:38:00 finetune: step 600/3704 epoch 0.32 loss 0.5673 elapsed 3.5min eta 18.0min
+2026-10-18 21:39:09 finetune: step 800/3704 epoch 0.43 loss 0.5716 elapsed 4.6min eta 16.8min
+2026-10-18 21:40:19 finetune: step 1000/3704 epoch 0.54 loss 0.5681 elapsed 5.8min eta 15.7min
+2026-10-18 21:41:28 finetune: step 1200/3704 epoch 0.65 loss 0.5638 elapsed 6.9min eta 14.5min
+2026-10-18 21:42:37 finetune: step 1400/3704 epoch 0.76 loss 0.5660 elapsed 8.1min eta 13.3min
+2026-10-18 21:43:47 finetune: step 1600/3704 epoch 0.86 loss 0.5585 elapsed 9.3min eta 12.2min
+2026-10-18 21:44:56 finetune: step 1800/3704 epoch 0.97 loss 0.5553 elapsed 10.4min eta 11.0min
+2026-10-18 21:46:05 finetune: step 2000/3704 epoch 1.08 loss 0.5537 elapsed 11.6min eta 9.9min
+2026-10-18 21:47:14 finetune: step 2200/3704 epoch 1.19 loss 0.5496 elapsed 12.7min eta 8.7min
+2026-10-18 21:48:26 finetune: step 2400/3704 epoch 1.30 loss 0.5499 elapsed 13.9min eta 7.6min
+2026-10-18 21:49:38 finetune: step 2600/3704 epoch 1.40 loss 0.5495 elapsed 15.1min eta 6.4min
+2026-10-18 21:50:51 finetune: step 2800/3704 epoch 1.51 loss 0.5532 elapsed 16.3min eta 5.3min
+2026-10-18 21:52:04 finetune: step 3000/3704 epoch 1.62 loss 0.5451 elapsed 17.5min eta 4.1min
+2026-10-18 21:53:16 finetune: step 3200/3704 epoch 1.73 loss 0.5512 elapsed 18.8min eta 3.0min
+2026-10-18 21:54:29 finetune: step 3400/3704 epoch 1.84 loss 0.5526 elapsed 20.0min eta 1.8min
+2026-10-18 21:55:41 finetune: step 3600/3704 epoch 1.94 loss 0.5511 elapsed 21.2min eta 0.6min
+2026-10-18 22:10:07 finetune: fold 2: done, standalone rmse=0.44680 pred_std=0.1840 pearson=0.5606
+2026-10-18 22:10:14 finetune: device=NVIDIA GeForce RTX 5070 Laptop GPU fold=3 train=59254 valid=14813 test=165859
+2026-10-18 22:12:39 finetune: step 400/3704 epoch 0.22 loss 0.5812 elapsed 2.3min eta 19.3min
+2026-10-18 22:13:49 finetune: step 600/3704 epoch 0.32 loss 0.5685 elapsed 3.5min eta 18.1min
+2026-10-18 22:14:59 finetune: step 800/3704 epoch 0.43 loss 0.5672 elapsed 4.7min eta 17.0min
+2026-10-18 22:16:09 finetune: step 1000/3704 epoch 0.54 loss 0.5666 elapsed 5.8min eta 15.8min
+2026-10-18 22:17:19 finetune: step 1200/3704 epoch 0.65 loss 0.5644 elapsed 7.0min eta 14.6min
+2026-10-18 22:18:29 finetune: step 1400/3704 epoch 0.76 loss 0.5662 elapsed 8.2min eta 13.5min
+2026-10-18 22:19:39 finetune: step 1600/3704 epoch 0.86 loss 0.5698 elapsed 9.3min eta 12.3min
+2026-10-18 22:20:49 finetune: step 1800/3704 epoch 0.97 loss 0.5580 elapsed 10.5min eta 11.1min
+2026-10-18 22:21:59 finetune: step 2000/3704 epoch 1.08 loss 0.5576 elapsed 11.7min eta 9.9min
+2026-10-18 22:23:09 finetune: step 2200/3704 epoch 1.19 loss 0.5527 elapsed 12.8min eta 8.8min
+2026-10-18 22:24:19 finetune: step 2400/3704 epoch 1.30 loss 0.5526 elapsed 14.0min eta 7.6min
+2026-10-18 22:25:29 finetune: step 2600/3704 epoch 1.40 loss 0.5488 elapsed 15.2min eta 6.4min
+2026-10-18 22:26:39 finetune: step 2800/3704 epoch 1.51 loss 0.5481 elapsed 16.3min eta 5.3min
+2026-10-18 22:27:49 finetune: step 3000/3704 epoch 1.62 loss 0.5539 elapsed 17.5min eta 4.1min
+2026-10-18 22:28:59 finetune: step 3200/3704 epoch 1.73 loss 0.5553 elapsed 18.7min eta 2.9min
+2026-10-18 22:30:09 finetune: step 3400/3704 epoch 1.84 loss 0.5475 elapsed 19.8min eta 1.8min
+2026-10-18 22:31:19 finetune: step 3600/3704 epoch 1.94 loss 0.5460 elapsed 21.0min eta 0.6min
+2026-10-18 22:45:52 finetune: fold 3: done, standalone rmse=0.44493 pred_std=0.1881 pearson=0.5534
+2026-10-18 22:45:59 finetune: device=NVIDIA GeForce RTX 5070 Laptop GPU fold=4 train=59254 valid=14813 test=165859
+2026-10-18 22:48:19 finetune: step 400/3704 epoch 0.22 loss 0.5793 elapsed 2.2min eta 18.6min
+2026-10-18 22:49:26 finetune: step 600/3704 epoch 0.32 loss 0.5714 elapsed 3.4min eta 17.4min
+2026-10-18 22:50:33 finetune: step 800/3704 epoch 0.43 loss 0.5698 elapsed 4.5min eta 16.3min
+2026-10-18 22:51:41 finetune: step 1000/3704 epoch 0.54 loss 0.5644 elapsed 5.6min eta 15.2min
+2026-10-18 22:52:48 finetune: step 1200/3704 epoch 0.65 loss 0.5624 elapsed 6.7min eta 14.0min
+2026-10-18 22:53:55 finetune: step 1400/3704 epoch 0.76 loss 0.5563 elapsed 7.8min eta 12.9min
+2026-10-18 22:55:02 finetune: step 1600/3704 epoch 0.86 loss 0.5625 elapsed 9.0min eta 11.8min
+2026-10-18 22:56:10 finetune: step 1800/3704 epoch 0.97 loss 0.5605 elapsed 10.1min eta 10.7min
+2026-10-18 22:57:17 finetune: step 2000/3704 epoch 1.08 loss 0.5581 elapsed 11.2min eta 9.5min
+2026-10-18 22:58:24 finetune: step 2200/3704 epoch 1.19 loss 0.5492 elapsed 12.3min eta 8.4min
+2026-10-18 22:59:31 finetune: step 2400/3704 epoch 1.30 loss 0.5439 elapsed 13.4min eta 7.3min
+2026-10-18 23:00:38 finetune: step 2600/3704 epoch 1.40 loss 0.5434 elapsed 14.6min eta 6.2min
+2026-10-18 23:01:45 finetune: step 2800/3704 epoch 1.51 loss 0.5546 elapsed 15.7min eta 5.1min
+2026-10-18 23:02:53 finetune: step 3000/3704 epoch 1.62 loss 0.5506 elapsed 16.8min eta 3.9min
+2026-10-18 23:04:00 finetune: step 3200/3704 epoch 1.73 loss 0.5499 elapsed 17.9min eta 2.8min
+2026-10-18 23:05:07 finetune: step 3400/3704 epoch 1.84 loss 0.5485 elapsed 19.0min eta 1.7min
+2026-10-18 23:06:14 finetune: step 3600/3704 epoch 1.94 loss 0.5492 elapsed 20.2min eta 0.6min
+2026-10-18 23:20:19 finetune: fold 4: done, standalone rmse=0.44652 pred_std=0.1861 pearson=0.5752
+2026-10-18 23:20:20 finetuned cross-encoder (title + desc) standalone oof rmse: 0.44534
+2026-10-18 23:20:20 [finetune cross-encoder (title + description)] 10683.4s
+2026-10-18 23:20:21 [group relative features] 0.6s
+2026-10-18 23:20:34 vocab size: 100793, n_features: 203706 (dense 72)
+2026-10-18 23:20:34 new feature stats (train):
+                                count   mean    std    min    25%    50%    75%    max
+ft_ce_title_desc              74067.0  0.686  0.186  0.020  0.553  0.693  0.856  0.990
+ft_ce_title                   74067.0  0.689  0.183  0.053  0.556  0.698  0.856  0.999
+q_ft_ce_title_desc_diff_mean  74067.0 -0.001  0.098 -0.609 -0.038  0.004  0.046  0.573
+q_ft_ce_title_desc_diff_max   74067.0 -0.112  0.126 -0.797 -0.168 -0.063 -0.018  0.000
+q_ft_ce_title_desc_rank       74067.0  0.550  0.290  0.043  0.300  0.545  0.800  1.000
+2026-10-18 23:20:34 corr with relevance (train):
+ft_ce_title_desc                0.567
+ft_ce_title                     0.554
+q_ft_ce_title_desc_diff_mean    0.207
+q_ft_ce_title_desc_diff_max     0.284
+q_ft_ce_title_desc_rank         0.100
+cos_title                       0.365
+ratio_match_title               0.362
+2026-10-18 23:21:05 [fold 0] 30.6s
+2026-10-18 23:21:05 fold 0: rmse=0.42593 best_iter=1027
+2026-10-18 23:21:40 [fold 1] 35.2s
+2026-10-18 23:21:40 fold 1: rmse=0.42673 best_iter=1191
+2026-10-18 23:22:10 [fold 2] 29.8s
+2026-10-18 23:22:10 fold 2: rmse=0.42839 best_iter=835
+2026-10-18 23:22:41 [fold 3] 31.1s
+2026-10-18 23:22:41 fold 3: rmse=0.42187 best_iter=916
+2026-10-18 23:23:11 [fold 4] 30.2s
+2026-10-18 23:23:11 fold 4: rmse=0.42779 best_iter=868
+2026-10-18 23:23:11 CV rmse: 0.42615
+2026-10-18 23:23:11 oof pred std: 0.3170, test pred std: 0.3156
+2026-10-18 23:23:11 features used (gain > 0): 2146
+2026-10-18 23:23:11 query emb: used 1024 columns, total gain 18480.6
+2026-10-18 23:23:11 title emb: used 1024 columns, total gain 10872.7
+2026-10-18 23:23:11 query tfidf: used 39 columns, total gain 15514.1
+2026-10-18 23:23:11 title tfidf: used 25 columns, total gain 102.7
+2026-10-18 23:23:11 feature importance top 40 (gain):
+ft_ce_title_desc                49057.7
+ft_ce_title                     28385.1
+ce_title                        14628.1
+ce_desc                          9568.7
+emb_cos_title                    8400.5
+ratio_match_title                6044.9
+emb_cos_desc                     4045.0
+q_size                           3234.9
+cos_title                        2643.6
+char_cos_title                   1718.1
+q_ft_ce_title_desc_rank          1653.9
+bm25_title_norm                  1525.2
+q_ce_title_diff_mean             1384.7
+q_ft_ce_title_desc_diff_max      1182.7
+q_ft_ce_title_rank               1132.6
+q_ce_desc_diff_mean              1000.3
+q_ft_ce_title_diff_max            740.7
+q_ft_ce_title_desc_diff_mean      729.0
+ratio_match_desc                  688.4
+ratio_number_title                663.3
+q_n_chars                         639.6
+cos_desc                          630.4
+q_ft_ce_title_diff_mean           585.7
+q_emb_cos_title_diff_mean         581.0
+bm25_desc_norm                    572.1
+last_in_title                     512.5
+q_n_words                         508.7
+q_emb_cos_title_diff_max          486.9
+has_attr                          342.8
+q_ce_title_diff_max               318.5
+ratio_bigram_title                311.1
+bm25_title                        298.2
+emb_cos_brand                     289.9
+bm25_desc                         196.2
+n_match_title                     177.2
+q_ratio_match_title_rank          161.7
+q_ce_desc_diff_max                150.3
+q_emb_cos_desc_diff_max           146.2
+n_match_any                       131.9
+eq_929                            118.3
+2026-10-18 23:23:11 saved: C:\kaggle_homedepo\output\exp020
