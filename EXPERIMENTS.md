@@ -27,7 +27,7 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 | exp015 | 2026-10-17 | exp014 ＋ MiniLM のスコアも両方入れる | 0.44011 | 未提出 | [exp/exp015_rerank_both.py](exp/exp015_rerank_both.py) |
 | exp016 | 2026-10-17 | exp014 の特徴量で LightGBM のハイパーパラメータを調整（Optuna 30 回、learning_rate 0.02） | 0.43841 | 0.4371 | [exp/exp016_tuning.py](exp/exp016_tuning.py) |
 | exp017 | 2026-10-18 | exp016 ＋ 同じ検索語の中で比べた相対的な特徴量 | 0.43582 | 0.43452 | [exp/exp017_query_relative.py](exp/exp017_query_relative.py) |
-| exp018 | 2026-10-18 | exp017 ＋ ファインチューニングした cross-encoder（bge-reranker-base、検索語 × タイトル、out-of-fold）のスコア | 0.42836 | 未提出 | [exp/exp018_finetune_ce.py](exp/exp018_finetune_ce.py) |
+| exp018 | 2026-10-18 | exp017 ＋ ファインチューニングした cross-encoder（bge-reranker-base、検索語 × タイトル、out-of-fold）のスコア | 0.42836 | 0.42810 | [exp/exp018_finetune_ce.py](exp/exp018_finetune_ce.py) |
 
 ## 共通の前提
 
@@ -1176,7 +1176,7 @@ relevance を使って学習するので、train 全体で学習したモデル�
 | 3 | 0.42331 | 1,368 | 0.42976 |
 | 4 | 0.43002 | 1,298 | 0.43625 |
 | **CV** | **0.42836** | | 0.43582 |
-| **Private LB** | 未提出 | | 0.43452 |
+| **Private LB** | **0.42810** | | 0.43452 |
 
 - 予測値の標準偏差：oof 0.313、test 0.311（exp017 は 0.302、0.302）
 
@@ -1189,4 +1189,5 @@ relevance を使って学習するので、train 全体で学習したモデル�
 - 重要度は `ft_ce_title` が 1 位で、2 位（`ce_title`）の 2.3 倍。学習前の cross-encoder のスコアも引き続き 2 位で使われており、両者は補い合っている
 - 注意点：train の OOF スコアは「その行を学習に使っていない 1 つのモデル」の予測だが、test のスコアは 5 つのモデルの平均で、少し性質が異なる（平均したほうが値のばらつきが小さく、精度もやや高い）。スタッキングでは一般的な扱いだが、LB で CV どおりの改善が出るか確認する
 - mxbai-rerank（DeBERTa 系）が学習できなかったのは、ライブラリのバージョンの問題の可能性が高い。直せれば、より良いモデルでファインチューニングできるかもしれない
+- Private LB は 0.42810 で、exp017（0.43452）から 0.0064 改善した（CV の改善は 0.0075）。LB と CV の差は −0.0013 → −0.0003 と 0.001 縮まり、CV の改善が LB ではやや小さく出た。OOF（1 つのモデル）と test（5 つのモデルの平均）の性質の違いが影響している可能性があるが、LB でも大きく改善しており、ファインチューニングの効果は本物と判断できる
 
