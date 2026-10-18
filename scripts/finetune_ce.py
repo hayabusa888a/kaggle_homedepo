@@ -1,0 +1,101 @@
+"""cross-encoder を 1 つの fold についてファインチューニングし、その fold（学習に使っていない行）と test を予測する。
+
+GPU 用の仮想環境（.venv-gpu）で実行する。src/finetune.py の finetune_ce_oof から fold ごとに呼ばれる。
+    .venv-gpu/Scripts/python.exe scripts/finetune_ce.py --data input.json --fold 0 --out-dir <dir> --model <name>
+入力の JSON: {"train": [[query, doc, label(0〜1), fold], ...], "test": [[query, doc], ...]}
+出力: <out-dir>/oof_fold{k}.npy（fold k の行のスコア、入力の順）、<out-dir>/test_fold{k}.npy
+"""
+import argparse
+import json
+import time
+from pathlib import Path
+
+import numpy as np
+import torch
+from datasets import Dataset
+from sentence_transformers.cross_encoder import CrossEncoder, CrossEncoderTrainer, CrossEncoderTrainingArguments
+from sentence_transformers.cross_encoder.losses import BinaryCrossEntropyLoss
+from transformers import TrainerCallback
+
+
+class ProgressCallback(TrainerCallback):
+    """一定のステップごとに、学習の損失と経過時間を出す"""
+
+    def __init__(self):
+        self.t0 = time.time()
+
+    def on_log(self, args, state, control, logs=None, **kwargs):
+        if logs and "loss" in logs:
+            elapsed = time.time() - self.t0
+            eta = elapsed / max(state.global_step, 1) * (state.max_steps - state.global_step)
+            print(f"step {state.global_step}/{state.max_steps} epoch {state.epoch:.2f} loss {logs['loss']:.4f} "
+                  f"elapsed {elapsed / 60:.1f}min eta {eta / 60:.1f}min", flush=True)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--data", required=True)
+    parser.add_argument("--fold", type=int, required=True)
+    parser.add_argument("--out-dir", required=True)
+    parser.add_argument("--model", required=True)
+    parser.add_argument("--epochs", type=float, default=2)
+    parser.add_argument("--lr", type=float, default=2e-5)
+    parser.add_argument("--batch-size", type=int, default=32)
+    parser.add_argument("--max-length", type=int, default=128)
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--precision", choices=["bf16", "fp32"], default="bf16")
+    parser.add_argument("--warmup-ratio", type=float, default=0.1)
+    parser.add_argument("--attn", default=None, help="アテンションの実装（例: eager）。None ならライブラリの既定")
+    args = parser.parse_args()
+
+    out_dir = Path(args.out_dir)
+    oof_path, test_path = out_dir / f"oof_fold{args.fold}.npy", out_dir / f"test_fold{args.fold}.npy"
+    if oof_path.exists() and test_path.exists():
+        print(f"fold {args.fold}: cached", flush=True)
+        return
+
+    data = json.loads(Path(args.data).read_text(encoding="utf-8"))
+    tr = [r for r in data["train"] if r[3] != args.fold]
+    va = [r for r in data["train"] if r[3] == args.fold]
+    train_ds = Dataset.from_dict({"query": [r[0] for r in tr], "doc": [r[1] for r in tr],
+                                  "label": [float(r[2]) for r in tr]})
+    print(f"device={torch.cuda.get_device_name(0)} fold={args.fold} train={len(tr)} valid={len(va)} "
+          f"test={len(data['test'])}", flush=True)
+
+    model_kwargs = {"attn_implementation": args.attn} if args.attn else {}
+    model = CrossEncoder(args.model, num_labels=1, max_length=args.max_length, device="cuda", model_kwargs=model_kwargs)
+    train_args = CrossEncoderTrainingArguments(
+        output_dir=str(out_dir / f"tmp_fold{args.fold}"),
+        num_train_epochs=args.epochs,
+        per_device_train_batch_size=args.batch_size,
+        learning_rate=args.lr,
+        warmup_ratio=args.warmup_ratio,
+        bf16=args.precision == "bf16",
+        logging_steps=200,
+        save_strategy="no",
+        report_to="none",
+        dataloader_num_workers=0,
+        seed=args.seed,
+    )
+    # relevance を 0〜1 に変換した値を、BCE（ロジットに対する二値交差エントロピー）で学習する
+    trainer = CrossEncoderTrainer(model=model, args=train_args, train_dataset=train_ds,
+                                  loss=BinaryCrossEntropyLoss(model), callbacks=[ProgressCallback()])
+    trainer.train()
+
+    def predict(pairs):
+        # モデルによって出力がロジットのままのもの（MiniLM など）と 0〜1 のものがあるので、常にシグモイドで 0〜1 にそろえる
+        return np.asarray(model.predict([[q, d] for q, d, *_ in pairs], batch_size=128, activation_fn=torch.nn.Sigmoid(),
+                                        show_progress_bar=False, convert_to_numpy=True), dtype=np.float32)
+
+    out_dir.mkdir(parents=True, exist_ok=True)
+    oof = predict(va)
+    np.save(oof_path, oof)
+    np.save(test_path, predict(data["test"]))
+    labels = np.array([r[2] for r in va])
+    rmse = float(np.sqrt(np.mean((oof * 2 + 1 - (labels * 2 + 1)) ** 2)))
+    corr = float(np.corrcoef(oof, labels)[0, 1]) if oof.std() > 0 else float("nan")
+    print(f"fold {args.fold}: done, standalone rmse={rmse:.5f} pred_std={oof.std():.4f} pearson={corr:.4f}", flush=True)
+
+
+if __name__ == "__main__":
+    main()
