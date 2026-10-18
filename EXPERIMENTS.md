@@ -25,7 +25,7 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 | exp013 | 2026-10-17 | exp012 ＋ cross-encoder（ms-marco-MiniLM-L-6-v2）のスコア（検索語 × タイトル・説明文） | 0.44496 | 未提出 | [exp/exp013_rerank_minilm.py](exp/exp013_rerank_minilm.py) |
 | exp014 | 2026-10-17 | exp012 ＋ cross-encoder（mxbai-rerank-base-v1）のスコア（検索語 × タイトル・説明文） | 0.44025 | 未提出 | [exp/exp014_rerank_mxbai.py](exp/exp014_rerank_mxbai.py) |
 | exp015 | 2026-10-17 | exp014 ＋ MiniLM のスコアも両方入れる | 0.44011 | 未提出 | [exp/exp015_rerank_both.py](exp/exp015_rerank_both.py) |
-| exp016 | 2026-10-17 | exp014 の特徴量で LightGBM のハイパーパラメータを調整（Optuna 30 回、learning_rate 0.02） | 0.43841 | 未提出 | [exp/exp016_tuning.py](exp/exp016_tuning.py) |
+| exp016 | 2026-10-17 | exp014 の特徴量で LightGBM のハイパーパラメータを調整（Optuna 30 回、learning_rate 0.02） | 0.43841 | 0.4371 | [exp/exp016_tuning.py](exp/exp016_tuning.py) |
 
 ## 共通の前提
 
@@ -1009,7 +1009,7 @@ exp001 から変えていない LightGBM のハイパーパラメータ（learni
 | 3 | 0.43181 | 1,738 | 0.43321 | 0.43344 |
 | 4 | 0.43946 | 1,517 | 0.44080 | 0.44172 |
 | **CV** | **0.43841** | | 0.43991 | 0.44025 |
-| **Private LB** | 未提出 | | | 未提出 |
+| **Private LB** | **0.4371** | | | 未提出 |
 
 **改善の内訳**（exp014 からの CV の差 −0.0018）
 
@@ -1035,4 +1035,6 @@ exp001 から変えていない LightGBM のハイパーパラメータ（learni
 - その結果、TF-IDF ベクトルで使われる列が大きく減った（検索語 159 → 16 列、タイトル 384 → 53 列）。強い L1 正則化（lambda_l1 9.0）で、効果の小さい分岐が作られにくくなったためと考えられる
 - 重要度は、`ce_title` 1 つに集中していた exp014 と比べて、`ce_desc`、`emb_cos_title`、`ratio_match_title` などに分散した。feature_fraction 0.31 により、木ごとに一部の特徴量しか候補にならず、ほかの特徴量も使われるようになった
 - 同じ 5 つの fold で 30 回パラメータを選んでいるので、CV はわずかに楽観的になっている可能性がある。LB で確認する
+- Private LB は 0.4371 で、これまでのベスト（exp010、0.44345）から 0.0064 改善した（exp010 からの CV の改善は 0.0074）
+- LB と CV の差は −0.0013 で、exp009・exp010 の約 −0.0024 より 0.001 ほど縮まった。同じ fold でパラメータを選んだことで CV が少し楽観的になった分と考えられるが、LB でも明確に改善しているので、調整の効果は本物と判断できる
 
