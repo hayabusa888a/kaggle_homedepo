@@ -1,0 +1,139 @@
+2026-10-18 20:12:44 [load data] 2.0s
+2026-10-18 20:12:56 [spell dictionary] 12.3s
+2026-10-18 20:12:57 embed query: 24431 unique, 24431 cached, 0 to process
+2026-10-18 20:12:58 embed title: 120453 unique, 120453 cached, 0 to process
+2026-10-18 20:13:04 embed desc: 110128 unique, 110128 cached, 0 to process
+2026-10-18 20:13:07 embed brand: 4284 unique, 4284 cached, 0 to process
+2026-10-18 20:13:09 [embeddings] 12.3s
+2026-10-18 20:13:09 rerank title: 236614 unique pairs, 236614 cached, 0 to process
+2026-10-18 20:13:20 rerank desc: 229000 unique pairs, 229000 cached, 0 to process
+2026-10-18 20:13:26 [rerank] 17.0s
+2026-10-18 20:13:46 [preprocess] 19.7s
+2026-10-18 20:14:03 [tfidf features] 17.8s
+2026-10-18 20:14:09 [match features] 5.9s
+2026-10-18 20:14:11 [brand features] 1.7s
+2026-10-18 20:14:39 [bm25 features] 28.4s
+2026-10-18 20:14:55 [char ngram features] 16.2s
+2026-10-18 20:14:58 [attr match features] 2.2s
+2026-10-18 20:15:05 finetune: fold 0: cached
+2026-10-18 20:15:11 finetune: fold 1: cached
+2026-10-18 20:15:16 finetune: fold 2: cached
+2026-10-18 20:15:22 finetune: fold 3: cached
+2026-10-18 20:15:27 finetune: fold 4: cached
+2026-10-18 20:15:28 finetuned cross-encoder standalone oof rmse: 0.44997
+2026-10-18 20:15:28 [finetune cross-encoder] 30.1s
+2026-10-18 20:15:31 [head features] 3.4s
+2026-10-18 20:15:32 [group relative features] 0.4s
+2026-10-18 20:15:47 vocab size: 100793, n_features: 203706 (dense 72)
+2026-10-18 20:15:47 relevance by head_match:
+             mean  count
+head_match              
+0           2.291  51098
+1           2.583  22969
+2026-10-18 20:15:47 relevance by title_head_in_query:
+                      mean  count
+title_head_in_query              
+0                    2.270  42593
+1                    2.533  31474
+2026-10-18 20:15:47 relevance by q_head_in_title_not_head:
+                           mean  count
+q_head_in_title_not_head              
+0                         2.375  53683
+1                         2.400  20384
+2026-10-18 20:15:47 relevance by q_head_dist_from_title_head:
+                              mean  count
+q_head_dist_from_title_head              
+0.0                          2.583  22969
+1.0                          2.425   6499
+2.0                          2.405   3605
+3.0                          2.394   2536
+4.0                          2.377   2133
+5.0                          2.380   1574
+6.0                          2.383   1208
+7.0                          2.366    952
+8.0                          2.407    626
+9.0                          2.373    454
+10.0                         2.372    262
+11.0                         2.313    172
+12.0                         2.369    181
+13.0                         2.418     90
+14.0                         2.252     37
+15.0                         2.428     14
+16.0                         2.630     18
+17.0                         2.332      6
+18.0                         2.564     13
+19.0                         3.000      1
+20.0                         2.500      2
+21.0                         1.670      1
+2026-10-18 20:15:47 new feature stats (train):
+                               count   mean    std  min  25%  50%  75%   max
+head_match                   74067.0  0.310  0.463  0.0  0.0  0.0  1.0   1.0
+title_head_in_query          74067.0  0.425  0.494  0.0  0.0  0.0  1.0   1.0
+q_head_in_title_not_head     74067.0  0.275  0.447  0.0  0.0  0.0  1.0   1.0
+q_head_dist_from_title_head  43353.0  1.615  2.550  0.0  0.0  0.0  2.0  21.0
+2026-10-18 20:15:47 corr with relevance (train):
+head_match                     0.253
+title_head_in_query            0.244
+q_head_in_title_not_head       0.021
+q_head_dist_from_title_head   -0.143
+cos_title                      0.365
+ratio_match_title              0.362
+2026-10-18 20:16:14 [fold 0] 26.7s
+2026-10-18 20:16:14 fold 0: rmse=0.42906 best_iter=720
+2026-10-18 20:16:48 [fold 1] 33.7s
+2026-10-18 20:16:48 fold 1: rmse=0.42921 best_iter=1015
+2026-10-18 20:17:18 [fold 2] 30.2s
+2026-10-18 20:17:18 fold 2: rmse=0.43046 best_iter=833
+2026-10-18 20:17:50 [fold 3] 32.5s
+2026-10-18 20:17:50 fold 3: rmse=0.42319 best_iter=980
+2026-10-18 20:18:25 [fold 4] 34.2s
+2026-10-18 20:18:25 fold 4: rmse=0.42978 best_iter=1154
+2026-10-18 20:18:25 CV rmse: 0.42835
+2026-10-18 20:18:25 oof pred std: 0.3127, test pred std: 0.3110
+2026-10-18 20:18:25 features used (gain > 0): 2148
+2026-10-18 20:18:25 query emb: used 1024 columns, total gain 19809.3
+2026-10-18 20:18:25 title emb: used 1024 columns, total gain 10618.3
+2026-10-18 20:18:25 query tfidf: used 38 columns, total gain 16973.0
+2026-10-18 20:18:25 title tfidf: used 27 columns, total gain 131.9
+2026-10-18 20:18:25 feature importance top 40 (gain):
+ft_ce_title                    46920.9
+ce_title                       20610.7
+ce_desc                        15348.9
+emb_cos_title                  11000.8
+ratio_match_title               7870.9
+emb_cos_desc                    5218.5
+q_size                          3876.0
+cos_title                       3853.0
+char_cos_title                  2850.3
+bm25_title_norm                 2776.4
+q_ft_ce_title_rank              1761.7
+q_ft_ce_title_diff_max          1677.1
+q_ce_title_diff_mean            1510.6
+title_head_in_query             1362.6
+ratio_number_title              1351.0
+head_match                      1249.1
+q_ce_desc_diff_mean             1237.2
+q_ft_ce_title_diff_mean         1155.3
+q_head_dist_from_title_head     1101.7
+ratio_match_desc                 978.8
+q_n_chars                        835.1
+last_in_title                    802.6
+q_n_words                        795.3
+cos_desc                         667.7
+q_emb_cos_title_diff_max         665.0
+bm25_desc_norm                   560.3
+bm25_title                       454.2
+q_ce_title_diff_max              443.1
+ratio_bigram_title               416.0
+q_emb_cos_title_diff_mean        401.8
+has_attr                         387.2
+emb_cos_brand                    380.1
+q_ce_desc_diff_max               286.2
+n_match_title                    201.1
+first_in_title                   166.4
+eq_929                           165.2
+q_emb_cos_desc_diff_max          156.8
+eq_135                           148.3
+bm25_desc                        144.0
+eq_567                           134.8
+2026-10-18 20:18:25 saved: C:\kaggle_homedepo\output\exp019

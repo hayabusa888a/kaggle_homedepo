@@ -1,3 +1,4 @@
+import re
 from collections import Counter
 
 import numpy as np
@@ -196,3 +197,43 @@ def group_relative_features(feats: pd.DataFrame, group_key: pd.Series, cols: lis
         out[f"{prefix}_{c}_diff_max"] = (feats[c] - gmax[c]).to_numpy()
         out[f"{prefix}_{c}_rank"] = rank[c].to_numpy()
     return pd.DataFrame(out, index=feats.index)
+
+
+# タイトルの「主語（商品の種類）」を取り出すための区切り。色の指定（"in Chrome"）や付加情報（"with ..."、"(Set of 2)"）の手前を見る
+_HEAD_CUT = re.compile(r"\s+(?:with|for|featuring|includes)\s+|\s*\(|,|\s+-\s+|\s+in\s+(?=[A-Z])")
+_QUERY_CUT = re.compile(r"\s+(?:for|with)\s+")
+
+
+def _last_word(text: str) -> str:
+    """数字を含まない最後の英単語を返す（"Brush 3-Pack" -> "Brush"）"""
+    words = [w for w in re.findall(r"[A-Za-z][A-Za-z'-]*", text) if not any(c.isdigit() for c in w)]
+    return words[-1] if words else ""
+
+
+def title_head(raw_title: str) -> str:
+    """元のタイトルから主語を取り出す（"Copper Faucet Riser in Chrome" -> "Riser"）"""
+    return _last_word(_HEAD_CUT.split(raw_title, maxsplit=1)[0])
+
+
+def query_head(query: str) -> str:
+    """検索語の主語（"for" / "with" の手前の最後の単語）を返す（"salt for ice" -> "salt"）"""
+    return _last_word(_QUERY_CUT.split(query, maxsplit=1)[0])
+
+
+def head_features(query: pd.Series, raw_title: pd.Series, stem_fn) -> pd.DataFrame:
+    """検索語の主語とタイトルの主語（商品の種類）の一致を見る特徴量。付属品・部品の取り違え（"copper faucet" と
+    "Copper Faucet Riser"）を見分けるため。stem_fn は単語をステミング後の形にそろえる関数"""
+    rows = []
+    for q, t in zip(query, raw_title):
+        qh, th = stem_fn(query_head(q)), stem_fn(title_head(t))
+        prefix = [stem_fn(w) for w in re.findall(r"[A-Za-z][A-Za-z'-]*", _HEAD_CUT.split(t, maxsplit=1)[0])]
+        q_words = {stem_fn(w) for w in re.findall(r"[A-Za-z][A-Za-z'-]*", q)}
+        # 検索語の主語が、タイトルの主語から何語手前にあるか（0 = 主語そのもの。なければ欠損）
+        pos = next((i for i, w in enumerate(reversed(prefix)) if w == qh), np.nan) if qh else np.nan
+        rows.append({
+            "head_match": int(bool(qh) and qh == th),
+            "title_head_in_query": int(bool(th) and th in q_words),
+            "q_head_in_title_not_head": int(bool(qh) and qh != th and qh in prefix),
+            "q_head_dist_from_title_head": pos,
+        })
+    return pd.DataFrame(rows, index=query.index)

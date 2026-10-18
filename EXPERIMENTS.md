@@ -28,6 +28,7 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 | exp016 | 2026-10-17 | exp014 の特徴量で LightGBM のハイパーパラメータを調整（Optuna 30 回、learning_rate 0.02） | 0.43841 | 0.4371 | [exp/exp016_tuning.py](exp/exp016_tuning.py) |
 | exp017 | 2026-10-18 | exp016 ＋ 同じ検索語の中で比べた相対的な特徴量 | 0.43582 | 0.43452 | [exp/exp017_query_relative.py](exp/exp017_query_relative.py) |
 | exp018 | 2026-10-18 | exp017 ＋ ファインチューニングした cross-encoder（bge-reranker-base、検索語 × タイトル、out-of-fold）のスコア | 0.42836 | 0.42810 | [exp/exp018_finetune_ce.py](exp/exp018_finetune_ce.py) |
+| exp019 | 2026-10-18 | exp018 ＋ 検索語の主語とタイトルの主語（商品の種類）の一致 | 0.42835 | 未提出 | [exp/exp019_head_match.py](exp/exp019_head_match.py) |
 
 ## 共通の前提
 
@@ -1264,4 +1265,54 @@ exp018（CV 0.42836）の OOF の予測を使い、どこで外しているか�
 - **最大の誤差の原因は「付属品・部品の取り違え」**。検索語の単語（faucet、microwave、fan、posts）がタイトルに含まれていても、タイトルの主語（商品の種類）は別のもの（riser、kit、control、finial）になっている。今の特徴量は「検索語の単語がタイトルにあるか」が中心なので、こうした行を高く予測してしまう
 - **型番やブランド名の表記**（`slv-603p`、`amertac`）で検索された行も外している。型番はタイトルにないことが多く、説明文や属性値に書かれている可能性がある
 - 一致しているのに relevance が 1.0（`topiary tree`、`14 ft ladder`）や、一致しないのに 3.0（`salt for ice`）といった、**評価者のつけ方のぶれ（ラベルのノイズ）**と思われる行もある。これは改善できない誤差
+
+---
+
+## exp019：exp018 + 主語（商品の種類）の一致
+
+### 目的
+
+誤差分析で、最も多く外していたのは「検索語の単語はタイトルにあるが、商品の種類が違う」行（`copper faucet` × `Copper Faucet Riser`、`ge slate microwave` × `Microwave Accessory Filler Kit` など）に見えた。検索語とタイトルの「主語（商品の種類）」が一致するかを特徴量にする。
+
+### 方法
+
+[src/features.py](src/features.py) の `title_head`、`query_head`、`head_features`。
+
+- タイトルの主語：元のタイトルを「` with `」「` for `」「` featuring `」「` includes `」「`(`」「`,`」「` - `」「` in ` + 大文字（`in Chrome` など色の指定）」の最初の位置で区切り、その手前の数字を含まない最後の英単語（`Copper Faucet Riser in Chrome` → `Riser`、`Patio High Bar Stools (Set of 2)` → `Stools`）
+- 検索語の主語：「` for `」「` with `」の手前の最後の英単語（`salt for ice` → `salt`）
+- 比較は小文字化・ハイフン除去・ステミング後の形で行う
+
+| 特徴量 | 内容 |
+|---|---|
+| `head_match` | 検索語の主語とタイトルの主語が一致する |
+| `title_head_in_query` | タイトルの主語が検索語のどこかに含まれる |
+| `q_head_in_title_not_head` | 検索語の主語はタイトルにあるが、タイトルの主語ではない（付属品の取り違えを狙う） |
+| `q_head_dist_from_title_head` | 検索語の主語がタイトルの主語から何語手前にあるか（0 = 主語そのもの、なければ欠損） |
+
+### 結果
+
+| fold | RMSE | exp018 の RMSE |
+|---|---|---|
+| 0 | 0.42906 | 0.42891 |
+| 1 | 0.42921 | 0.42927 |
+| 2 | 0.43046 | 0.43027 |
+| 3 | 0.42319 | 0.42331 |
+| 4 | 0.42978 | 0.43002 |
+| **CV** | **0.42835** | 0.42836 |
+| **Private LB** | 未提出 | 0.42810 |
+
+**特徴量ごとの平均 relevance（train）**
+
+| 特徴量 | 0 のとき | 1 のとき | 相関 |
+|---|---|---|---|
+| `head_match` | 2.291（51,098 行） | **2.583**（22,969 行） | 0.253 |
+| `title_head_in_query` | 2.270 | 2.533 | 0.244 |
+| `q_head_in_title_not_head` | 2.375 | **2.400** | 0.021 |
+
+### 考察
+
+- CV は変わらなかった（−0.00001）。主語が一致する行は平均 relevance が 0.29 高く、特徴量そのものには情報があるが、ファインチューニングした cross-encoder（検索語とタイトルを同時に読む）がすでに同じ情報を取り込んでいたと考えられる
+- 狙いだった `q_head_in_title_not_head`（付属品の取り違え）は、relevance との関係がほとんどなかった（2.375 vs 2.400）
+- 誤差分析で挙げた行を詳しく見ると、**同じ検索語・ほぼ同じ商品でも評価がばらばら**だった。たとえば `copper faucet` × `BrassCraft ... Copper Faucet Riser` は、長さ違いの同じ部品が 1.00、2.33、2.33、2.67、2.67 と評価されている。`ge slate microwave` × `Microwave Accessory Filler Kit` も、ほぼ同じ商品が 1.00 と 2.00
+- つまり、誤差分析の「付属品の取り違え」の多くは、付属品だから低く評価されたのではなく、**評価者のつけ方のぶれ（ラベルのノイズ）**だったと考えられる。モデルの予測（約 2.7）はむしろこれらの平均に近く、妥当な値。大きく外している行の多くは、改善できない誤差の可能性が高い
 
