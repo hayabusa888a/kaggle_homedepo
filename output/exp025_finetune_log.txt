@@ -1,0 +1,146 @@
+device=NVIDIA GeForce RTX 5070 Laptop GPU fold=0 train=59253 valid=14814 test=165859
+trainable params: 303M / 568M
+step 400/3704 epoch 0.22 loss 0.5695 elapsed 4.5min eta 36.8min
+step 600/3704 epoch 0.32 loss 0.5660 elapsed 6.7min eta 34.7min
+step 800/3704 epoch 0.43 loss 0.5695 elapsed 9.0min eta 32.5min
+step 1000/3704 epoch 0.54 loss 0.5679 elapsed 11.2min eta 30.3min
+step 1200/3704 epoch 0.65 loss 0.5622 elapsed 13.5min eta 28.1min
+step 1400/3704 epoch 0.76 loss 0.5638 elapsed 15.7min eta 25.9min
+step 1600/3704 epoch 0.86 loss 0.5512 elapsed 18.0min eta 23.7min
+step 1800/3704 epoch 0.97 loss 0.5605 elapsed 20.2min eta 21.4min
+step 2000/3704 epoch 1.08 loss 0.5508 elapsed 22.5min eta 19.2min
+step 2200/3704 epoch 1.19 loss 0.5466 elapsed 24.8min eta 16.9min
+step 2400/3704 epoch 1.30 loss 0.5396 elapsed 27.0min eta 14.7min
+step 2600/3704 epoch 1.40 loss 0.5518 elapsed 29.3min eta 12.4min
+step 2800/3704 epoch 1.51 loss 0.5399 elapsed 31.5min eta 10.2min
+step 3000/3704 epoch 1.62 loss 0.5426 elapsed 33.8min eta 7.9min
+step 3200/3704 epoch 1.73 loss 0.5437 elapsed 36.0min eta 5.7min
+step 3400/3704 epoch 1.84 loss 0.5466 elapsed 38.3min eta 3.4min
+step 3600/3704 epoch 1.94 loss 0.5395 elapsed 40.6min eta 1.2min
+predict 20000/165859
+predict 40000/165859
+predict 60000/165859
+predict 80000/165859
+predict 100000/165859
+predict 120000/165859
+predict 140000/165859
+predict 160000/165859
+predict 165859/165859
+fold 0: done, standalone rmse=0.43346 pred_std=0.1842 pearson=0.6008 gpu_mem_peak=6.5GB
+device=NVIDIA GeForce RTX 5070 Laptop GPU fold=1 train=59253 valid=14814 test=165859
+trainable params: 303M / 568M
+step 400/3704 epoch 0.22 loss 0.5766 elapsed 4.5min eta 37.3min
+step 600/3704 epoch 0.32 loss 0.5651 elapsed 6.8min eta 35.0min
+step 800/3704 epoch 0.43 loss 0.5610 elapsed 9.0min eta 32.8min
+step 1000/3704 epoch 0.54 loss 0.5585 elapsed 11.3min eta 30.5min
+step 1200/3704 epoch 0.65 loss 0.5655 elapsed 13.5min eta 28.2min
+step 1400/3704 epoch 0.76 loss 0.5589 elapsed 15.8min eta 26.0min
+step 1600/3704 epoch 0.86 loss 0.5579 elapsed 18.1min eta 23.7min
+step 1800/3704 epoch 0.97 loss 0.5540 elapsed 20.3min eta 21.5min
+step 2000/3704 epoch 1.08 loss 0.5451 elapsed 22.6min eta 19.2min
+step 2200/3704 epoch 1.19 loss 0.5440 elapsed 24.8min eta 17.0min
+step 2400/3704 epoch 1.30 loss 0.5384 elapsed 27.1min eta 14.7min
+step 2600/3704 epoch 1.40 loss 0.5417 elapsed 29.4min eta 12.5min
+step 2800/3704 epoch 1.51 loss 0.5437 elapsed 31.6min eta 10.2min
+step 3000/3704 epoch 1.62 loss 0.5433 elapsed 33.9min eta 7.9min
+step 3200/3704 epoch 1.73 loss 0.5420 elapsed 36.1min eta 5.7min
+step 3400/3704 epoch 1.84 loss 0.5420 elapsed 38.4min eta 3.4min
+step 3600/3704 epoch 1.94 loss 0.5431 elapsed 40.7min eta 1.2min
+predict 20000/165859
+predict 40000/165859
+predict 60000/165859
+predict 80000/165859
+predict 100000/165859
+predict 120000/165859
+predict 140000/165859
+predict 160000/165859
+predict 165859/165859
+fold 1: done, standalone rmse=0.43423 pred_std=0.1830 pearson=0.5921 gpu_mem_peak=6.5GB
+device=NVIDIA GeForce RTX 5070 Laptop GPU fold=2 train=59254 valid=14813 test=165859
+trainable params: 303M / 568M
+step 400/3704 epoch 0.22 loss 0.5688 elapsed 4.5min eta 37.2min
+step 600/3704 epoch 0.32 loss 0.5623 elapsed 6.8min eta 35.0min
+step 800/3704 epoch 0.43 loss 0.5662 elapsed 9.0min eta 32.7min
+step 1000/3704 epoch 0.54 loss 0.5669 elapsed 11.3min eta 30.5min
+step 1200/3704 epoch 0.65 loss 0.5648 elapsed 13.5min eta 28.2min
+step 1400/3704 epoch 0.76 loss 0.5600 elapsed 15.8min eta 26.0min
+step 1600/3704 epoch 0.86 loss 0.5630 elapsed 18.0min eta 23.7min
+step 1800/3704 epoch 0.97 loss 0.5606 elapsed 20.3min eta 21.5min
+step 2000/3704 epoch 1.08 loss 0.5385 elapsed 22.6min eta 19.2min
+step 2200/3704 epoch 1.19 loss 0.5474 elapsed 24.8min eta 17.0min
+step 2400/3704 epoch 1.30 loss 0.5407 elapsed 27.1min eta 14.7min
+step 2600/3704 epoch 1.40 loss 0.5426 elapsed 29.3min eta 12.5min
+step 2800/3704 epoch 1.51 loss 0.5466 elapsed 31.6min eta 10.2min
+step 3000/3704 epoch 1.62 loss 0.5461 elapsed 33.8min eta 7.9min
+step 3200/3704 epoch 1.73 loss 0.5417 elapsed 36.1min eta 5.7min
+step 3400/3704 epoch 1.84 loss 0.5422 elapsed 38.3min eta 3.4min
+step 3600/3704 epoch 1.94 loss 0.5406 elapsed 40.6min eta 1.2min
+predict 20000/165859
+predict 40000/165859
+predict 60000/165859
+predict 80000/165859
+predict 100000/165859
+predict 120000/165859
+predict 140000/165859
+predict 160000/165859
+predict 165859/165859
+fold 2: done, standalone rmse=0.43872 pred_std=0.1824 pearson=0.5782 gpu_mem_peak=6.5GB
+device=NVIDIA GeForce RTX 5070 Laptop GPU fold=3 train=59254 valid=14813 test=165859
+trainable params: 303M / 568M
+step 400/3704 epoch 0.22 loss 0.5698 elapsed 4.5min eta 37.2min
+step 600/3704 epoch 0.32 loss 0.5660 elapsed 6.8min eta 35.0min
+step 800/3704 epoch 0.43 loss 0.5688 elapsed 9.0min eta 32.7min
+step 1000/3704 epoch 0.54 loss 0.5665 elapsed 11.3min eta 30.5min
+step 1200/3704 epoch 0.65 loss 0.5626 elapsed 13.5min eta 28.2min
+step 1400/3704 epoch 0.76 loss 0.5621 elapsed 15.8min eta 26.0min
+step 1600/3704 epoch 0.86 loss 0.5557 elapsed 18.0min eta 23.7min
+step 1800/3704 epoch 0.97 loss 0.5639 elapsed 20.3min eta 21.5min
+step 2000/3704 epoch 1.08 loss 0.5486 elapsed 22.6min eta 19.2min
+step 2200/3704 epoch 1.19 loss 0.5472 elapsed 24.8min eta 17.0min
+step 2400/3704 epoch 1.30 loss 0.5430 elapsed 27.1min eta 14.7min
+step 2600/3704 epoch 1.40 loss 0.5447 elapsed 29.3min eta 12.5min
+step 2800/3704 epoch 1.51 loss 0.5434 elapsed 31.6min eta 10.2min
+step 3000/3704 epoch 1.62 loss 0.5440 elapsed 33.8min eta 7.9min
+step 3200/3704 epoch 1.73 loss 0.5397 elapsed 36.1min eta 5.7min
+step 3400/3704 epoch 1.84 loss 0.5437 elapsed 38.4min eta 3.4min
+step 3600/3704 epoch 1.94 loss 0.5463 elapsed 40.6min eta 1.2min
+predict 20000/165859
+predict 40000/165859
+predict 60000/165859
+predict 80000/165859
+predict 100000/165859
+predict 120000/165859
+predict 140000/165859
+predict 160000/165859
+predict 165859/165859
+fold 3: done, standalone rmse=0.43679 pred_std=0.1855 pearson=0.5671 gpu_mem_peak=6.5GB
+device=NVIDIA GeForce RTX 5070 Laptop GPU fold=4 train=59254 valid=14813 test=165859
+trainable params: 303M / 568M
+step 400/3704 epoch 0.22 loss 0.5712 elapsed 4.5min eta 37.2min
+step 600/3704 epoch 0.32 loss 0.5637 elapsed 6.8min eta 34.9min
+step 800/3704 epoch 0.43 loss 0.5681 elapsed 9.0min eta 32.7min
+step 1000/3704 epoch 0.54 loss 0.5593 elapsed 11.3min eta 30.5min
+step 1200/3704 epoch 0.65 loss 0.5665 elapsed 13.5min eta 28.2min
+step 1400/3704 epoch 0.76 loss 0.5626 elapsed 15.8min eta 26.0min
+step 1600/3704 epoch 0.86 loss 0.5585 elapsed 18.0min eta 23.7min
+step 1800/3704 epoch 0.97 loss 0.5562 elapsed 20.3min eta 21.5min
+step 2000/3704 epoch 1.08 loss 0.5502 elapsed 22.5min eta 19.2min
+step 2200/3704 epoch 1.19 loss 0.5452 elapsed 24.8min eta 16.9min
+step 2400/3704 epoch 1.30 loss 0.5461 elapsed 27.0min eta 14.7min
+step 2600/3704 epoch 1.40 loss 0.5443 elapsed 29.3min eta 12.4min
+step 2800/3704 epoch 1.51 loss 0.5403 elapsed 31.6min eta 10.2min
+step 3000/3704 epoch 1.62 loss 0.5449 elapsed 33.8min eta 7.9min
+step 3200/3704 epoch 1.73 loss 0.5453 elapsed 36.1min eta 5.7min
+step 3400/3704 epoch 1.84 loss 0.5402 elapsed 38.3min eta 3.4min
+step 3600/3704 epoch 1.94 loss 0.5357 elapsed 40.6min eta 1.2min
+predict 20000/165859
+predict 40000/165859
+predict 60000/165859
+predict 80000/165859
+predict 100000/165859
+predict 120000/165859
+predict 140000/165859
+predict 160000/165859
+predict 165859/165859
+fold 4: done, standalone rmse=0.44041 pred_std=0.1854 pearson=0.5887 gpu_mem_peak=6.5GB
+all folds done
