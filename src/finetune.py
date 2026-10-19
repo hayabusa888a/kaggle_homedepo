@@ -47,7 +47,7 @@ def finetune_ce_oof(train_query: pd.Series, train_doc: pd.Series, relevance: np.
             for line in proc.stdout:
                 line = line.rstrip()
                 # 進捗の行だけを残し、ライブラリの警告などは捨てる
-                if logger and line.startswith(("step ", "fold ", "device=", "trainable")):
+                if logger and line.startswith(("step ", "fold ", "device=", "trainable", "predict ")):
                     logger.info(f"finetune: {line}")
         if proc.returncode != 0:
             raise RuntimeError(f"finetune_ce.py failed on fold {k} (exit {proc.returncode})")

@@ -41,6 +41,7 @@ def main():
     parser.add_argument("--epochs", type=float, default=2)
     parser.add_argument("--lr", type=float, default=2e-5)
     parser.add_argument("--batch-size", type=int, default=32)
+    parser.add_argument("--predict-batch-size", type=int, default=128)
     parser.add_argument("--max-length", type=int, default=128)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--precision", choices=["bf16", "fp32"], default="bf16")
@@ -97,11 +98,24 @@ def main():
     trainer = CrossEncoderTrainer(model=model, args=train_args, train_dataset=train_ds,
                                   loss=BinaryCrossEntropyLoss(model), callbacks=[ProgressCallback()])
     trainer.train()
+    # 予測の前に、学習用のデータ（最適化手法の内部状態など）を GPU から解放する
+    del trainer
+    torch.cuda.empty_cache()
+    model.eval()
 
-    def predict(pairs):
-        # モデルによって出力がロジットのままのもの（MiniLM など）と 0〜1 のものがあるので、常にシグモイドで 0〜1 にそろえる
-        return np.asarray(model.predict([[q, d] for q, d, *_ in pairs], batch_size=128, activation_fn=torch.nn.Sigmoid(),
-                                        show_progress_bar=False, convert_to_numpy=True), dtype=np.float32)
+    def predict(pairs, chunk=20000):
+        # モデルによって出力がロジットのままのもの（MiniLM など）と 0〜1 のものがあるので、常にシグモイドで 0〜1 にそろえる。
+        # 大きいモデルで長い入力を通常の精度でまとめて予測するとメモリがあふれるので、bf16 で行う
+        out = []
+        for start in range(0, len(pairs), chunk):
+            part = [[q, d] for q, d, *_ in pairs[start : start + chunk]]
+            with torch.autocast("cuda", dtype=torch.bfloat16):
+                out.append(np.asarray(model.predict(part, batch_size=args.predict_batch_size,
+                                                    activation_fn=torch.nn.Sigmoid(), show_progress_bar=False,
+                                                    convert_to_numpy=True), dtype=np.float32))
+            if len(pairs) > chunk:
+                print(f"predict {min(start + chunk, len(pairs))}/{len(pairs)}", flush=True)
+        return np.concatenate(out)
 
     out_dir.mkdir(parents=True, exist_ok=True)
     oof = predict(va)
