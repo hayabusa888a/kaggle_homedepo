@@ -32,6 +32,7 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 | exp020 | 2026-10-18 | exp018 ＋ ファインチューニングした cross-encoder（検索語 × タイトル + 説明文）のスコア | 0.42615 | 0.42668 | [exp/exp020_finetune_ce_desc.py](exp/exp020_finetune_ce_desc.py) |
 | exp021 | 2026-10-19 | exp020 ＋ 大きいモデル（bge-reranker-v2-m3）でファインチューニングした cross-encoder（検索語 × タイトル）のスコア | 0.42283 | 未提出 | [exp/exp021_finetune_ce_large.py](exp/exp021_finetune_ce_large.py) |
 | exp022 | 2026-10-19 | exp021 ＋ 大きいモデル（bge-reranker-v2-m3）でファインチューニングした cross-encoder（検索語 × タイトル + 説明文）のスコア | 0.42098 | 0.42315 | [exp/exp022_finetune_ce_large_desc.py](exp/exp022_finetune_ce_large_desc.py) |
+| exp023 | 2026-10-19 | アンサンブル（24 メンバー、OOF で重みを最適化） | 0.41938 | 未提出 | [exp/exp023_blend.py](exp/exp023_blend.py) |
 
 ## 共通の前提
 
@@ -1534,4 +1535,99 @@ base モデルでは、入力に説明文を加えると単独の RMSE が 0.004
 - LightGBM 全体の改善が単独の改善の半分程度にとどまったのは、すでに似た情報を持つスコア（特に base のタイトル + 説明文のスコア）が入っているため。4 つのファインチューニングしたスコアは、重要度の上位 4 つを占めている
 - 計算時間は約 4.7 時間と、これまでで最も長い
 - Private LB は 0.42315 で、exp020（0.42668、exp021 は未提出）から 0.0035 改善した（同じ区間の CV の改善は 0.0052）。LB と CV の差は +0.0022 で、exp020（+0.0005）より広がった。ファインチューニングしたスコアを重ねるほど、CV の改善が LB では小さく出る傾向がある
+
+---
+
+## exp023：アンサンブル（24 メンバー）
+
+### 目的
+
+性質の違う複数のモデルの予測を混ぜて、単体のモデルより良い予測を作る。
+
+### 方法
+
+**特徴量**：exp022 と同じ特徴量を 1 回だけ作ってファイルに保存し（[exp/exp023_build_features.py](exp/exp023_build_features.py)、`data/features/exp022/`、3.9GB、git 管理外）、各メンバーはそれを読み込む。列の並びは、数値の特徴量 80 列 → 埋め込みベクトル 2,048 列 → TF-IDF ベクトル約 20 万列
+
+**メンバー**（すべて exp022 と同じ 5 fold で OOF と test の予測を作る。[exp/exp023_members.py](exp/exp023_members.py)、MLP は [exp/exp023_mlp.py](exp/exp023_mlp.py)）
+
+| 種類 | メンバー | 使う特徴量 |
+|---|---|---|
+| LightGBM | `lgb_exp022`（exp022 そのもの）、`lgb_seed7_ff025`、`lgb_leaves63` | 全列 |
+| XGBoost（GPU） | `xgb_d6`、`xgb_d4` | 全列 |
+| CatBoost（GPU） | `cat_d6`、`cat_d8` | 数値 + 埋め込み |
+| Ridge | `ridge_num`、`ridge_num_emb` | 数値（＋ 埋め込み）。欠損は train の中央値で補完し、標準化 |
+| ランダムフォレスト | `rf_mf03_leaf20`、`rf_mf06_leaf50`、`rf_sqrt_leaf10`（300 本） | 数値（同） |
+| Extra Trees | `et_mf05_leaf20`、`et_mf08_leaf50`（300 本） | 数値（同） |
+| k-NN | `knn_a_k20_dist`、`knn_a_k100_unif` | 重要度の高い 13 列（同） |
+| | `knn_num_k30_dist`、`knn_num_k100_unif`、`knn_num_k300_unif` | 数値（同） |
+| MLP（GPU） | `mlp_num_emb_512`、`mlp_num_emb_1024`、`mlp_num_256` | 数値（＋ 埋め込み）（同） |
+| cross-encoder 単独 | `ce_ft_ce_large_title_desc`、`ce_ft_ce_large_title` | ファインチューニングしたスコアそのもの |
+
+- 勾配ブースティングは検証 fold で early stopping する（exp022 と同じ扱い）。MLP も検証 fold の RMSE で early stopping する
+- 予測はすべて 1〜3 にクリップする
+
+**混ぜ方**（[exp/exp023_blend.py](exp/exp023_blend.py)）
+
+- 重みを「0 以上、合計 1」として、OOF の RMSE が最小になるように決める（SLSQP）
+- 重みを決めた OOF でそのまま評価すると楽観的になるので、**4 つの fold で重みを決めて残り 1 つの fold で評価する操作を 5 回繰り返す**（入れ子の CV）。提出用の重みは OOF 全体で決める
+
+### 結果
+
+**メンバー単独の CV RMSE と、exp022 の LightGBM との予測の相関**
+
+| メンバー | CV RMSE | 相関 | | メンバー | CV RMSE | 相関 |
+|---|---|---|---|---|---|---|
+| rf_mf03_leaf20 | **0.42068** | 0.992 | | mlp_num_256 | 0.42572 | 0.957 |
+| rf_mf06_leaf50 | 0.42078 | 0.992 | | knn_a_k100_unif | 0.42672 | 0.976 |
+| ridge_num | 0.42095 | 0.985 | | ridge_num_emb | 0.43032 | 0.954 |
+| lgb_exp022 | 0.42098 | 1.000 | | knn_num_k100_unif | 0.43244 | 0.949 |
+| lgb_seed7_ff025 | 0.42115 | 0.998 | | knn_num_k300_unif | 0.43353 | 0.952 |
+| cat_d6 | 0.42119 | 0.995 | | knn_a_k20_dist | 0.43479 | 0.943 |
+| xgb_d4 | 0.42123 | 0.997 | | knn_num_k30_dist | 0.43525 | 0.931 |
+| lgb_leaves63 | 0.42130 | 0.996 | | ce_ft_ce_large_title_desc | 0.43708 | 0.949 |
+| xgb_d6 | 0.42139 | 0.995 | | mlp_num_emb_1024 | 0.43999 | 0.916 |
+| et_mf05_leaf20 | 0.42141 | 0.992 | | ce_ft_ce_large_title | 0.44113 | 0.936 |
+| cat_d8 | 0.42142 | 0.995 | | mlp_num_emb_512 | 0.44524 | 0.901 |
+| rf_sqrt_leaf10 | 0.42152 | 0.991 | | | | |
+| et_mf08_leaf50 | 0.42164 | 0.992 | | | | |
+
+学習時間はどのメンバーも 4 分以内（CatBoost・XGBoost・MLP は GPU）。
+
+**アンサンブル**
+
+| 方法 | CV RMSE |
+|---|---|
+| exp022 の LightGBM 単体（参考） | 0.42098 |
+| 単純平均（全メンバー） | 0.42066 |
+| 単純平均（単独の上位 5 つ） | 0.41992 |
+| **重みを最適化（入れ子の CV）** | **0.41938** |
+| 重みを最適化（OOF 全体で決めて同じ OOF で評価、参考） | 0.41930 |
+
+入れ子の CV の fold ごと：0.41765、0.41869、0.42229、0.41687、0.42140（exp022 の LightGBM：0.41891、0.42096、0.42343、0.41852、0.42305）
+
+**提出用の重み**（0.0001 以上のもの）
+
+| メンバー | 重み |
+|---|---|
+| ridge_num | 0.285 |
+| mlp_num_256 | 0.202 |
+| rf_mf06_leaf50 | 0.158 |
+| rf_mf03_leaf20 | 0.144 |
+| lgb_exp022 | 0.126 |
+| knn_num_k30_dist | 0.025 |
+| lgb_leaves63 | 0.019 |
+| mlp_num_emb_1024 | 0.017 |
+| ridge_num_emb | 0.012 |
+| mlp_num_emb_512 | 0.011 |
+
+| **Private LB** | 未提出 |
+|---|---|
+
+### 考察
+
+- 重みを最適化したアンサンブルは、入れ子の CV で 0.41938 となり、exp022 の LightGBM 単体から 0.0016 改善した。5 fold すべてで改善している。入れ子の CV と、同じ OOF で評価した値（0.41930）の差は 0.0001 と小さく、重みの過学習はほとんどない
+- **数値の特徴量 80 列だけの Ridge（線形回帰）が、LightGBM 単体と同じ精度（0.42095）**だった。ファインチューニングした cross-encoder のスコアが強く、それをほぼ線形に組み合わせるだけで十分に予測できる段階になっている
+- 重みは、**LightGBM と性質の違うモデル**（Ridge 0.29、MLP 0.20、ランダムフォレスト 0.30）に大きく配分された。一方、XGBoost・CatBoost・LightGBM の別設定は、単独では LightGBM と同等の精度でも、予測の相関が 0.995 以上と高く、重みはほぼ 0 になった。アンサンブルでは「単独の精度」より「間違え方の違い」が効くことがはっきり表れた
+- k-NN と、埋め込みベクトルを入れた MLP・Ridge は単独では弱いが、相関が低い（0.90〜0.95）ので、小さな重みで使われた
+- cross-encoder 単独の予測は重み 0 だった。そのスコアは、すでにほかのメンバーの特徴量として使われているため
 

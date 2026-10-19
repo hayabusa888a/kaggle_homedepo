@@ -1,0 +1,65 @@
+2026-10-19 20:53:08 [load data] 1.9s
+2026-10-19 20:53:20 [spell dictionary] 12.2s
+2026-10-19 20:53:21 embed query: 24431 unique, 24431 cached, 0 to process
+2026-10-19 20:53:22 embed title: 120453 unique, 120453 cached, 0 to process
+2026-10-19 20:53:26 embed desc: 110128 unique, 110128 cached, 0 to process
+2026-10-19 20:53:29 embed brand: 4284 unique, 4284 cached, 0 to process
+2026-10-19 20:53:30 [embeddings] 10.0s
+2026-10-19 20:53:31 rerank title: 236614 unique pairs, 236614 cached, 0 to process
+2026-10-19 20:53:41 rerank desc: 229000 unique pairs, 229000 cached, 0 to process
+2026-10-19 20:53:46 [rerank] 15.5s
+2026-10-19 20:54:07 [preprocess] 21.1s
+2026-10-19 20:54:27 [tfidf features] 19.7s
+2026-10-19 20:54:33 [match features] 6.3s
+2026-10-19 20:54:35 [brand features] 1.9s
+2026-10-19 20:55:06 [bm25 features] 31.5s
+2026-10-19 20:55:24 [char ngram features] 17.6s
+2026-10-19 20:55:26 [attr match features] 2.5s
+2026-10-19 20:56:21 finetune: fold 0: cached
+2026-10-19 20:56:27 finetune: fold 1: cached
+2026-10-19 20:56:32 finetune: fold 2: cached
+2026-10-19 20:56:38 finetune: fold 3: cached
+2026-10-19 20:56:44 finetune: fold 4: cached
+2026-10-19 20:56:45 finetuned cross-encoder standalone oof rmse: 0.44997
+2026-10-19 20:56:45 [finetune cross-encoder] 78.4s
+2026-10-19 20:56:51 finetune: fold 0: cached
+2026-10-19 20:56:57 finetune: fold 1: cached
+2026-10-19 20:57:02 finetune: fold 2: cached
+2026-10-19 20:57:08 finetune: fold 3: cached
+2026-10-19 20:57:13 finetune: fold 4: cached
+2026-10-19 20:57:14 finetuned cross-encoder (title + desc) standalone oof rmse: 0.44534
+2026-10-19 20:57:14 [finetune cross-encoder (title + description)] 29.3s
+2026-10-19 20:57:19 finetune: fold 0: cached
+2026-10-19 20:57:25 finetune: fold 1: cached
+2026-10-19 20:57:30 finetune: fold 2: cached
+2026-10-19 20:57:36 finetune: fold 3: cached
+2026-10-19 20:57:41 finetune: fold 4: cached
+2026-10-19 20:57:42 finetuned cross-encoder (large, title) standalone oof rmse: 0.44113
+2026-10-19 20:57:42 [finetune cross-encoder (large, title)] 27.8s
+2026-10-19 20:57:47 finetune: fold 0: cached
+2026-10-19 20:57:53 finetune: fold 1: cached
+2026-10-19 20:57:58 finetune: fold 2: cached
+2026-10-19 20:58:03 finetune: fold 3: cached
+2026-10-19 20:58:08 finetune: fold 4: cached
+2026-10-19 20:58:09 finetuned cross-encoder (large, title + desc) standalone oof rmse: 0.43708
+2026-10-19 20:58:09 [finetune cross-encoder (large, title + description)] 27.0s
+2026-10-19 20:58:09 [group relative features] 0.5s
+2026-10-19 20:58:24 vocab size: 100793, n_features: 203714 (dense 80)
+2026-10-19 20:58:24 new feature stats (train):
+                                      count   mean    std    min    25%    50%    75%    max
+ft_ce_large_title_desc              74067.0  0.697  0.185  0.065  0.569  0.711  0.866  0.976
+ft_ce_large_title                   74067.0  0.696  0.182  0.062  0.572  0.709  0.862  0.973
+ft_ce_title_desc                    74067.0  0.686  0.186  0.020  0.553  0.693  0.856  0.990
+q_ft_ce_large_title_desc_diff_mean  74067.0 -0.001  0.097 -0.652 -0.036  0.004  0.045  0.561
+q_ft_ce_large_title_desc_diff_max   74067.0 -0.107  0.126 -0.811 -0.158 -0.056 -0.014  0.000
+q_ft_ce_large_title_desc_rank       74067.0  0.549  0.290  0.043  0.300  0.545  0.800  1.000
+2026-10-19 20:58:24 corr with relevance (train):
+ft_ce_large_title_desc                0.585
+ft_ce_large_title                     0.574
+ft_ce_title_desc                      0.567
+q_ft_ce_large_title_desc_diff_mean    0.216
+q_ft_ce_large_title_desc_diff_max     0.312
+q_ft_ce_large_title_desc_rank         0.099
+cos_title                             0.365
+ratio_match_title                     0.362
+2026-10-19 20:58:36 saved features: C:\kaggle_homedepo\data\features\exp022 train (74067, 203714) test (166693, 203714) n_dense 80

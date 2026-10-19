@@ -1,0 +1,72 @@
+2026-10-19 21:18:23 members: 24
+2026-10-19 21:18:23 single CV rmse:
+rf_mf03_leaf20               0.42068
+rf_mf06_leaf50               0.42078
+ridge_num                    0.42095
+lgb_exp022                   0.42098
+lgb_seed7_ff025              0.42115
+cat_d6                       0.42119
+xgb_d4                       0.42123
+lgb_leaves63                 0.42130
+xgb_d6                       0.42139
+et_mf05_leaf20               0.42141
+cat_d8                       0.42142
+rf_sqrt_leaf10               0.42152
+et_mf08_leaf50               0.42164
+mlp_num_256                  0.42572
+knn_a_k100_unif              0.42672
+ridge_num_emb                0.43032
+knn_num_k100_unif            0.43244
+knn_num_k300_unif            0.43353
+knn_a_k20_dist               0.43479
+knn_num_k30_dist             0.43525
+ce_ft_ce_large_title_desc    0.43708
+mlp_num_emb_1024             0.43999
+ce_ft_ce_large_title         0.44113
+mlp_num_emb_512              0.44524
+2026-10-19 21:18:23 correlation with lgb_exp022:
+mlp_num_emb_512              0.9009
+mlp_num_emb_1024             0.9155
+knn_num_k30_dist             0.9312
+ce_ft_ce_large_title         0.9361
+knn_a_k20_dist               0.9426
+ce_ft_ce_large_title_desc    0.9489
+knn_num_k100_unif            0.9492
+knn_num_k300_unif            0.9516
+ridge_num_emb                0.9535
+mlp_num_256                  0.9572
+knn_a_k100_unif              0.9763
+ridge_num                    0.9851
+rf_sqrt_leaf10               0.9914
+et_mf05_leaf20               0.9919
+rf_mf06_leaf50               0.9921
+rf_mf03_leaf20               0.9922
+et_mf08_leaf50               0.9923
+cat_d8                       0.9949
+xgb_d6                       0.9951
+cat_d6                       0.9953
+lgb_leaves63                 0.9961
+xgb_d4                       0.9970
+lgb_seed7_ff025              0.9978
+lgb_exp022                   1.0000
+2026-10-19 21:18:23 simple average (all): 0.42066
+2026-10-19 21:18:23 simple average (top 5): 0.41992
+2026-10-19 21:18:23 nested fold 0: rmse=0.41765 (lgb_exp022 0.41891)
+2026-10-19 21:18:24 nested fold 1: rmse=0.41869 (lgb_exp022 0.42096)
+2026-10-19 21:18:24 nested fold 2: rmse=0.42229 (lgb_exp022 0.42343)
+2026-10-19 21:18:25 nested fold 3: rmse=0.41687 (lgb_exp022 0.41852)
+2026-10-19 21:18:25 nested fold 4: rmse=0.42140 (lgb_exp022 0.42305)
+2026-10-19 21:18:25 optimized blend, nested CV rmse: 0.41938
+2026-10-19 21:18:26 optimized blend, in-sample CV rmse: 0.41930
+2026-10-19 21:18:26 weights:
+ridge_num           0.2852
+mlp_num_256         0.2024
+rf_mf06_leaf50      0.1579
+rf_mf03_leaf20      0.1437
+lgb_exp022          0.1261
+knn_num_k30_dist    0.0253
+lgb_leaves63        0.0191
+mlp_num_emb_1024    0.0174
+ridge_num_emb       0.0121
+mlp_num_emb_512     0.0109
+2026-10-19 21:18:26 saved: C:\kaggle_homedepo\output\exp023
