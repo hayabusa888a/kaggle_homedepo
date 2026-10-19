@@ -33,6 +33,8 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 | exp021 | 2026-10-19 | exp020 ＋ 大きいモデル（bge-reranker-v2-m3）でファインチューニングした cross-encoder（検索語 × タイトル）のスコア | 0.42283 | 未提出 | [exp/exp021_finetune_ce_large.py](exp/exp021_finetune_ce_large.py) |
 | exp022 | 2026-10-19 | exp021 ＋ 大きいモデル（bge-reranker-v2-m3）でファインチューニングした cross-encoder（検索語 × タイトル + 説明文）のスコア | 0.42098 | 0.42315 | [exp/exp022_finetune_ce_large_desc.py](exp/exp022_finetune_ce_large_desc.py) |
 | exp023 | 2026-10-19 | アンサンブル（24 メンバー、OOF で重みを最適化） | 0.41938 | 0.42338 | [exp/exp023_blend.py](exp/exp023_blend.py) |
+| exp024 | 2026-10-19 | exp023 と同じメンバーを、test のファインチューニングのスコアを fold ごとのモデルの予測にそろえて学習し直す（アンサンブル） | 0.41920 | 未提出 | [exp/exp024_blend.py](exp/exp024_blend.py) |
+| exp024（LightGBM 単体） | 2026-10-19 | 同上の LightGBM 単体（exp022 と同じ設定） | 0.42099 | 未提出 | `output/exp024/submission_lgb.csv` |
 
 ## 共通の前提
 
@@ -1633,4 +1635,41 @@ base モデルでは、入力に説明文を加えると単独の RMSE が 0.004
 - **Private LB は 0.42338 で、exp022（0.42315）よりわずかに悪かった**。CV では 0.0016 改善していたが、LB では改善しなかった
 - LB と CV の差は、ファインチューニングしたスコアを重ねるにつれて広がっている（exp018：−0.0003 → exp020：+0.0005 → exp022：+0.0022 → exp023：+0.0040）。考えられる原因は、ファインチューニングしたスコアの作り方が train と test で違うこと（train は「その行を学習に使っていない 1 つのモデル」の予測、test は「5 つのモデルの平均」）。アンサンブルで重みの大きかった Ridge と MLP は、これらのスコアにほぼ線形に頼っているため、この違いの影響を木のモデルより強く受けた可能性がある
 - 特徴量の分布（平均・標準偏差）を train と test で比べると、ファインチューニングしたスコアの平均は test のほうが 0.017 ほど高いが、学習前の cross-encoder のスコア（`ce_title`）も同程度高いので、これは test 自体の性質と考えられる。標準偏差はほぼ同じで、分布の比較だけでは違いの原因を特定できなかった
+
+---
+
+## exp024：test のスコアを fold ごとのモデルの予測にそろえる
+
+### 目的
+
+ファインチューニングしたスコアを重ねるにつれて LB と CV の差が広がり（exp018：−0.0003 → exp023：+0.0040）、exp023 のアンサンブルは CV では改善したのに LB では改善しなかった。原因の仮説は、ファインチューニングしたスコアの作り方が train と test で違うこと。
+
+- train：その行を学習に使っていない **1 つのモデル**の予測（OOF）
+- test：**5 つのモデルの平均**
+
+5 つの平均のほうが、個々のモデルの癖が打ち消されて性質が変わる（実際、test のスコアの標準偏差は、1 つのモデルの予測より 1.5〜2% 小さい）。train で学んだ「スコアと relevance の関係」が、test ではわずかにずれる可能性がある。
+
+### 方法
+
+**fold k で学習した LightGBM などのモデルは、test にも「fold k のファインチューニングのモデルが出したスコア」を使って予測し、最後に 5 つの予測を平均する**。こうすると、モデルが見るスコアが train でも test でも「1 つのモデルの予測」になる。
+
+- [exp/exp024_build_fold_test.py](exp/exp024_build_fold_test.py)：ファインチューニングの各モデルの fold ごとの test の予測（保存済み）を読み込み、fold k ごとに test の数値の特徴量（先頭 80 列）を作り直す。置き換えるのは、ファインチューニングした 4 つのスコアと、その同じ検索語の中での相対値 12 個の計 16 列。相対値は train（OOF）と test（fold k のスコア）を合わせて集計し直す。fold の平均が exp022 の test の特徴量と一致することを確認した（誤差 1.8×10⁻⁷）
+- [exp/exp024_members.py](exp/exp024_members.py)：exp023 と同じメンバー（ファインチューニングのスコア単独を除く 21 個）と、exp022 と同じ設定の LightGBM（`lgb_base`）を、fold ごとの test の特徴量で学習し直す
+- [exp/exp024_blend.py](exp/exp024_blend.py)：exp023 と同じ方法で混ぜる。提出ファイルを 2 つ作る
+  - `submission.csv`：アンサンブル（exp023 と比べる用）
+  - `submission_lgb.csv`：LightGBM 単体（exp022 と比べる用。対策そのものの効果を見る）
+
+train の特徴量は変えていないので、**CV は exp023 とほぼ同じになり、効果は LB でしか確かめられない**。
+
+### 結果
+
+| | CV RMSE（入れ子） | Private LB |
+|---|---|---|
+| アンサンブル（`submission.csv`） | 0.41920 | 未提出 |
+| LightGBM 単体（`submission_lgb.csv`） | 0.42099 | 未提出 |
+| （参考）exp023 アンサンブル | 0.41938 | 0.42338 |
+| （参考）exp022 LightGBM 単体 | 0.42098 | 0.42315 |
+
+- 重み：ridge_num 0.270、mlp_num_256 0.229、rf_mf06_leaf50 0.168、rf_mf03_leaf20 0.130、lgb_base 0.096、lgb_leaves63 0.037、mlp_num_emb_512 0.035、knn_num_k30_dist 0.023、ridge_num_emb 0.011、lgb_seed7_ff025 0.002
+- test の予測の変化（RMSE）：LightGBM 単体と exp022 の間 0.0163、アンサンブルと exp023 の間 0.0154。平均・標準偏差はほとんど変わらない
 
