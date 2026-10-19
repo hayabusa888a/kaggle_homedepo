@@ -33,12 +33,12 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 | exp021 | 2026-10-19 | exp020 ＋ 大きいモデル（bge-reranker-v2-m3）でファインチューニングした cross-encoder（検索語 × タイトル）のスコア | 0.42283 | 未提出 | [exp/exp021_finetune_ce_large.py](exp/exp021_finetune_ce_large.py) |
 | exp022 | 2026-10-19 | exp021 ＋ 大きいモデル（bge-reranker-v2-m3）でファインチューニングした cross-encoder（検索語 × タイトル + 説明文）のスコア | 0.42098 | 0.42315 | [exp/exp022_finetune_ce_large_desc.py](exp/exp022_finetune_ce_large_desc.py) |
 | exp023 | 2026-10-19 | アンサンブル（24 メンバー、OOF で重みを最適化） | 0.41938 | 0.42338 | [exp/exp023_blend.py](exp/exp023_blend.py) |
-| exp024 | 2026-10-19 | exp023 と同じメンバーを、test のファインチューニングのスコアを fold ごとのモデルの予測にそろえて学習し直す（アンサンブル） | 0.41920 | 未提出 | [exp/exp024_blend.py](exp/exp024_blend.py) |
-| exp024（LightGBM 単体） | 2026-10-19 | 同上の LightGBM 単体（exp022 と同じ設定） | 0.42099 | 未提出 | `output/exp024/submission_lgb.csv` |
+| exp024 | 2026-10-19 | exp023 と同じメンバーを、test のファインチューニングのスコアを fold ごとのモデルの予測にそろえて学習し直す（アンサンブル） | 0.41920 | 0.42282 | [exp/exp024_blend.py](exp/exp024_blend.py) |
+| exp024（LightGBM 単体） | 2026-10-19 | 同上の LightGBM 単体（exp022 と同じ設定） | 0.42099 | 0.42257 | `output/exp024/submission_lgb.csv` |
 | exp025 | 2026-10-20 | exp024 ＋ v2-m3（タイトル + 説明文）のファインチューニングを 2 つの種で平均（アンサンブル） | 0.41868 | 未提出 | [exp/exp025_run.py](exp/exp025_run.py) |
 | exp025（LightGBM 単体） | 2026-10-20 | 同上の LightGBM 単体 | 0.42030 | 未提出 | `output/exp025/submission_lgb.csv` |
-| exp026 | 2026-10-20 | exp025 ＋ v2-m3（タイトルのみ）のファインチューニングも 2 つの種で平均（アンサンブル） | 0.41854 | 未提出 | [exp/exp026_run.py](exp/exp026_run.py) |
-| exp026（LightGBM 単体） | 2026-10-20 | 同上の LightGBM 単体 | 0.42015 | 未提出 | `output/exp026/submission_lgb.csv` |
+| exp026 | 2026-10-20 | exp025 ＋ v2-m3（タイトルのみ）のファインチューニングも 2 つの種で平均（アンサンブル） | 0.41854 | 0.42268 | [exp/exp026_run.py](exp/exp026_run.py) |
+| exp026（LightGBM 単体） | 2026-10-20 | 同上の LightGBM 単体 | 0.42015 | **0.42254** | `output/exp026/submission_lgb.csv` |
 
 ## 共通の前提
 
@@ -1669,13 +1669,23 @@ train の特徴量は変えていないので、**CV は exp023 とほぼ同じ�
 
 | | CV RMSE（入れ子） | Private LB |
 |---|---|---|
-| アンサンブル（`submission.csv`） | 0.41920 | 未提出 |
-| LightGBM 単体（`submission_lgb.csv`） | 0.42099 | 未提出 |
+| アンサンブル（`submission.csv`） | 0.41920 | **0.42282** |
+| LightGBM 単体（`submission_lgb.csv`） | 0.42099 | **0.42257** |
 | （参考）exp023 アンサンブル | 0.41938 | 0.42338 |
 | （参考）exp022 LightGBM 単体 | 0.42098 | 0.42315 |
 
 - 重み：ridge_num 0.270、mlp_num_256 0.229、rf_mf06_leaf50 0.168、rf_mf03_leaf20 0.130、lgb_base 0.096、lgb_leaves63 0.037、mlp_num_emb_512 0.035、knn_num_k30_dist 0.023、ridge_num_emb 0.011、lgb_seed7_ff025 0.002
 - test の予測の変化（RMSE）：LightGBM 単体と exp022 の間 0.0163、アンサンブルと exp023 の間 0.0154。平均・標準偏差はほとんど変わらない
+
+**LB の結果**（Public LB も記録する）
+
+| | CV RMSE | Private LB | Public LB | 比べる相手の Private LB |
+|---|---|---|---|---|
+| LightGBM 単体 | 0.42099 | **0.42257** | 0.42444 | exp022：0.42315（−0.0006） |
+| アンサンブル | 0.41920 | **0.42282** | 0.42485 | exp023：0.42338（−0.0006） |
+
+- **対策は LB で効いた**。train 側の特徴量と CV はそのままで、test の予測の作り方を変えただけで、LightGBM 単体・アンサンブルとも Private LB が 0.0006 改善した。train と test でファインチューニングしたスコアの作り方をそろえることが重要だった
+- ただし、LB と CV の差（LightGBM 単体で +0.0016）はまだ残っている。また、アンサンブルは CV では LightGBM 単体より 0.0018 良いのに、LB では 0.00025 悪い。train と test の違い（スコアの作り方以外の要因）が、まだ残っていると考えられる
 
 ---
 
@@ -1769,8 +1779,8 @@ exp025 で、v2-m3（タイトル + 説明文）を 2 つの種で平均する�
 |---|---|---|
 | LightGBM 単体（`lgb_base`） | **0.42015** | 0.42030 |
 | アンサンブル（入れ子の CV） | **0.41854** | 0.41868 |
-| Private LB（アンサンブル） | 未提出 | 未提出 |
-| Private LB（LightGBM 単体） | 未提出 | 未提出 |
+| Private LB（アンサンブル） | **0.42268**（Public 0.42461） | 未提出 |
+| Private LB（LightGBM 単体） | **0.42254**（Public 0.42439） | 未提出 |
 
 入れ子の CV の fold ごと：0.41675、0.41738、0.42119、0.41660、0.42075（すべての fold で exp025 より良い）
 
@@ -1780,4 +1790,6 @@ exp025 で、v2-m3（タイトル + 説明文）を 2 つの種で平均する�
 
 - 2 つの種の平均で、タイトルのみのモデル単独の RMSE が 0.0032 改善した（exp025 のタイトル + 説明文のモデルとほぼ同じ改善幅）
 - 一方、LightGBM 単体・アンサンブルの改善は 0.0001〜0.0002 と小さい。より強いタイトル + 説明文のスコアがすでに 2 つの種の平均になっており、タイトルのみのスコアの改善分は、その情報とほとんど重なっていたと考えられる
+- Private LB は LightGBM 単体 0.42254、アンサンブル 0.42268。exp024 から、LightGBM 単体は 0.00003、アンサンブルは 0.00014 しか改善しなかった（CV では exp024 から 0.0008 と 0.0007 改善）。種の平均による CV の改善は、LB にはほとんど表れなかった
+- **これまでのベストは exp026 の LightGBM 単体（Private LB 0.42254）**
 
