@@ -44,6 +44,10 @@ def main():
     parser.add_argument("--max-length", type=int, default=128)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--precision", choices=["bf16", "fp32"], default="bf16")
+    parser.add_argument("--grad-accum", type=int, default=1, help="この回数分の勾配をためてから更新する（大きいモデルでメモリを節約）")
+    parser.add_argument("--freeze-embeddings", action="store_true", help="単語の埋め込み層を学習しない（多言語モデルでは全体の約半分を占める）")
+    parser.add_argument("--grad-checkpointing", action="store_true", help="中間結果を保存せず計算し直して、メモリを節約する")
+    parser.add_argument("--optim", default="adamw_torch", help="最適化手法（例: adamw_torch, adamw_bnb_8bit, adafactor）")
     parser.add_argument("--warmup-ratio", type=float, default=0.1)
     parser.add_argument("--attn", default=None, help="アテンションの実装（例: eager）。None ならライブラリの既定")
     args = parser.parse_args()
@@ -64,10 +68,22 @@ def main():
 
     model_kwargs = {"attn_implementation": args.attn} if args.attn else {}
     model = CrossEncoder(args.model, num_labels=1, max_length=args.max_length, device="cuda", model_kwargs=model_kwargs)
+    hf_model = getattr(model, "model", None) or model[0].auto_model
+    if args.freeze_embeddings:
+        for param in hf_model.base_model.embeddings.parameters():
+            param.requires_grad = False
+    n_train = sum(p.numel() for p in hf_model.parameters() if p.requires_grad)
+    n_all = sum(p.numel() for p in hf_model.parameters())
+    print(f"trainable params: {n_train / 1e6:.0f}M / {n_all / 1e6:.0f}M", flush=True)
+    if args.grad_checkpointing:
+        # Trainer 経由の設定は sentence-transformers 側が引数を受け付けないので、中のモデルに直接設定する
+        hf_model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
     train_args = CrossEncoderTrainingArguments(
         output_dir=str(out_dir / f"tmp_fold{args.fold}"),
         num_train_epochs=args.epochs,
         per_device_train_batch_size=args.batch_size,
+        gradient_accumulation_steps=args.grad_accum,
+        optim=args.optim,
         learning_rate=args.lr,
         warmup_ratio=args.warmup_ratio,
         bf16=args.precision == "bf16",
@@ -94,7 +110,8 @@ def main():
     labels = np.array([r[2] for r in va])
     rmse = float(np.sqrt(np.mean((oof * 2 + 1 - (labels * 2 + 1)) ** 2)))
     corr = float(np.corrcoef(oof, labels)[0, 1]) if oof.std() > 0 else float("nan")
-    print(f"fold {args.fold}: done, standalone rmse={rmse:.5f} pred_std={oof.std():.4f} pearson={corr:.4f}", flush=True)
+    print(f"fold {args.fold}: done, standalone rmse={rmse:.5f} pred_std={oof.std():.4f} pearson={corr:.4f} "
+          f"gpu_mem_peak={torch.cuda.max_memory_allocated() / 2**30:.1f}GB", flush=True)
 
 
 if __name__ == "__main__":

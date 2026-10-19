@@ -23,7 +23,7 @@ def fold_ids(groups: pd.Series, n_folds: int = 5) -> np.ndarray:
 def finetune_ce_oof(train_query: pd.Series, train_doc: pd.Series, relevance: np.ndarray, groups: pd.Series,
                     test_query: pd.Series, test_doc: pd.Series, out_dir: Path, model: str,
                     n_folds: int = 5, epochs: float = 2, max_length: int = 128, batch_size: int = 32,
-                    logger=None) -> tuple[np.ndarray, np.ndarray]:
+                    extra_args: list[str] | None = None, logger=None) -> tuple[np.ndarray, np.ndarray]:
     """fold ごとに cross-encoder をファインチューニングし、(train の OOF スコア, test のスコア（fold の平均）) を返す。
     fold ごとの結果は out_dir に保存し、保存済みの fold は学習し直さない"""
     folds = fold_ids(groups, n_folds)
@@ -41,13 +41,13 @@ def finetune_ce_oof(train_query: pd.Series, train_doc: pd.Series, relevance: np.
     for k in range(n_folds):
         cmd = [str(GPU_PYTHON), str(FINETUNE_SCRIPT), "--data", str(data_path), "--fold", str(k),
                "--out-dir", str(out_dir), "--model", model, "--epochs", str(epochs),
-               "--max-length", str(max_length), "--batch-size", str(batch_size)]
+               "--max-length", str(max_length), "--batch-size", str(batch_size), *(extra_args or [])]
         with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
                               encoding="utf-8", errors="replace") as proc:
             for line in proc.stdout:
                 line = line.rstrip()
                 # 進捗の行だけを残し、ライブラリの警告などは捨てる
-                if logger and line.startswith(("step ", "fold ", "device=")):
+                if logger and line.startswith(("step ", "fold ", "device=", "trainable")):
                     logger.info(f"finetune: {line}")
         if proc.returncode != 0:
             raise RuntimeError(f"finetune_ce.py failed on fold {k} (exit {proc.returncode})")
