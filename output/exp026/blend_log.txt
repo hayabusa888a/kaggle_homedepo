@@ -1,0 +1,44 @@
+2026-10-20 04:25:31 members: 22
+2026-10-20 04:25:31 single CV rmse:
+rf_mf03_leaf20       0.41974
+rf_mf06_leaf50       0.41974
+lgb_base             0.42015
+ridge_num            0.42024
+cat_d6               0.42030
+lgb_leaves63         0.42036
+xgb_d4               0.42037
+lgb_seed7_ff025      0.42038
+xgb_d6               0.42044
+cat_d8               0.42051
+et_mf05_leaf20       0.42060
+et_mf08_leaf50       0.42075
+rf_sqrt_leaf10       0.42079
+mlp_num_256          0.42542
+knn_a_k100_unif      0.42633
+ridge_num_emb        0.42973
+knn_num_k100_unif    0.43209
+knn_num_k300_unif    0.43316
+knn_a_k20_dist       0.43393
+knn_num_k30_dist     0.43513
+mlp_num_emb_1024     0.43876
+mlp_num_emb_512      0.44560
+2026-10-20 04:25:32 nested fold 0: rmse=0.41675 (lgb_base 0.41818)
+2026-10-20 04:25:32 nested fold 1: rmse=0.41738 (lgb_base 0.41962)
+2026-10-20 04:25:33 nested fold 2: rmse=0.42119 (lgb_base 0.42251)
+2026-10-20 04:25:33 nested fold 3: rmse=0.41660 (lgb_base 0.41816)
+2026-10-20 04:25:33 nested fold 4: rmse=0.42075 (lgb_base 0.42229)
+2026-10-20 04:25:33 optimized blend, nested CV rmse: 0.41854
+2026-10-20 04:25:34 optimized blend, in-sample CV rmse: 0.41845
+2026-10-20 04:25:34 weights:
+rf_mf06_leaf50      0.2602
+ridge_num           0.2575
+mlp_num_256         0.2005
+rf_mf03_leaf20      0.0895
+lgb_base            0.0788
+lgb_leaves63        0.0755
+knn_num_k30_dist    0.0175
+mlp_num_emb_512     0.0158
+ridge_num_emb       0.0047
+2026-10-20 04:25:34 test pred mean/std: lgb_base 2.4150/0.3219, exp022 2.4161/0.3221, blend 2.4080/0.3237, exp023 2.4098/0.3212
+2026-10-20 04:25:34 rmse between test preds: lgb_base vs exp022 0.01896, blend vs exp023 0.01914
+2026-10-20 04:25:34 saved: C:\kaggle_homedepo\output\exp026

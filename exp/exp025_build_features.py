@@ -26,16 +26,17 @@ from src.preprocess import _map_unique, normalize
 from src.spell import build_symspell, make_query_corrector
 from src.utils import ROOT, get_logger
 
-SRC_DIR = ROOT / "data" / "features" / "exp022"
-DST_DIR = ROOT / "data" / "features" / "exp025"
 PROC = ROOT / "data" / "processed"
-SEED_DIRS = [PROC / "ft_ce_bge_v2m3_title_desc", PROC / "ft_ce_bge_v2m3_title_desc_seed2"]
-COL = "ft_ce_large_title_desc"
 
 
-def main():
+def main(src_dir=ROOT / "data" / "features" / "exp022", dst_dir=ROOT / "data" / "features" / "exp025",
+         seed_dirs=(PROC / "ft_ce_bge_v2m3_title_desc", PROC / "ft_ce_bge_v2m3_title_desc_seed2"),
+         col="ft_ce_large_title_desc", doc="title_desc", log_name="exp025_features_log.txt"):
+    """src_dir の特徴量の col を、seed_dirs のモデルの予測の平均に置き換えて dst_dir に保存する。
+    doc はファインチューニングの入力の文書（"title" または "title_desc"）"""
+    SRC_DIR, DST_DIR, SEED_DIRS, COL = src_dir, dst_dir, list(seed_dirs), col
     DST_DIR.mkdir(parents=True, exist_ok=True)
-    logger = get_logger(ROOT / "output" / "exp025_features_log.txt")
+    logger = get_logger(ROOT / "output" / log_name)
     meta = json.loads((SRC_DIR / "meta.json").read_text(encoding="utf-8"))
     names, n = meta["feature_names"], meta["n_dense"]
     folds = fold_ids(pd.Series(meta["groups"]))
@@ -45,8 +46,8 @@ def main():
     products = df.drop_duplicates("product_uid")
     corrector = make_query_corrector(build_symspell(
         _map_unique(products["product_title"] + " " + products["product_description"], normalize)))
-    test_keys = (corrector(_map_unique(test["search_term"], normalize)) + "\x1f"
-                 + test["product_title"] + ". " + test["product_description"])
+    doc_text = test["product_title"] + (". " + test["product_description"] if doc == "title_desc" else "")
+    test_keys = corrector(_map_unique(test["search_term"], normalize)) + "\x1f" + doc_text
 
     # train の OOF（fold k の行の順に保存されている）と、fold ごとの test の予測を、種ごとに読み込む
     oofs, tests = [], []

@@ -1,0 +1,4 @@
+2026-10-20 04:03:49 seed 1: standalone OOF rmse 0.44113
+2026-10-20 04:03:49 seed 2: standalone OOF rmse 0.44100
+2026-10-20 04:03:49 mean of 2 seeds: standalone OOF rmse 0.43792, corr between seeds 0.9583
+2026-10-20 04:04:08 saved: C:\kaggle_homedepo\data\features\exp026

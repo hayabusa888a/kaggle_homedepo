@@ -1,0 +1,15 @@
+device=NVIDIA GeForce RTX 5070 Laptop GPU fold=0 train=59253 valid=14814 test=164309
+trainable params: 303M / 568M
+fold 0: done, standalone rmse=0.43939 pred_std=0.1831 pearson=0.5866 gpu_mem_peak=5.8GB
+device=NVIDIA GeForce RTX 5070 Laptop GPU fold=1 train=59253 valid=14814 test=164309
+trainable params: 303M / 568M
+fold 1: done, standalone rmse=0.43748 pred_std=0.1806 pearson=0.5834 gpu_mem_peak=5.4GB
+device=NVIDIA GeForce RTX 5070 Laptop GPU fold=2 train=59254 valid=14813 test=164309
+trainable params: 303M / 568M
+fold 2: done, standalone rmse=0.44322 pred_std=0.1802 pearson=0.5665 gpu_mem_peak=5.8GB
+device=NVIDIA GeForce RTX 5070 Laptop GPU fold=3 train=59254 valid=14813 test=164309
+trainable params: 303M / 568M
+fold 3: done, standalone rmse=0.44116 pred_std=0.1816 pearson=0.5540 gpu_mem_peak=5.8GB
+device=NVIDIA GeForce RTX 5070 Laptop GPU fold=4 train=59254 valid=14813 test=164309
+trainable params: 303M / 568M
+fold 4: done, standalone rmse=0.44371 pred_std=0.1833 pearson=0.5802 gpu_mem_peak=5.8GB
