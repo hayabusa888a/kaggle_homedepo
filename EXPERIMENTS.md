@@ -31,7 +31,7 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 | exp019 | 2026-10-18 | exp018 ＋ 検索語の主語とタイトルの主語（商品の種類）の一致 | 0.42835 | 未提出 | [exp/exp019_head_match.py](exp/exp019_head_match.py) |
 | exp020 | 2026-10-18 | exp018 ＋ ファインチューニングした cross-encoder（検索語 × タイトル + 説明文）のスコア | 0.42615 | 0.42668 | [exp/exp020_finetune_ce_desc.py](exp/exp020_finetune_ce_desc.py) |
 | exp021 | 2026-10-19 | exp020 ＋ 大きいモデル（bge-reranker-v2-m3）でファインチューニングした cross-encoder（検索語 × タイトル）のスコア | 0.42283 | 未提出 | [exp/exp021_finetune_ce_large.py](exp/exp021_finetune_ce_large.py) |
-| exp022 | 2026-10-19 | exp021 ＋ 大きいモデル（bge-reranker-v2-m3）でファインチューニングした cross-encoder（検索語 × タイトル + 説明文）のスコア | 0.42098 | 未提出 | [exp/exp022_finetune_ce_large_desc.py](exp/exp022_finetune_ce_large_desc.py) |
+| exp022 | 2026-10-19 | exp021 ＋ 大きいモデル（bge-reranker-v2-m3）でファインチューニングした cross-encoder（検索語 × タイトル + 説明文）のスコア | 0.42098 | 0.42315 | [exp/exp022_finetune_ce_large_desc.py](exp/exp022_finetune_ce_large_desc.py) |
 
 ## 共通の前提
 
@@ -1521,7 +1521,7 @@ base モデルでは、入力に説明文を加えると単独の RMSE が 0.004
 | 3 | 0.41852 | 567 | 0.41980 |
 | 4 | 0.42305 | 783 | 0.42468 |
 | **CV** | **0.42098** | | 0.42283 |
-| **Private LB** | 未提出 | | 未提出 |
+| **Private LB** | **0.42315** | | 未提出 |
 
 - 予測値の標準偏差：oof 0.323、test 0.322
 
@@ -1533,4 +1533,5 @@ base モデルでは、入力に説明文を加えると単独の RMSE が 0.004
 - 大きいモデルでも説明文の効果ははっきり出た（単独で −0.0041、5 fold すべてで改善）。base のときの改善（−0.0046）とほぼ同じ大きさ
 - LightGBM 全体の改善が単独の改善の半分程度にとどまったのは、すでに似た情報を持つスコア（特に base のタイトル + 説明文のスコア）が入っているため。4 つのファインチューニングしたスコアは、重要度の上位 4 つを占めている
 - 計算時間は約 4.7 時間と、これまでで最も長い
+- Private LB は 0.42315 で、exp020（0.42668、exp021 は未提出）から 0.0035 改善した（同じ区間の CV の改善は 0.0052）。LB と CV の差は +0.0022 で、exp020（+0.0005）より広がった。ファインチューニングしたスコアを重ねるほど、CV の改善が LB では小さく出る傾向がある
 
