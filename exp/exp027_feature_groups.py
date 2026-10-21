@@ -17,12 +17,12 @@ from scipy import sparse
 import exp023_members as m23
 from src.utils import OUTPUT_DIR, ROOT, get_logger, rmse
 
-m23.FEAT_DIR = ROOT / "data" / "features" / "exp026"
-OUT_DIR = OUTPUT_DIR / "exp027"
 UID_BINS = [100000, 150000, 180000, 195000, 206650]
 
 
-def main():
+def main(feat_dir=ROOT / "data" / "features" / "exp026", out_dir=OUTPUT_DIR / "exp027", group_names=None):
+    """feat_dir の特徴量で、group_names（None なら全部）の構成を比べ、out_dir に保存する"""
+    m23.FEAT_DIR, OUT_DIR = feat_dir, out_dir
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     logger = get_logger(OUT_DIR / "log.txt")
     data = m23.Data()
@@ -38,6 +38,8 @@ def main():
         "num_tfidf": np.r_[np.arange(n), np.arange(n + n_emb, n_all)],
         "num": np.arange(n),
     }
+    if group_names:
+        groups = {k: groups[k] for k in group_names}
 
     tr = pd.read_csv(ROOT / "input" / "train.csv", encoding="ISO-8859-1")
     te = pd.read_csv(ROOT / "input" / "test.csv", encoding="ISO-8859-1")

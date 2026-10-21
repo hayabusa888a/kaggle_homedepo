@@ -1,0 +1,6 @@
+2026-10-21 21:42:04 test rows with a train query: 27.1%
+2026-10-21 21:42:18 ft_ce_title: seen-query rows, mean score of all folds - unseen-query fold = +0.0034 (0-1 scale)
+2026-10-21 21:42:19 ft_ce_title_desc: seen-query rows, mean score of all folds - unseen-query fold = +0.0035 (0-1 scale)
+2026-10-21 21:42:20 ft_ce_large_title: seen-query rows, mean score of all folds - unseen-query fold = +0.0034 (0-1 scale)
+2026-10-21 21:42:22 ft_ce_large_title_desc: seen-query rows, mean score of all folds - unseen-query fold = +0.0032 (0-1 scale)
+2026-10-21 21:42:24 saved: C:\kaggle_homedepo\data\features\exp028
