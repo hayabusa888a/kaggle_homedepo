@@ -1,0 +1,2 @@
+2026-10-27 16:17:38 ft_ce_deberta_title_desc: standalone OOF rmse 0.43702
+2026-10-27 16:18:05 saved: C:\kaggle_homedepo\data\features\exp029 (n_dense 84)
