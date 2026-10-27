@@ -1,0 +1,12 @@
+2026-10-27 23:29:19 start
+2026-10-28 00:30:11 finetune done
+2026-10-28 00:30:27 ft_ce_deberta_title: standalone OOF rmse 0.43951
+2026-10-28 00:30:53 saved: C:\kaggle_homedepo\data\features\exp030 (n_dense 88)
+2026-10-28 00:30:54 features done
+2026-10-28 00:33:17 all: group=all, n_cols=203722, cv=0.41776, cv_weighted=0.41878, rmse_100k-150k=0.41178, rmse_150k-180k=0.41914, rmse_180k-195k=0.44001, rmse_195k-206k=0.43591
+2026-10-28 00:33:44 num: group=num, n_cols=88, cv=0.41521, cv_weighted=0.41621, rmse_100k-150k=0.40924, rmse_150k-180k=0.41639, rmse_180k-195k=0.43718, rmse_195k-206k=0.43441
+2026-10-28 00:33:44 summary:
+group  n_cols      cv  cv_weighted  rmse_100k-150k  rmse_150k-180k  rmse_180k-195k  rmse_195k-206k
+  all  203722 0.41776      0.41878         0.41178         0.41914         0.44001         0.43591
+  num      88 0.41521      0.41621         0.40924         0.41639         0.43718         0.43441
+2026-10-28 00:33:45 pipeline done

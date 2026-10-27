@@ -76,6 +76,8 @@ rows = [
     ("exp028_num", "2026-10-21", "検証・対策", "同上（数値の特徴量だけ）", "exp027", 0.41776, 0.42434, 0.42636, "不採用", "同上", "output/exp028/submission_num.csv"),
     ("exp029_all", "2026-10-27", "ファインチューニング", "＋ ファインチューニングした DeBERTa（mxbai-rerank-base-v1、タイトル + 説明文、transformers 4.49）", "exp026_lgb", 0.41812, 0.42011, 0.42207, "採用（ベスト）", "1.8 億で v2-m3（5.7 億）と同精度。系統の違うモデルは LB でもしっかり効く。学習は 7 時間（GPU メモリがあふれ気味）", "output/exp029/submission_all.csv"),
     ("exp029_num", "2026-10-27", "特徴量選択", "同上（数値の特徴量 84 列だけ、参考）", "exp029_all", 0.41547, N, N, "参考", "未提出", "output/exp029/submission_num.csv"),
+    ("exp030_all", "2026-10-28", "ファインチューニング", "＋ ファインチューニングした DeBERTa（検索語 × タイトル）", "exp029_all", 0.41776, N, N, "LB 待ち", "単独 0.43951 はタイトル版で最良。ただし DeBERTa（タイトル + 説明文）との相関 0.945 で、CV の上乗せは −0.0004 と小さい。学習は 1 時間", "output/exp030/submission_all.csv"),
+    ("exp030_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 88 列だけ、参考）", "exp030_all", 0.41521, N, N, "参考", "未提出", "output/exp030/submission_num.csv"),
 ]
 first = 2
 for i, r in enumerate(rows):
@@ -121,9 +123,9 @@ ov = wb.create_sheet("概要", 0)
 ov.column_dimensions["A"].width = 26
 ov.column_dimensions["B"].width = 95
 items = [
-    ("Home Depot Product Search Relevance：実験の振り返り（exp001〜exp029）", None, "title"),
+    ("Home Depot Product Search Relevance：実験の振り返り（exp001〜exp030）", None, "title"),
     ("タスク", "検索語と商品のペアの関連度 relevance（1〜3、複数人の評価の平均）を予測する。評価指標は RMSE", None),
-    ("期間", "2026-10-13 〜 2026-10-27", None),
+    ("期間", "2026-10-13 〜 2026-10-28", None),
     ("現在のベスト", "exp029_all：LightGBM 単体（全部の列）。CV 0.41812 / Private LB 0.42011 / Public LB 0.42207", "best"),
     ("最初のベースライン", "exp001：CV 0.50579 / Private LB 0.50782（ベストまで −0.0877）", None),
     ("ベストの構成", "前処理（正規化・SymSpell・ステミング）→ TF-IDF・BM25・単語一致・文字 n-gram・ブランド・属性値 → 埋め込み（mxbai-embed-large）→ 学習前の cross-encoder（mxbai-rerank-base）→ ファインチューニングした cross-encoder 5 種（bge-reranker-base ×2、v2-m3 ×2（種の平均）、DeBERTa ×1）→ 同じ検索語の中での相対値 → LightGBM（Optuna で調整、lr 0.02）", None),
@@ -169,6 +171,7 @@ ftrows = [
     ("bge-reranker-v2-m3（2 つの種の平均）", "XLM-RoBERTa", "5.7 億 ×2", "タイトル", "同上", 0.43792, N, "+66 分", "exp026〜", "種の相関 0.958"),
     ("bge-reranker-v2-m3", "XLM-RoBERTa", "5.7 億", "タイトル + 説明文（256）", "同上 + バッチ 8 × 4 + bf16 予測", 0.43708, 0.585, "283 分", "exp022〜", ""),
     ("bge-reranker-v2-m3（2 つの種の平均）", "XLM-RoBERTa", "5.7 億 ×2", "タイトル + 説明文（256）", "同上", 0.43407, N, "+4.7 時間", "exp025〜", "種の相関 0.964"),
+    ("mxbai-rerank-base-v1", "DeBERTa-v3", "1.8 億", "タイトル（128）", "transformers 4.49 の別環境。バッチ 16 × 2", 0.43951, N, "1 時間", "exp030", "DeBERTa（タイトル + 説明文）との相関 0.945"),
     ("mxbai-rerank-base-v1", "DeBERTa-v3", "1.8 億", "タイトル + 説明文（256）", "transformers 4.49 の別環境。バッチ 16 × 2", 0.43702, N, "7 時間", "exp029", "transformers 5.x では NaN。ほかのスコアとの相関 0.88〜0.92"),
     ("（学習前）mxbai-rerank-base-v1", "DeBERTa-v3", "1.8 億", "タイトル", "ファインチューニングなし", N, 0.433, "51 分（採点のみ）", "exp014〜", "参考"),
 ]
