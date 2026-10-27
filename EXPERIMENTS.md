@@ -5,7 +5,7 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 - タスク：検索語と商品のペアに対する関連度 `relevance`（1〜3）を予測する
 - 評価指標：RMSE
 - 参考：全行を train の平均値（2.38）で予測した場合の RMSE は 0.53398
-- 振り返り用の一覧：[experiments_summary.xlsx](experiments_summary.xlsx)（exp001〜exp030、作成は `scripts/make_experiments_summary.py`）
+- 振り返り用の一覧：[experiments_summary.xlsx](experiments_summary.xlsx)（exp001〜exp031、作成は `scripts/make_experiments_summary.py`）
 
 ## 結果一覧
 
@@ -47,6 +47,8 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 | exp029（数値だけ） | 2026-10-27 | 同上で、数値の特徴量 84 列だけ（参考） | 0.41547 | 未提出 | `output/exp029/submission_num.csv` |
 | exp030（全部の列） | 2026-10-28 | exp029 ＋ ファインチューニングした DeBERTa（検索語 × タイトル）のスコア | 0.41776 | 未提出 | `output/exp030/submission_all.csv` |
 | exp030（数値だけ） | 2026-10-28 | 同上で、数値の特徴量 88 列だけ（参考） | 0.41521 | 未提出 | `output/exp030/submission_num.csv` |
+| exp031（全部の列） | 2026-10-28 | exp029 ＋ ファインチューニングした ModernBERT（gte-reranker-modernbert-base、検索語 × タイトル + 説明文）のスコア | 0.41743 | 未提出 | `output/exp031/submission_all.csv` |
+| exp031（数値だけ） | 2026-10-28 | 同上で、数値の特徴量 88 列だけ（参考） | 0.41496 | 未提出 | `output/exp031/submission_num.csv` |
 
 ## 共通の前提
 
@@ -2091,4 +2093,52 @@ exp029 で、系統の違う DeBERTa（検索語 × タイトル + 説明文）�
 
 - DeBERTa は入力がタイトルだけでも単独で強く、タイトル版では今までで最も良い
 - ただし、exp029 の DeBERTa（タイトル + 説明文）との相関が 0.945 と高く、LightGBM の CV の改善は 0.0004 と小さい（exp029 の 0.0020 の 5 分の 1）。同じ系統のモデルを入力だけ変えて重ねた形なので、exp025・exp026（種の平均）と同じく LB には効きにくい可能性がある。採否は Public LB で判断する
+
+## exp031：別系統のリランカー（1）ModernBERT（gte-reranker-modernbert-base）のファインチューニング
+
+### 目的
+
+exp029 で、系統の違うモデル（DeBERTa）を加えると、CV 以上に LB が改善した。さらに別の系統のリランカーを加えて、同じ効果が得られるかを確かめる。1 つ目は、2024 年に出た新しい系統の ModernBERT をもとにしたリランカー gte-reranker-modernbert-base（Alibaba、1.5 億パラメータ）。軽く、今の環境（`.venv-gpu`、transformers 5.20）でそのまま学習できる。
+
+### 方法
+
+- [exp/exp031_pipeline.sh](exp/exp031_pipeline.sh)（exp031〜033 をまとめて独立したプロセスとして実行）
+- 設定は exp029 と同じ（bf16、2 エポック、学習率 2e-5、バッチ 16 × 2）。入力は検索語 × タイトル + 説明文（最大 256 トークン）。入力データ（fold の分け方を含む）は exp020 と同じ
+- 結果は `data/processed/ft_ce_gte_modernbert_title_desc/`
+- [exp/exp031_build_features.py](exp/exp031_build_features.py)：exp029 の特徴量に `ft_ce_modernbert_title_desc` と、その同じ検索語の中での相対値 3 つを加える（数値の特徴量 84 → 88 列。test は fold ごとにそろえる）。exp032・exp033 でも使えるよう、加えるモデルを実験ごとに指定できるようにした
+- [exp/exp031_run.py](exp/exp031_run.py)：LightGBM 単体（全部の列 / 参考に数値だけ）。パラメータは exp029 と同じ
+- 比較のため、exp030（DeBERTa タイトル版）は加えず、exp029 に ModernBERT だけを加えた
+- 所要時間：**2 時間 40 分**（1 fold あたり学習 約 23 分 + test の予測 約 9 分）。GPU のメモリは最大 4.9GB
+
+### 結果
+
+**ファインチューニングしたモデル単独（OOF の RMSE、検索語 × タイトル + 説明文）**
+
+| fold | ModernBERT（1.5 億） | DeBERTa（1.8 億） | v2-m3（5.7 億、種 1） |
+|---|---|---|---|
+| 0 | 0.43553 | 0.43529 | 0.43425 |
+| 1 | 0.43528 | 0.43750 | 0.43462 |
+| 2 | 0.43847 | 0.43848 | 0.43916 |
+| 3 | 0.43088 | 0.43179 | 0.43751 |
+| 4 | 0.43988 | 0.44199 | 0.43983 |
+| **全体** | **0.43602** | 0.43702 | 0.43708 |
+
+予測の相関：v2-m3 タイトル + 説明文 0.925、DeBERTa タイトル + 説明文 0.906、v2-m3 タイトル 0.901、bge-reranker-base タイトル + 説明文 0.894、タイトル 0.867
+
+**LightGBM 単体**
+
+| | CV RMSE | 重み付き CV | Private LB | Public LB |
+|---|---|---|---|---|
+| **全部の列（`submission_all.csv`）** | **0.41743** | 0.41845 | 未提出 | 未提出 |
+| 数値だけ（`submission_num.csv`、参考） | 0.41496 | 0.41596 | 未提出 | 未提出 |
+| （参考）exp030 全部の列（exp029 ＋ DeBERTa タイトル） | 0.41776 | 0.41878 | 未提出 | 未提出 |
+| （参考）exp029 全部の列 | 0.41812 | 0.41913 | 0.42011 | 0.42207 |
+
+商品の新しさの帯ごとの RMSE（全部の列）：100k〜150k 0.41145（exp029 0.41218）、150k〜180k 0.41871（0.41953）、180k〜195k 0.43978（0.44019）、195k〜206k 0.43570（0.43621）。すべての帯で改善
+
+### 考察
+
+- ModernBERT は、1.5 億パラメータで単独の精度が今までで最も良い（v2-m3 の 5.7 億、DeBERTa の 1.8 億より良い）。学習も 1 fold 約 32 分と速い
+- ほかのスコアとの相関は 0.87〜0.93 で、DeBERTa（0.88〜0.92）と同じくらい。LightGBM の CV の改善は 0.0007 で、exp029 の DeBERTa（0.0020）より小さいが、exp030（DeBERTa タイトル版、0.0004）より大きい
+- 系統の違うモデルの追加なので、exp029 と同じく LB でも効くかどうかが見どころ。採否は Public LB で判断する
 

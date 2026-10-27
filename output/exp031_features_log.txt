@@ -1,0 +1,5 @@
+2026-10-28 03:15:43 ft_ce_modernbert_title_desc: standalone OOF rmse 0.43602, pearson 0.5816
+2026-10-28 03:15:47 correlation of OOF scores:
+                             ft_ce_modernbert_title_desc  ft_ce_title  ft_ce_title_desc  ft_ce_large_title  ft_ce_large_title_desc  ft_ce_deberta_title_desc
+ft_ce_modernbert_title_desc                          1.0        0.867             0.894              0.901                   0.925                     0.906
+2026-10-28 03:16:11 saved: C:\kaggle_homedepo\data\features\exp031 (n_dense 88)

@@ -78,6 +78,8 @@ rows = [
     ("exp029_num", "2026-10-27", "特徴量選択", "同上（数値の特徴量 84 列だけ、参考）", "exp029_all", 0.41547, N, N, "参考", "未提出", "output/exp029/submission_num.csv"),
     ("exp030_all", "2026-10-28", "ファインチューニング", "＋ ファインチューニングした DeBERTa（検索語 × タイトル）", "exp029_all", 0.41776, N, N, "LB 待ち", "単独 0.43951 はタイトル版で最良。ただし DeBERTa（タイトル + 説明文）との相関 0.945 で、CV の上乗せは −0.0004 と小さい。学習は 1 時間", "output/exp030/submission_all.csv"),
     ("exp030_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 88 列だけ、参考）", "exp030_all", 0.41521, N, N, "参考", "未提出", "output/exp030/submission_num.csv"),
+    ("exp031_all", "2026-10-28", "ファインチューニング", "exp029 ＋ ファインチューニングした ModernBERT（gte-reranker-modernbert-base、タイトル + 説明文）", "exp029_all", 0.41743, N, N, "LB 待ち", "別系統のリランカー。単独 0.43602 は全モデルで最良（1.5 億パラメータ）。ほかとの相関 0.87〜0.93。学習は 2 時間 40 分", "output/exp031/submission_all.csv"),
+    ("exp031_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 88 列だけ、参考）", "exp031_all", 0.41496, N, N, "参考", "未提出", "output/exp031/submission_num.csv"),
 ]
 first = 2
 for i, r in enumerate(rows):
@@ -123,7 +125,7 @@ ov = wb.create_sheet("概要", 0)
 ov.column_dimensions["A"].width = 26
 ov.column_dimensions["B"].width = 95
 items = [
-    ("Home Depot Product Search Relevance：実験の振り返り（exp001〜exp030）", None, "title"),
+    ("Home Depot Product Search Relevance：実験の振り返り（exp001〜exp031）", None, "title"),
     ("タスク", "検索語と商品のペアの関連度 relevance（1〜3、複数人の評価の平均）を予測する。評価指標は RMSE", None),
     ("期間", "2026-10-13 〜 2026-10-28", None),
     ("現在のベスト", "exp029_all：LightGBM 単体（全部の列）。CV 0.41812 / Private LB 0.42011 / Public LB 0.42207", "best"),
@@ -173,6 +175,7 @@ ftrows = [
     ("bge-reranker-v2-m3（2 つの種の平均）", "XLM-RoBERTa", "5.7 億 ×2", "タイトル + 説明文（256）", "同上", 0.43407, N, "+4.7 時間", "exp025〜", "種の相関 0.964"),
     ("mxbai-rerank-base-v1", "DeBERTa-v3", "1.8 億", "タイトル（128）", "transformers 4.49 の別環境。バッチ 16 × 2", 0.43951, N, "1 時間", "exp030", "DeBERTa（タイトル + 説明文）との相関 0.945"),
     ("mxbai-rerank-base-v1", "DeBERTa-v3", "1.8 億", "タイトル + 説明文（256）", "transformers 4.49 の別環境。バッチ 16 × 2", 0.43702, N, "7 時間", "exp029", "transformers 5.x では NaN。ほかのスコアとの相関 0.88〜0.92"),
+    ("gte-reranker-modernbert-base", "ModernBERT", "1.5 億", "タイトル + 説明文（256）", "—（.venv-gpu のまま）", 0.43602, 0.582, "2 時間 40 分", "exp031", "ほかのスコアとの相関 0.87〜0.93"),
     ("（学習前）mxbai-rerank-base-v1", "DeBERTa-v3", "1.8 億", "タイトル", "ファインチューニングなし", N, 0.433, "51 分（採点のみ）", "exp014〜", "参考"),
 ]
 for i, rowv in enumerate(ftrows, 2):

@@ -18,6 +18,24 @@ from sentence_transformers.cross_encoder.losses import BinaryCrossEntropyLoss
 from transformers import TrainerCallback
 
 
+# Qwen3-Reranker の入力の形（モデルカードのもの）。この形で "yes" と答える確からしさをスコアとして学習済み
+QWEN3_PREFIX = ('<|im_start|>system\nJudge whether the Document meets the requirements based on the Query and the Instruct '
+                'provided. Note that the answer can only be "yes" or "no".<|im_end|>\n<|im_start|>user\n'
+                '<Instruct>: Given a web search query, retrieve relevant passages that answer the query\n<Query>: ')
+QWEN3_SUFFIX = "<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+
+
+def apply_qwen3_template(rows, tokenizer, max_length):
+    """検索語と文書を Qwen3-Reranker の形に包む。長い文書は、末尾の形の部分が切れないように、
+    文書の本文だけを先にトークン数で切り詰めてから包む"""
+    queries = [QWEN3_PREFIX + r[0] + "\n" for r in rows]
+    q_len = [len(x) for x in tokenizer(queries, add_special_tokens=False)["input_ids"]]
+    doc_ids = tokenizer([r[1] for r in rows], add_special_tokens=False)["input_ids"]
+    fixed = len(tokenizer("<Document>: " + QWEN3_SUFFIX, add_special_tokens=False)["input_ids"]) + 2
+    docs = [tokenizer.decode(ids[: max(max_length - n - fixed, 8)]) for ids, n in zip(doc_ids, q_len)]
+    return [[q, "<Document>: " + d + QWEN3_SUFFIX, *r[2:]] for q, d, r in zip(queries, docs, rows)]
+
+
 class ProgressCallback(TrainerCallback):
     """一定のステップごとに、学習の損失と経過時間を出す"""
 
@@ -51,6 +69,7 @@ def main():
     parser.add_argument("--optim", default="adamw_torch", help="最適化手法（例: adamw_torch, adamw_bnb_8bit, adafactor）")
     parser.add_argument("--warmup-ratio", type=float, default=0.1)
     parser.add_argument("--attn", default=None, help="アテンションの実装（例: eager）。None ならライブラリの既定")
+    parser.add_argument("--template", choices=["qwen3"], default=None, help="入力をモデル固有の形に包む（Qwen3-Reranker 用）")
     args = parser.parse_args()
 
     out_dir = Path(args.out_dir)
@@ -62,16 +81,20 @@ def main():
     data = json.loads(Path(args.data).read_text(encoding="utf-8"))
     tr = [r for r in data["train"] if r[3] != args.fold]
     va = [r for r in data["train"] if r[3] == args.fold]
-    train_ds = Dataset.from_dict({"query": [r[0] for r in tr], "doc": [r[1] for r in tr],
-                                  "label": [float(r[2]) for r in tr]})
     print(f"device={torch.cuda.get_device_name(0)} fold={args.fold} train={len(tr)} valid={len(va)} "
           f"test={len(data['test'])}", flush=True)
 
     model_kwargs = {"attn_implementation": args.attn} if args.attn else {}
     model = CrossEncoder(args.model, num_labels=1, max_length=args.max_length, device="cuda", model_kwargs=model_kwargs)
     hf_model = getattr(model, "model", None) or model[0].auto_model
+    if args.template == "qwen3":
+        tr, va, data["test"] = (apply_qwen3_template(rows, model.tokenizer, args.max_length) for rows in (tr, va, data["test"]))
+    train_ds = Dataset.from_dict({"query": [r[0] for r in tr], "doc": [r[1] for r in tr],
+                                  "label": [float(r[2]) for r in tr]})
     if args.freeze_embeddings:
-        for param in hf_model.base_model.embeddings.parameters():
+        # エンコーダ（BERT 系）は embeddings、デコーダ（Qwen など）は embed_tokens が単語の埋め込み層
+        emb = getattr(hf_model.base_model, "embeddings", None) or hf_model.base_model.embed_tokens
+        for param in emb.parameters():
             param.requires_grad = False
     n_train = sum(p.numel() for p in hf_model.parameters() if p.requires_grad)
     n_all = sum(p.numel() for p in hf_model.parameters())
