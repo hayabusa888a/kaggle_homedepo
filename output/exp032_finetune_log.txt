@@ -1,0 +1,60 @@
+device=NVIDIA GeForce RTX 5070 Laptop GPU fold=0 train=59253 valid=14814 test=164309
+trainable params: 440M / 596M
+predict 20000/164309
+predict 40000/164309
+predict 60000/164309
+predict 80000/164309
+predict 100000/164309
+predict 120000/164309
+predict 140000/164309
+predict 160000/164309
+predict 164309/164309
+fold 0: done, standalone rmse=0.44438 pred_std=0.1626 pearson=0.5673 gpu_mem_peak=5.9GB
+device=NVIDIA GeForce RTX 5070 Laptop GPU fold=1 train=59253 valid=14814 test=164309
+trainable params: 440M / 596M
+predict 20000/164309
+predict 40000/164309
+predict 60000/164309
+predict 80000/164309
+predict 100000/164309
+predict 120000/164309
+predict 140000/164309
+predict 160000/164309
+predict 164309/164309
+fold 1: done, standalone rmse=0.44465 pred_std=0.1563 pearson=0.5561 gpu_mem_peak=5.9GB
+device=NVIDIA GeForce RTX 5070 Laptop GPU fold=2 train=59254 valid=14813 test=164309
+trainable params: 440M / 596M
+predict 20000/164309
+predict 40000/164309
+predict 60000/164309
+predict 80000/164309
+predict 100000/164309
+predict 120000/164309
+predict 140000/164309
+predict 160000/164309
+predict 164309/164309
+fold 2: done, standalone rmse=0.44319 pred_std=0.1608 pearson=0.5584 gpu_mem_peak=6.0GB
+device=NVIDIA GeForce RTX 5070 Laptop GPU fold=3 train=59254 valid=14813 test=164309
+trainable params: 440M / 596M
+predict 20000/164309
+predict 40000/164309
+predict 60000/164309
+predict 80000/164309
+predict 100000/164309
+predict 120000/164309
+predict 140000/164309
+predict 160000/164309
+predict 164309/164309
+fold 3: done, standalone rmse=0.43690 pred_std=0.1611 pearson=0.5529 gpu_mem_peak=6.0GB
+device=NVIDIA GeForce RTX 5070 Laptop GPU fold=4 train=59254 valid=14813 test=164309
+trainable params: 440M / 596M
+predict 20000/164309
+predict 40000/164309
+predict 60000/164309
+predict 80000/164309
+predict 100000/164309
+predict 120000/164309
+predict 140000/164309
+predict 160000/164309
+predict 164309/164309
+fold 4: done, standalone rmse=0.44514 pred_std=0.1620 pearson=0.5702 gpu_mem_peak=5.9GB

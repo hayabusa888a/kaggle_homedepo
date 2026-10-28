@@ -58,3 +58,8 @@ predict 140000/165859
 predict 160000/165859
 predict 165859/165859
 fold 4: done, standalone rmse=0.43988 pred_std=0.1729 pearson=0.5852 gpu_mem_peak=4.9GB
+fold 0: cached
+fold 1: cached
+fold 2: cached
+fold 3: cached
+fold 4: cached

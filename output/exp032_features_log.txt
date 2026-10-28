@@ -1,0 +1,5 @@
+2026-10-28 09:36:05 ft_ce_qwen3_title: standalone OOF rmse 0.44286, pearson 0.5606
+2026-10-28 09:36:09 correlation of OOF scores:
+                   ft_ce_qwen3_title  ft_ce_title  ft_ce_title_desc  ft_ce_large_title  ft_ce_large_title_desc  ft_ce_deberta_title_desc
+ft_ce_qwen3_title                1.0        0.879             0.867              0.903                   0.885                     0.858
+2026-10-28 09:36:32 saved: C:\kaggle_homedepo\data\features\exp032 (n_dense 88)

@@ -5,7 +5,7 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 - タスク：検索語と商品のペアに対する関連度 `relevance`（1〜3）を予測する
 - 評価指標：RMSE
 - 参考：全行を train の平均値（2.38）で予測した場合の RMSE は 0.53398
-- 振り返り用の一覧：[experiments_summary.xlsx](experiments_summary.xlsx)（exp001〜exp031、作成は `scripts/make_experiments_summary.py`）
+- 振り返り用の一覧：[experiments_summary.xlsx](experiments_summary.xlsx)（exp001〜exp032、作成は `scripts/make_experiments_summary.py`）
 
 ## 結果一覧
 
@@ -49,6 +49,8 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 | exp030（数値だけ） | 2026-10-28 | 同上で、数値の特徴量 88 列だけ（参考） | 0.41521 | 未提出 | `output/exp030/submission_num.csv` |
 | exp031（全部の列） | 2026-10-28 | exp029 ＋ ファインチューニングした ModernBERT（gte-reranker-modernbert-base、検索語 × タイトル + 説明文）のスコア | 0.41743 | **0.41990** | `output/exp031/submission_all.csv` |
 | exp031（数値だけ） | 2026-10-28 | 同上で、数値の特徴量 88 列だけ（参考） | 0.41496 | 未提出 | `output/exp031/submission_num.csv` |
+| exp032（全部の列） | 2026-10-28 | exp029 ＋ ファインチューニングした Qwen3-Reranker-0.6B（検索語 × タイトル）のスコア | 0.41759 | 未提出 | `output/exp032/submission_all.csv` |
+| exp032（数値だけ） | 2026-10-28 | 同上で、数値の特徴量 88 列だけ（参考） | 0.41510 | 未提出 | `output/exp032/submission_num.csv` |
 
 ## 共通の前提
 
@@ -2144,4 +2146,56 @@ exp029 で、系統の違うモデル（DeBERTa）を加えると、CV 以上に
 - 系統の違うモデルの追加なので、exp029 と同じく LB でも効くかどうかが見どころ。採否は Public LB で判断する
 - **Private LB 0.41990、Public LB 0.42184 で、exp029（0.42011 / 0.42207）から Private で 0.00021、Public で 0.00023 改善した。これまでのベスト**。CV の改善（0.0007）の 3 分の 1 程度で、exp029（DeBERTa、CV −0.0020 に対し LB −0.0024）ほどの効果はなかった。系統の違うモデルを加える効果は、加えるほど小さくなっていくと考えられる
 - exp030（DeBERTa タイトル版、Public −0.00009）より ModernBERT（Public −0.00023）のほうが効いた。同じ系統を重ねるより別の系統を加えるほうが効く、という傾向とも合う
+
+## exp032：別系統のリランカー（2）Qwen3-Reranker-0.6B のファインチューニング
+
+### 目的
+
+別系統のリランカーの 2 つ目として、LLM（デコーダ）系の Qwen3-Reranker-0.6B を加える。今までのモデルはすべてエンコーダ（BERT 系）なので、性質が最も違い、予測の多様性が期待できる。
+
+### 方法
+
+- モデル：`tomaarsen/Qwen3-Reranker-0.6B-seq-cls`（Qwen3-Reranker-0.6B を、sentence-transformers の CrossEncoder で使えるよう分類の形に変換したもの、6 億パラメータ）。今の環境（`.venv-gpu`）でそのまま読み込めた
+- **入力の形**：このモデルは、指示文つきの決まった形（`<Instruct>: ... <Query>: ... <Document>: ...` をチャットの形で包んだもの）で学習されている。素の入力では、学習前のスコアが逆転した（「cordless drill」に対し、ドリルの商品 0.14、無関係な鏡 0.33）。決まった形で包むと 0.998 / 0.00003 と正しくなったので、この形で学習・予測する。長い文書を切り詰めると末尾の形の部分が切れるので、文書の本文だけを先にトークン数で切り詰めてから包む（[scripts/finetune_ce.py](scripts/finetune_ce.py) の `--template qwen3`）
+- 入力：検索語 × タイトル（形の部分を含めて最大 160 トークン。最長でも 139 トークンで、切り詰めはない）。入力データ（fold の分け方を含む）は exp018 と同じ。6 億パラメータで時間がかかるので、タイトル + 説明文は見送った
+- 設定：bf16、2 エポック、学習率 2e-5、バッチ 16 × 2。単語の埋め込み層（1.6 億）を固定、8bit AdamW、gradient checkpointing（途中の計算結果を保存せず計算し直す）
+  - 最初は gradient checkpointing なしで始めたが、GPU のメモリが 7.8GB と上限近くまで使われ、消費電力が 30W 程度しか出ず（通常は 110W）、メモリのあふれで大幅に遅くなっていた。いったん止めて、gradient checkpointing ありに変えた（メモリ 6.0GB、110W）
+- 結果は `data/processed/ft_ce_qwen3_06b_title/`
+- [exp/exp031_build_features.py](exp/exp031_build_features.py) `exp032`：exp029 の特徴量に `ft_ce_qwen3_title` と相対値 3 つを加える（数値の特徴量 84 → 88 列）
+- [exp/exp031_run.py](exp/exp031_run.py) `exp032`：LightGBM 単体。パラメータは exp029 と同じ
+- 所要時間：**6 時間 5 分**（1 fold あたり学習 約 54 分 + test の予測 約 15 分）
+
+### 結果
+
+**ファインチューニングしたモデル単独（OOF の RMSE、検索語 × タイトル）**
+
+| fold | Qwen3（6 億） | DeBERTa（1.8 億） |
+|---|---|---|
+| 0 | 0.44438 | 0.44168 |
+| 1 | 0.44465 | 0.43804 |
+| 2 | 0.44319 | 0.44226 |
+| 3 | 0.43690 | 0.43174 |
+| 4 | 0.44514 | 0.44373 |
+| **全体** | **0.44286** | 0.43951 |
+
+タイトル版どうしでは、DeBERTa（0.43951）・v2-m3（0.44113）より弱く、bge-reranker-base（0.44997）より良い
+
+予測の相関：v2-m3 タイトル 0.903、v2-m3 タイトル + 説明文 0.885、bge-reranker-base タイトル 0.879、タイトル + 説明文 0.867、DeBERTa タイトル + 説明文 **0.858**（今までのファインチューニングのモデルどうしの相関で最も低い）
+
+**LightGBM 単体**
+
+| | CV RMSE | 重み付き CV | Private LB | Public LB |
+|---|---|---|---|---|
+| **全部の列（`submission_all.csv`）** | **0.41759** | 0.41862 | 未提出 | 未提出 |
+| 数値だけ（`submission_num.csv`、参考） | 0.41510 | 0.41612 | 未提出 | 未提出 |
+| （参考）exp031 全部の列（exp029 ＋ ModernBERT） | 0.41743 | 0.41845 | 0.41990 | 0.42184 |
+| （参考）exp029 全部の列 | 0.41812 | 0.41913 | 0.42011 | 0.42207 |
+
+商品の新しさの帯ごとの RMSE（全部の列）：100k〜150k 0.41161（exp029 0.41218）、150k〜180k 0.41890（0.41953）、180k〜195k 0.44007（0.44019）、195k〜206k 0.43572（0.43621）。すべての帯で改善
+
+### 考察
+
+- Qwen3 は単独では弱いが、ほかのスコアとの相関が最も低く、LightGBM の CV の改善（0.0005）は、単独で強い ModernBERT（0.0007）に近い。性質の違いが効いている
+- LLM 系で 6 億パラメータあるが、入力の形を合わせ、メモリを抑えれば 8GB の GPU でも学習できた。時間は ModernBERT の 2 倍以上かかった
+- 採否は Public LB で判断する
 

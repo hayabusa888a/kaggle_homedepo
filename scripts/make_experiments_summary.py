@@ -80,6 +80,8 @@ rows = [
     ("exp030_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 88 列だけ、参考）", "exp030_all", 0.41521, N, N, "参考", "未提出", "output/exp030/submission_num.csv"),
     ("exp031_all", "2026-10-28", "ファインチューニング", "exp029 ＋ ファインチューニングした ModernBERT（gte-reranker-modernbert-base、タイトル + 説明文）", "exp029_all", 0.41743, 0.41990, 0.42184, "採用（ベスト）", "LB で Public −0.00023、新しいベスト（exp030 とは別に exp029 に加えたもの）。別系統のリランカー。単独 0.43602 は全モデルで最良（1.5 億パラメータ）。ほかとの相関 0.87〜0.93。学習は 2 時間 40 分", "output/exp031/submission_all.csv"),
     ("exp031_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 88 列だけ、参考）", "exp031_all", 0.41496, N, N, "参考", "未提出", "output/exp031/submission_num.csv"),
+    ("exp032_all", "2026-10-28", "ファインチューニング", "exp029 ＋ ファインチューニングした Qwen3-Reranker-0.6B（LLM 系、タイトル）", "exp029_all", 0.41759, N, N, "LB 待ち", "単独 0.44286 と弱めだが、ほかとの相関が最も低い（0.86〜0.90）。モデル固有の入力の形が必要。gradient checkpointing なしではメモリがあふれ 30W に。学習は 6 時間", "output/exp032/submission_all.csv"),
+    ("exp032_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 88 列だけ、参考）", "exp032_all", 0.41510, N, N, "参考", "未提出", "output/exp032/submission_num.csv"),
 ]
 first = 2
 for i, r in enumerate(rows):
@@ -125,7 +127,7 @@ ov = wb.create_sheet("概要", 0)
 ov.column_dimensions["A"].width = 26
 ov.column_dimensions["B"].width = 95
 items = [
-    ("Home Depot Product Search Relevance：実験の振り返り（exp001〜exp031）", None, "title"),
+    ("Home Depot Product Search Relevance：実験の振り返り（exp001〜exp032）", None, "title"),
     ("タスク", "検索語と商品のペアの関連度 relevance（1〜3、複数人の評価の平均）を予測する。評価指標は RMSE", None),
     ("期間", "2026-10-13 〜 2026-10-28", None),
     ("現在のベスト", "exp031_all：LightGBM 単体（全部の列）。CV 0.41743 / Private LB 0.41990 / Public LB 0.42184", "best"),
@@ -176,6 +178,7 @@ ftrows = [
     ("mxbai-rerank-base-v1", "DeBERTa-v3", "1.8 億", "タイトル（128）", "transformers 4.49 の別環境。バッチ 16 × 2", 0.43951, N, "1 時間", "exp030", "DeBERTa（タイトル + 説明文）との相関 0.945"),
     ("mxbai-rerank-base-v1", "DeBERTa-v3", "1.8 億", "タイトル + 説明文（256）", "transformers 4.49 の別環境。バッチ 16 × 2", 0.43702, N, "7 時間", "exp029", "transformers 5.x では NaN。ほかのスコアとの相関 0.88〜0.92"),
     ("gte-reranker-modernbert-base", "ModernBERT", "1.5 億", "タイトル + 説明文（256）", "—（.venv-gpu のまま）", 0.43602, 0.582, "2 時間 40 分", "exp031", "ほかのスコアとの相関 0.87〜0.93"),
+    ("Qwen3-Reranker-0.6B（seq-cls）", "Qwen3（LLM）", "6 億", "タイトル（160、指示文の形で包む）", "埋め込み層を固定 + 8bit AdamW + gradient checkpointing", 0.44286, 0.561, "6 時間", "exp032", "ほかのスコアとの相関 0.86〜0.90（最も低い）"),
     ("（学習前）mxbai-rerank-base-v1", "DeBERTa-v3", "1.8 億", "タイトル", "ファインチューニングなし", N, 0.433, "51 分（採点のみ）", "exp014〜", "参考"),
 ]
 for i, rowv in enumerate(ftrows, 2):
