@@ -1,0 +1,9 @@
+2026-10-28 09:39:44 ft_ce_deberta_title: standalone OOF rmse 0.43951, pearson 0.5835
+2026-10-28 09:39:45 ft_ce_modernbert_title_desc: standalone OOF rmse 0.43602, pearson 0.5816
+2026-10-28 09:39:45 ft_ce_qwen3_title: standalone OOF rmse 0.44286, pearson 0.5606
+2026-10-28 09:39:49 correlation of OOF scores:
+                             ft_ce_deberta_title  ft_ce_modernbert_title_desc  ft_ce_qwen3_title  ft_ce_title  ft_ce_title_desc  ft_ce_large_title  ft_ce_large_title_desc  ft_ce_deberta_title_desc
+ft_ce_deberta_title                        1.000                        0.890              0.873        0.861             0.864              0.908                   0.901                     0.945
+ft_ce_modernbert_title_desc                0.890                        1.000              0.876        0.867             0.894              0.901                   0.925                     0.906
+ft_ce_qwen3_title                          0.873                        0.876              1.000        0.879             0.867              0.903                   0.885                     0.858
+2026-10-28 09:40:08 saved: C:\kaggle_homedepo\data\features\exp033 (n_dense 96)

@@ -80,8 +80,10 @@ rows = [
     ("exp030_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 88 列だけ、参考）", "exp030_all", 0.41521, N, N, "参考", "未提出", "output/exp030/submission_num.csv"),
     ("exp031_all", "2026-10-28", "ファインチューニング", "exp029 ＋ ファインチューニングした ModernBERT（gte-reranker-modernbert-base、タイトル + 説明文）", "exp029_all", 0.41743, 0.41990, 0.42184, "採用（ベスト）", "LB で Public −0.00023、新しいベスト（exp030 とは別に exp029 に加えたもの）。別系統のリランカー。単独 0.43602 は全モデルで最良（1.5 億パラメータ）。ほかとの相関 0.87〜0.93。学習は 2 時間 40 分", "output/exp031/submission_all.csv"),
     ("exp031_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 88 列だけ、参考）", "exp031_all", 0.41496, N, N, "参考", "未提出", "output/exp031/submission_num.csv"),
-    ("exp032_all", "2026-10-28", "ファインチューニング", "exp029 ＋ ファインチューニングした Qwen3-Reranker-0.6B（LLM 系、タイトル）", "exp029_all", 0.41759, N, N, "LB 待ち", "単独 0.44286 と弱めだが、ほかとの相関が最も低い（0.86〜0.90）。モデル固有の入力の形が必要。gradient checkpointing なしではメモリがあふれ 30W に。学習は 6 時間", "output/exp032/submission_all.csv"),
+    ("exp032_all", "2026-10-28", "ファインチューニング", "exp029 ＋ ファインチューニングした Qwen3-Reranker-0.6B（LLM 系、タイトル）", "exp029_all", 0.41759, 0.42004, 0.42201, "採用", "LB はごくわずかに改善（Public −0.00006）。CV の改善ほど LB には効かず。単独 0.44286 と弱めだが、ほかとの相関が最も低い（0.86〜0.90）。モデル固有の入力の形が必要。gradient checkpointing なしではメモリがあふれ 30W に。学習は 6 時間", "output/exp032/submission_all.csv"),
     ("exp032_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 88 列だけ、参考）", "exp032_all", 0.41510, N, N, "参考", "未提出", "output/exp032/submission_num.csv"),
+    ("exp033_all", "2026-10-28", "ファインチューニング", "exp029 ＋ DeBERTa（タイトル）・ModernBERT・Qwen3 の 3 つを全部", "exp029_all", 0.41705, N, N, "LB 待ち", "1 つずつの CV の改善の合計（0.0016）の 7 割（0.0011）。新しい学習なし", "output/exp033/submission_all.csv"),
+    ("exp033_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 96 列だけ、参考）", "exp033_all", 0.41456, N, N, "参考", "未提出", "output/exp033/submission_num.csv"),
 ]
 first = 2
 for i, r in enumerate(rows):
@@ -127,7 +129,7 @@ ov = wb.create_sheet("概要", 0)
 ov.column_dimensions["A"].width = 26
 ov.column_dimensions["B"].width = 95
 items = [
-    ("Home Depot Product Search Relevance：実験の振り返り（exp001〜exp032）", None, "title"),
+    ("Home Depot Product Search Relevance：実験の振り返り（exp001〜exp033）", None, "title"),
     ("タスク", "検索語と商品のペアの関連度 relevance（1〜3、複数人の評価の平均）を予測する。評価指標は RMSE", None),
     ("期間", "2026-10-13 〜 2026-10-28", None),
     ("現在のベスト", "exp031_all：LightGBM 単体（全部の列）。CV 0.41743 / Private LB 0.41990 / Public LB 0.42184", "best"),

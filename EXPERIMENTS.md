@@ -5,7 +5,7 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 - タスク：検索語と商品のペアに対する関連度 `relevance`（1〜3）を予測する
 - 評価指標：RMSE
 - 参考：全行を train の平均値（2.38）で予測した場合の RMSE は 0.53398
-- 振り返り用の一覧：[experiments_summary.xlsx](experiments_summary.xlsx)（exp001〜exp032、作成は `scripts/make_experiments_summary.py`）
+- 振り返り用の一覧：[experiments_summary.xlsx](experiments_summary.xlsx)（exp001〜exp033、作成は `scripts/make_experiments_summary.py`）
 
 ## 結果一覧
 
@@ -49,8 +49,10 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 | exp030（数値だけ） | 2026-10-28 | 同上で、数値の特徴量 88 列だけ（参考） | 0.41521 | 未提出 | `output/exp030/submission_num.csv` |
 | exp031（全部の列） | 2026-10-28 | exp029 ＋ ファインチューニングした ModernBERT（gte-reranker-modernbert-base、検索語 × タイトル + 説明文）のスコア | 0.41743 | **0.41990** | `output/exp031/submission_all.csv` |
 | exp031（数値だけ） | 2026-10-28 | 同上で、数値の特徴量 88 列だけ（参考） | 0.41496 | 未提出 | `output/exp031/submission_num.csv` |
-| exp032（全部の列） | 2026-10-28 | exp029 ＋ ファインチューニングした Qwen3-Reranker-0.6B（検索語 × タイトル）のスコア | 0.41759 | 未提出 | `output/exp032/submission_all.csv` |
+| exp032（全部の列） | 2026-10-28 | exp029 ＋ ファインチューニングした Qwen3-Reranker-0.6B（検索語 × タイトル）のスコア | 0.41759 | 0.42004 | `output/exp032/submission_all.csv` |
 | exp032（数値だけ） | 2026-10-28 | 同上で、数値の特徴量 88 列だけ（参考） | 0.41510 | 未提出 | `output/exp032/submission_num.csv` |
+| exp033（全部の列） | 2026-10-28 | exp029 ＋ DeBERTa（タイトル）・ModernBERT・Qwen3 の 3 つのスコアを全部 | 0.41705 | 未提出 | `output/exp033/submission_all.csv` |
+| exp033（数値だけ） | 2026-10-28 | 同上で、数値の特徴量 96 列だけ（参考） | 0.41456 | 未提出 | `output/exp033/submission_num.csv` |
 
 ## 共通の前提
 
@@ -2186,7 +2188,7 @@ exp029 で、系統の違うモデル（DeBERTa）を加えると、CV 以上に
 
 | | CV RMSE | 重み付き CV | Private LB | Public LB |
 |---|---|---|---|---|
-| **全部の列（`submission_all.csv`）** | **0.41759** | 0.41862 | 未提出 | 未提出 |
+| **全部の列（`submission_all.csv`）** | **0.41759** | 0.41862 | **0.42004** | **0.42201** |
 | 数値だけ（`submission_num.csv`、参考） | 0.41510 | 0.41612 | 未提出 | 未提出 |
 | （参考）exp031 全部の列（exp029 ＋ ModernBERT） | 0.41743 | 0.41845 | 0.41990 | 0.42184 |
 | （参考）exp029 全部の列 | 0.41812 | 0.41913 | 0.42011 | 0.42207 |
@@ -2197,5 +2199,38 @@ exp029 で、系統の違うモデル（DeBERTa）を加えると、CV 以上に
 
 - Qwen3 は単独では弱いが、ほかのスコアとの相関が最も低く、LightGBM の CV の改善（0.0005）は、単独で強い ModernBERT（0.0007）に近い。性質の違いが効いている
 - LLM 系で 6 億パラメータあるが、入力の形を合わせ、メモリを抑えれば 8GB の GPU でも学習できた。時間は ModernBERT の 2 倍以上かかった
-- 採否は Public LB で判断する
+- **Private LB 0.42004、Public LB 0.42201 で、exp029（0.42011 / 0.42207）から Private で 0.00007、Public で 0.00006 改善したが、ごくわずか**。CV では ModernBERT に近い改善だったのに、LB では exp031（Public −0.00023）の 4 分の 1 程度で、exp030（DeBERTa タイトル、−0.00009）より小さい
+- 相関が低い（性質が違う）だけでは LB に効くとは限らない。単独で弱いモデルの違いは、test では雑音に近い可能性がある
+
+## exp033：exp030〜exp032 の 3 つのモデルを全部加える
+
+### 目的
+
+exp030（DeBERTa タイトル）・exp031（ModernBERT）・exp032（Qwen3）は、それぞれ exp029 に 1 つずつ加えて効果を切り分けた。3 つとも LB でわずかに改善したので、全部を加えたときの効果を確かめる。
+
+### 方法
+
+- [exp/exp031_build_features.py](exp/exp031_build_features.py) `exp033`：exp029 の特徴量に、`ft_ce_deberta_title`・`ft_ce_modernbert_title_desc`・`ft_ce_qwen3_title` と、それぞれの相対値 3 つを加える（数値の特徴量 84 → 96 列。test は fold ごとにそろえる）
+- [exp/exp031_run.py](exp/exp031_run.py) `exp033`：LightGBM 単体。パラメータは exp029 と同じ
+- 新しい学習はなく、exp030〜032 のファインチューニングの結果を使う（[exp/exp031_pipeline.sh](exp/exp031_pipeline.sh) の最後に実行）
+
+### 結果
+
+**LightGBM 単体**
+
+| | CV RMSE | 重み付き CV | Private LB | Public LB |
+|---|---|---|---|---|
+| **全部の列（`submission_all.csv`）** | **0.41705** | 0.41810 | 未提出 | 未提出 |
+| 数値だけ（`submission_num.csv`、参考） | 0.41456 | 0.41561 | 未提出 | 未提出 |
+| （参考）exp030（＋ DeBERTa タイトル） | 0.41776 | 0.41878 | 0.41998 | 0.42198 |
+| （参考）exp031（＋ ModernBERT） | 0.41743 | 0.41845 | 0.41990 | 0.42184 |
+| （参考）exp032（＋ Qwen3） | 0.41759 | 0.41862 | 0.42004 | 0.42201 |
+| （参考）exp029 | 0.41812 | 0.41913 | 0.42011 | 0.42207 |
+
+商品の新しさの帯ごとの RMSE（全部の列）：100k〜150k 0.41110（exp029 0.41218）、150k〜180k 0.41829（0.41953）、180k〜195k 0.43977（0.44019）、195k〜206k 0.43478（0.43621）
+
+### 考察
+
+- CV は exp029 から 0.0011 改善した。1 つずつ加えたときの改善（0.0004・0.0007・0.0005、合計 0.0016）の 7 割ほどで、3 つの間で情報が一部重なっている
+- 1 つずつの LB の改善は、CV の改善の 1/4〜1/3 程度だった。同じ割合なら、exp033 の LB の改善は 0.0003〜0.0004 程度と見込まれる。採否は Public LB で判断する
 
