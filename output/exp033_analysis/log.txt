@@ -1,0 +1,175 @@
+2026-10-28 13:08:13 CV: exp033 0.41705 / exp026 0.42015
+2026-10-28 13:08:13 pred std: exp033 0.328 / exp026 0.324 / y 0.534
+2026-10-28 13:08:13 1. by true relevance:
+               n   share  y_mean  pred_mean  rmse33  rmse26  err_share    diff
+y_bin                                                                         
+1.00-1.33   5115  0.0691  1.1941     1.9568  0.8035  0.8149     0.2563 -0.0114
+1.67        6785  0.0916  1.6699     2.1128  0.5229  0.5283     0.1440 -0.0055
+2.00       11739  0.1585  1.9998     2.2422  0.3613  0.3615     0.1190 -0.0002
+2.33       16071  0.2170  2.3299     2.3378  0.2750  0.2727     0.0944  0.0023
+2.67       15221  0.2055  2.6698     2.4644  0.3349  0.3358     0.1325 -0.0008
+3.00       19136  0.2584  2.9999     2.6479  0.4134  0.4177     0.2538 -0.0044
+2026-10-28 13:08:13 2a. by number of query words:
+             n   share  y_mean  pred_mean  rmse33  rmse26  err_share    diff
+q_words                                                                     
+0            7  0.0001  1.8557     1.7139  0.5241  0.5134     0.0001  0.0108
+1         4205  0.0568  2.2580     2.2730  0.4988  0.5009     0.0812 -0.0021
+2        17666  0.2385  2.5050     2.5047  0.4186  0.4234     0.2402 -0.0048
+3        24330  0.3285  2.3938     2.3947  0.4120  0.4152     0.3206 -0.0031
+4        15420  0.2082  2.3036     2.3090  0.4160  0.4185     0.2071 -0.0025
+5+       12439  0.1679  2.3214     2.3099  0.3950  0.3966     0.1506 -0.0017
+2026-10-28 13:08:13 2b. by share of query words in title:
+             n   share  y_mean  pred_mean  rmse33  rmse26  err_share    diff
+match                                                                       
+0         5502  0.0743  2.0479     2.0511  0.5267  0.5307     0.1185 -0.0040
+(0,0.5]  20887  0.2820  2.2296     2.2225  0.4406  0.4442     0.3147 -0.0036
+(0.5,1)  22619  0.3054  2.3144     2.3160  0.4104  0.4134     0.2957 -0.0030
+1        25059  0.3383  2.6424     2.6468  0.3733  0.3757     0.2711 -0.0024
+2026-10-28 13:08:13 2c. by product_uid:
+                      n   share  y_mean  pred_mean  rmse33  rmse26  err_share    diff
+uid_bin                                                                              
+(100000, 150000]  45709  0.6171  2.4339     2.4219  0.4111  0.4144     0.5996 -0.0033
+(150000, 180000]  16570  0.2237  2.3438     2.3553  0.4183  0.4211     0.2250 -0.0028
+(180000, 195000]   6927  0.0935  2.2306     2.2657  0.4398  0.4422     0.1040 -0.0024
+(195000, 206650]   4861  0.0656  2.2338     2.2620  0.4348  0.4382     0.0713 -0.0034
+2026-10-28 13:08:13 2d. by number of products per query (train + test):
+                n   share  y_mean  pred_mean  rmse33  rmse26  err_share    diff
+q_size_bin                                                                     
+1-3          3267  0.0441  2.3791     2.3515  0.4281  0.4315     0.0465 -0.0034
+4-6          4973  0.0671  2.3444     2.3386  0.4226  0.4259     0.0689 -0.0034
+7-10        15676  0.2116  2.2640     2.2791  0.4353  0.4383     0.2306 -0.0029
+11+         50151  0.6771  2.4223     2.4203  0.4099  0.4130     0.6540 -0.0031
+2026-10-28 13:08:13 2e. query contains a digit:
+               n   share  y_mean  pred_mean  rmse33  rmse26  err_share    diff
+has_digit                                                                     
+digit      18256  0.2465  2.3228     2.3216  0.4020  0.4040      0.229 -0.0021
+no digit   55811  0.7535  2.4009     2.4016  0.4219  0.4253      0.771 -0.0034
+2026-10-28 13:08:13 3a. by disagreement among 8 fine-tuned scores:
+                   n  share  y_mean  pred_mean  rmse33  rmse26  err_share    diff
+ft_std_bin                                                                       
+q1 (agree)     14814    0.2  2.6883     2.6832  0.3284  0.3293     0.1241 -0.0009
+q2             14813    0.2  2.4416     2.4382  0.3853  0.3874     0.1707 -0.0021
+q3             14813    0.2  2.3169     2.3192  0.4238  0.4260     0.2066 -0.0022
+q4             14813    0.2  2.2480     2.2475  0.4495  0.4523     0.2323 -0.0028
+q5 (disagree)  14814    0.2  2.2133     2.2213  0.4813  0.4879     0.2663 -0.0066
+2026-10-28 13:08:13 3b. standalone rmse of each fine-tuned score and their mean:
+ft_ce_title                    0.44997
+ft_ce_title_desc               0.44534
+ft_ce_large_title              0.43792
+ft_ce_large_title_desc         0.43407
+ft_ce_deberta_title_desc       0.43702
+ft_ce_deberta_title            0.43951
+ft_ce_modernbert_title_desc    0.43602
+ft_ce_qwen3_title              0.44286
+mean of 8                      0.42601
+2026-10-28 13:08:13 3c. correlation with y:
+y                              1.0000
+pred33                         0.6246
+ft_ce_title                    0.5539
+ft_ce_title_desc               0.5669
+ft_ce_large_title              0.5803
+ft_ce_large_title_desc         0.5905
+ft_ce_deberta_title_desc       0.5906
+ft_ce_deberta_title            0.5835
+ft_ce_modernbert_title_desc    0.5816
+ft_ce_qwen3_title              0.5606
+2026-10-28 13:08:13 4. prediction change exp026 -> exp033: std 0.0521, rows improved 52.4%, worsened 47.6%
+2026-10-28 13:08:13 4a. most improved rows:
+                     search_term                                                                                                        title     y  pred26  pred33
+53779                 metal pail   Kraftware Sophisticates Black with Brushed Chrome 3 qt. Ice Bucket with Bale Handle, Bands and Metal Cover  3.00   1.758   2.065
+31557              copper faucet                                               BrassCraft 3/8 in. O.D. x 36 in. Copper Faucet Riser in Chrome  1.00   2.643   2.450
+24748               white gloves                                                                 BEHR Premium Plus #W-D-610 White Glove Paint  1.00   2.330   2.089
+9642                   wall fans                                                        Westinghouse Ceiling Fan and Light White Wall Control  1.00   2.661   2.491
+378            knobs for cabinet                                                                   Liberty 3-3/4 in. Steel Bar Pull (25-Pack)  3.00   1.917   2.181
+39161             utility tables                                                                                   Orange 3-Tier Utility Cart  3.00   2.062   2.383
+18035                 metal pail  Kraftware Sophisticates Black with Polished Chrome 3 qt. Ice Bucket with Bale Handle, Bands and Metal Cover  2.67   1.717   2.026
+18990                 paint pans                                                                           9 in. Plastic Roller Tray (3-Pack)  3.00   1.903   2.154
+16832                  bags hang                                                                Express Products Quick Door Hanger Single Bag  1.33   2.431   2.188
+27554  electrical wire connector                                   Halex 3/8 in. Flexible Metal Conduit (FMC) 1-Hole Conduit Straps (10-Pack)  1.00   2.227   2.021
+2026-10-28 13:08:13 4b. most worsened rows:
+                  search_term                                                                      title    y  pred26  pred33
+26900               deckpaint                              Rust-Oleum Restore 9 in. Restore Roller Cover  1.0   1.912   2.194
+18172          outdoor screem                            Suncast Grand View 35.75 in. Resin Garden Fence  1.0   1.708   2.042
+27725             thresh hold  Frost King E/O 3-1/2 in. Wide x 36 in. Silver Adjustable Height Threshold  3.0   2.237   1.943
+1134           contact cement                     3M Super 77 16.75 fl. oz. Multi-Purpose Spray Adhesive  1.0   1.893   2.149
+13185                  u seal               USEAL USA Band 6 in. Aluminum Foil Self-Adhesive Repair Tape  1.0   1.945   2.188
+25689                  shopac                           DEWALT 2-gal. Max Cordless/Corded Wet/Dry Vacuum  1.0   1.978   2.212
+40635            mirror clips                                                 48 in. J-Mold Mirror Mount  1.0   2.244   2.434
+60208               steqamers                                                     Shark Steam Pocket Mop  1.0   1.932   2.169
+49632  blinds for patio doors            Chicology Deluxe Allure Cordless Powder Sliding Panel, 96 in. L  1.0   2.099   2.300
+13146              backsplach                       Old Mill Brick Castle Gate Brickweb Thin Brick Flats  3.0   2.043   1.821
+2026-10-28 13:08:13 5. rows with |residual| > 1: 1523 (2.06%), their share of squared error 15.6%
+2026-10-28 13:08:13 5a. worst over-predictions:
+                search_term                                                                                                title    y  pred26  pred33  ft_mean
+22606          topiary tree                                                             Romano 4 ft. Boxwood Spiral Topiary Tree  1.0   2.832   2.831    2.889
+51667          14 ft ladder  Werner 14 ft. Fiberglass Round Rung Straight Ladder with 375 lb. Load Capacity Type IAA Duty Rating  1.0   2.808   2.760    2.880
+24912          12v lighting         Philips 50-Watt Halogen MR16 12-Volt Landscape Lighting and Indoor Dimmable Flood Light Bulb  1.0   2.749   2.735    2.807
+59646  rachet scret drivers                                       Stalwart Deluxe Mini-Ratchet Screwdriver Socket Set (17-Piece)  1.0   2.670   2.717    2.758
+5485             ant killer                        Ortho Home Defense Max 1.33 Gal. Perimeter and Indoor Insect Killer with Wand  1.0   2.708   2.680    2.720
+68134            bird stops                                                        Heath Bird Stop Blue Ceramic Wild Bird Feeder  1.0   2.636   2.655    2.700
+10024                canapu                                                        Moto Shade 10 ft. x 20 ft. Replacement Canopy  1.0   2.626   2.652    2.754
+230              face masks                                                       Sundstrom Safety Silicone Half Mask Respirator  1.0   2.546   2.650    2.629
+33166            heater fan                                                 Hunter Westover 52 in. New Bronze Indoor Ceiling Fan  1.0   2.639   2.629    2.760
+32314       roller bearings             Prime-Line Sliding Door Tandem Roller Assembly, 1 in. Steel Ball Bearing, End Adjustable  1.0   2.647   2.587    2.595
+32699                linzer                                Linzer 9 in. x 3/8 in. Medium-Density Polyester Roller Cover (6-Pack)  1.0   2.561   2.585    2.523
+30293     yelloe safet tape                                                          HDX 3 in. x 1000 ft. Caution Tape in Yellow  1.0   2.563   2.580    2.636
+2026-10-28 13:08:13 5b. worst under-predictions:
+                              search_term                                                                                                                title    y  pred26  pred33  ft_mean
+46352                                 cat                                                                       GE UltraPro 1 Ethernet RJ45 Wall Plate - White  3.0   1.539   1.578    1.553
+54695                  digital time witch                         Picnic Time Vulcan Cal Berkley Tailgating Cooler and Propane Gas Grill Kit with Digital Logo  3.0   1.625   1.596    1.617
+13849                                labo                                                                                            PRO-LAB Asbestos Test Kit  3.0   1.630   1.603    1.595
+27520                        salt for ice                                                                           Bare Ground 1-Gal. Battery-Powered Sprayer  3.0   1.650   1.604    1.650
+69255     glass washer with sucktion cups                                                           Oster Beehive 2-Speed Blender with 6-Cup Glass Jar in Blue  3.0   1.706   1.613    1.719
+63012               ice marker water kits                                            Homewerks Worldwide 1/2 in. x 1/2 in. x 1/4 in. Brass Extender Tee Carded  3.0   1.734   1.628    1.776
+66967                                 vdk                                                               BDK Warner Brothers Batman Carpet Floor Mats (4-Piece)  3.0   1.653   1.636    1.575
+60382  stainless steel light cover plates  QCA Spas Ocean Key Plus 4-Person Plug and Play 20-Stainless Steel Jet Spa with Waterfall, LED Light, and Hard Cover  3.0   1.645   1.641    1.688
+16598                        roof deicing                                                                             30 ft. Automatic Electric Heat Cable Kit  3.0   1.582   1.644    1.719
+58064                         3 old goats                                                                    Carlon 3-Gang 35 cu. in. Old Work Box (Case of 6)  3.0   1.631   1.644    1.600
+61735              home depot in cambrige                                                                       The Home Depot 24 in. x 100 ft. Bubble Cushion  3.0   1.727   1.651    1.802
+26225                        door in door                                                                                8 in. Homeowner Shims (12-Per Bundle)  3.0   1.675   1.657    1.626
+2026-10-28 13:08:13 6. near-duplicate groups: 3448 groups, 8016 rows. rmse to group mean 0.2888, exp033 0.4032, exp026 0.4080
+2026-10-28 13:08:37 7. fold 0 model: best_iteration 478
+2026-10-28 13:11:06 7a. gain share by group:
+fine-tuned score           0.8410
+query-relative             0.0554
+emb vector (query)         0.0402
+classic                    0.0253
+emb vector (title)         0.0230
+pretrained ce / emb cos    0.0150
+tfidf vector (title)       0.0002
+tfidf vector (query)       0.0000
+2026-10-28 13:11:06 7b. top 25 features by gain:
+ft_ce_large_title_desc                     0.2670
+ft_ce_deberta_title_desc                   0.2547
+ft_ce_deberta_title                        0.1133
+ft_ce_modernbert_title_desc                0.1033
+ft_ce_title                                0.0462
+ft_ce_large_title                          0.0256
+ft_ce_title_desc                           0.0160
+ft_ce_qwen3_title                          0.0149
+q_size                                     0.0105
+emb_cos_title                              0.0058
+q_ft_ce_large_title_desc_rank              0.0051
+emb_cos_desc                               0.0049
+q_ft_ce_modernbert_title_desc_rank         0.0047
+q_ft_ce_large_title_rank                   0.0036
+q_ft_ce_deberta_title_desc_rank            0.0035
+ratio_match_title                          0.0035
+q_emb_cos_title_diff_mean                  0.0033
+q_ft_ce_large_title_desc_diff_mean         0.0029
+cos_title                                  0.0027
+q_ft_ce_deberta_title_diff_max             0.0025
+ce_desc                                    0.0024
+q_ratio_match_title_rank                   0.0023
+q_ft_ce_qwen3_title_rank                   0.0022
+q_ft_ce_modernbert_title_desc_diff_mean    0.0019
+has_attr                                   0.0019
+2026-10-28 13:11:06 8. test predictions by product_uid:
+                      n  seen_query  pred33  pred26  change
+uid_bin                                                    
+(100000, 150000]  93162      0.2489  2.4317  2.4306  0.0011
+(150000, 180000]  32349      0.2343  2.3832  2.3835 -0.0003
+(180000, 195000]  12856      0.2261  2.3074  2.3083 -0.0009
+(195000, 206650]   9039      0.2260  2.3089  2.3099 -0.0009
+(206650, 300000]  19287      0.4933  2.5143  2.5124  0.0019
+2026-10-28 13:11:06    train: y mean 2.3816, OOF pred mean 2.3819; test pred mean 2.4156 (exp026 2.4150)
