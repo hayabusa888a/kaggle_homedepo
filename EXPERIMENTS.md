@@ -51,7 +51,7 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 | exp031（数値だけ） | 2026-10-28 | 同上で、数値の特徴量 88 列だけ（参考） | 0.41496 | 未提出 | `output/exp031/submission_num.csv` |
 | exp032（全部の列） | 2026-10-28 | exp029 ＋ ファインチューニングした Qwen3-Reranker-0.6B（検索語 × タイトル）のスコア | 0.41759 | 0.42004 | `output/exp032/submission_all.csv` |
 | exp032（数値だけ） | 2026-10-28 | 同上で、数値の特徴量 88 列だけ（参考） | 0.41510 | 未提出 | `output/exp032/submission_num.csv` |
-| exp033（全部の列） | 2026-10-28 | exp029 ＋ DeBERTa（タイトル）・ModernBERT・Qwen3 の 3 つのスコアを全部 | 0.41705 | 未提出 | `output/exp033/submission_all.csv` |
+| exp033（全部の列） | 2026-10-28 | exp029 ＋ DeBERTa（タイトル）・ModernBERT・Qwen3 の 3 つのスコアを全部 | 0.41705 | **0.41978** | `output/exp033/submission_all.csv` |
 | exp033（数値だけ） | 2026-10-28 | 同上で、数値の特徴量 96 列だけ（参考） | 0.41456 | 未提出 | `output/exp033/submission_num.csv` |
 
 ## 共通の前提
@@ -2220,7 +2220,7 @@ exp030（DeBERTa タイトル）・exp031（ModernBERT）・exp032（Qwen3）は
 
 | | CV RMSE | 重み付き CV | Private LB | Public LB |
 |---|---|---|---|---|
-| **全部の列（`submission_all.csv`）** | **0.41705** | 0.41810 | 未提出 | 未提出 |
+| **全部の列（`submission_all.csv`）** | **0.41705** | 0.41810 | **0.41978** | **0.42182** |
 | 数値だけ（`submission_num.csv`、参考） | 0.41456 | 0.41561 | 未提出 | 未提出 |
 | （参考）exp030（＋ DeBERTa タイトル） | 0.41776 | 0.41878 | 0.41998 | 0.42198 |
 | （参考）exp031（＋ ModernBERT） | 0.41743 | 0.41845 | 0.41990 | 0.42184 |
@@ -2233,4 +2233,6 @@ exp030（DeBERTa タイトル）・exp031（ModernBERT）・exp032（Qwen3）は
 
 - CV は exp029 から 0.0011 改善した。1 つずつ加えたときの改善（0.0004・0.0007・0.0005、合計 0.0016）の 7 割ほどで、3 つの間で情報が一部重なっている
 - 1 つずつの LB の改善は、CV の改善の 1/4〜1/3 程度だった。同じ割合なら、exp033 の LB の改善は 0.0003〜0.0004 程度と見込まれる。採否は Public LB で判断する
+- **Private LB 0.41978、Public LB 0.42182 で、exp029（0.42011 / 0.42207）から Private で 0.00033、Public で 0.00025 改善した。Public で exp031（0.42184）をわずかに上回り、これまでのベスト**。改善はほぼ見込みどおり
+- ただし exp031 との差は Public で 0.00002 しかなく、LB の改善のほとんどは ModernBERT によるもの。DeBERTa タイトル版と Qwen3 の上乗せは誤差に近い
 
