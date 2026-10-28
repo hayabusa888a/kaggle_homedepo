@@ -2,9 +2,11 @@
 # exp031〜033 を最後まで通して実行する（独立したプロセスとして起動する）。exp030 のパイプラインが終わるのを待ってから始める。
 #   exp031: ModernBERT 系のリランカー（gte-reranker-modernbert-base）を、検索語 × タイトル + 説明文で 5 fold ファインチューニング
 #   exp032: LLM 系のリランカー（Qwen3-Reranker-0.6B、分類用に変換したもの）を、検索語 × タイトルで 5 fold ファインチューニング
-#           （モデル固有の入力の形で包む。埋め込み層の固定 + 8bit AdamW で 8GB に収める）
+#           （モデル固有の入力の形で包む。埋め込み層の固定 + 8bit AdamW + gradient checkpointing で 8GB に収める。
+#            gradient checkpointing なしではメモリが 7.8GB まであふれて 30W 程度しか出ず、大幅に遅くなった）
 #   exp033: exp029 に DeBERTa（タイトル）・ModernBERT・Qwen3 の 3 つを全部加える
 # それぞれ exp029 の特徴量にスコアと相対値を加えて、LightGBM 単体を学習する。どれかが失敗しても次へ進む。
+# 途中で止めて再実行したときは、保存済みの fold と、提出ファイルまでできた実験を飛ばす。
 set -uo pipefail
 cd "$(dirname "$0")/.."
 LOG=output/exp031_pipeline_log.txt
@@ -31,6 +33,7 @@ finetune() {
 
 # features_lgb <exp>
 features_lgb() {
+  [ -f "output/$1/submission_all.csv" ] && { log "$1 already done, skipped"; return 0; }
   python -B exp/exp031_build_features.py "$1" >> "$LOG" 2>&1 || { log "$1 build features failed"; return 1; }
   python -B exp/exp031_run.py "$1" >> "$LOG" 2>&1 || { log "$1 lgb failed"; return 1; }
   log "$1 done"
@@ -39,7 +42,7 @@ features_lgb() {
 finetune exp031 ft_ce_gte_modernbert_title_desc ft_ce_bge_base_title_desc Alibaba-NLP/gte-reranker-modernbert-base \
   --max-length 256 && features_lgb exp031
 finetune exp032 ft_ce_qwen3_06b_title ft_ce_bge_base_title tomaarsen/Qwen3-Reranker-0.6B-seq-cls \
-  --max-length 160 --template qwen3 --freeze-embeddings --optim adamw_bnb_8bit && features_lgb exp032
+  --max-length 160 --template qwen3 --freeze-embeddings --optim adamw_bnb_8bit --grad-checkpointing && features_lgb exp032
 if grep -q "exp031 finetune done" "$LOG" && grep -q "exp032 finetune done" "$LOG" && grep -q "pipeline done" output/exp030_pipeline_log.txt; then
   features_lgb exp033
 fi

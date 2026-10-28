@@ -74,11 +74,11 @@ rows = [
     ("exp027", "2026-10-20", "特徴量選択", "LightGBM で数値の特徴量 80 列だけ使う（埋め込み・TF-IDF ベクトルを外す）", "exp026_lgb", 0.41776, 0.42354, 0.42547, "不採用", "CV −0.0024 なのに LB +0.0010。ファインチューニングのスコアへの依存を強めると LB で悪化", "output/exp027/submission_num.csv"),
     ("exp028_all", "2026-10-21", "検証・対策", "train にある検索語の test 行は、その検索語を見ていない fold のモデルのスコアを使う", "exp026_lgb", 0.42015, 0.42340, 0.42529, "不採用", "仮説は外れ。見た検索語の高めのスコアは正しい情報だった", "output/exp028/submission_all.csv"),
     ("exp028_num", "2026-10-21", "検証・対策", "同上（数値の特徴量だけ）", "exp027", 0.41776, 0.42434, 0.42636, "不採用", "同上", "output/exp028/submission_num.csv"),
-    ("exp029_all", "2026-10-27", "ファインチューニング", "＋ ファインチューニングした DeBERTa（mxbai-rerank-base-v1、タイトル + 説明文、transformers 4.49）", "exp026_lgb", 0.41812, 0.42011, 0.42207, "採用（ベスト）", "1.8 億で v2-m3（5.7 億）と同精度。系統の違うモデルは LB でもしっかり効く。学習は 7 時間（GPU メモリがあふれ気味）", "output/exp029/submission_all.csv"),
+    ("exp029_all", "2026-10-27", "ファインチューニング", "＋ ファインチューニングした DeBERTa（mxbai-rerank-base-v1、タイトル + 説明文、transformers 4.49）", "exp026_lgb", 0.41812, 0.42011, 0.42207, "採用", "1.8 億で v2-m3（5.7 億）と同精度。系統の違うモデルは LB でもしっかり効く。学習は 7 時間（GPU メモリがあふれ気味）", "output/exp029/submission_all.csv"),
     ("exp029_num", "2026-10-27", "特徴量選択", "同上（数値の特徴量 84 列だけ、参考）", "exp029_all", 0.41547, N, N, "参考", "未提出", "output/exp029/submission_num.csv"),
-    ("exp030_all", "2026-10-28", "ファインチューニング", "＋ ファインチューニングした DeBERTa（検索語 × タイトル）", "exp029_all", 0.41776, N, N, "LB 待ち", "単独 0.43951 はタイトル版で最良。ただし DeBERTa（タイトル + 説明文）との相関 0.945 で、CV の上乗せは −0.0004 と小さい。学習は 1 時間", "output/exp030/submission_all.csv"),
+    ("exp030_all", "2026-10-28", "ファインチューニング", "＋ ファインチューニングした DeBERTa（検索語 × タイトル）", "exp029_all", 0.41776, 0.41998, 0.42198, "採用", "LB はわずかに改善（Public −0.00009）。単独 0.43951 はタイトル版で最良。ただし DeBERTa（タイトル + 説明文）との相関 0.945 で、CV の上乗せは −0.0004 と小さい。学習は 1 時間", "output/exp030/submission_all.csv"),
     ("exp030_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 88 列だけ、参考）", "exp030_all", 0.41521, N, N, "参考", "未提出", "output/exp030/submission_num.csv"),
-    ("exp031_all", "2026-10-28", "ファインチューニング", "exp029 ＋ ファインチューニングした ModernBERT（gte-reranker-modernbert-base、タイトル + 説明文）", "exp029_all", 0.41743, N, N, "LB 待ち", "別系統のリランカー。単独 0.43602 は全モデルで最良（1.5 億パラメータ）。ほかとの相関 0.87〜0.93。学習は 2 時間 40 分", "output/exp031/submission_all.csv"),
+    ("exp031_all", "2026-10-28", "ファインチューニング", "exp029 ＋ ファインチューニングした ModernBERT（gte-reranker-modernbert-base、タイトル + 説明文）", "exp029_all", 0.41743, 0.41990, 0.42184, "採用（ベスト）", "LB で Public −0.00023、新しいベスト（exp030 とは別に exp029 に加えたもの）。別系統のリランカー。単独 0.43602 は全モデルで最良（1.5 億パラメータ）。ほかとの相関 0.87〜0.93。学習は 2 時間 40 分", "output/exp031/submission_all.csv"),
     ("exp031_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 88 列だけ、参考）", "exp031_all", 0.41496, N, N, "参考", "未提出", "output/exp031/submission_num.csv"),
 ]
 first = 2
@@ -110,7 +110,7 @@ for i, r in enumerate(rows):
 last_row = first + len(rows) - 1
 ws.cell(row=last_row + 2, column=2, value="凡例").font = f(True)
 notes = [
-    ("緑の行", "現在のベスト（exp029_all）"), ("オレンジの行", "不採用（以降の実験の土台にしていない）"), ("灰色の行", "検証・参考のための実験"),
+    ("緑の行", "現在のベスト（exp031_all）"), ("オレンジの行", "不採用（以降の実験の土台にしていない）"), ("灰色の行", "検証・参考のための実験"),
     ("青い数字", "Kaggle に提出して得た LB（ユーザーから共有された値）。空欄は未提出、または Public LB を記録していない"),
     ("LB−CV・変化の列", "数式で計算（比較対象は「比較対象」列の実験名を「実験」列から探す）。LB の変化は、両方に Private LB があるときだけ表示"),
     ("CV", "検索語単位の GroupKFold（5 分割）の RMSE。exp023〜は入れ子の CV（アンサンブル）または LightGBM 単体の OOF"),
@@ -128,9 +128,9 @@ items = [
     ("Home Depot Product Search Relevance：実験の振り返り（exp001〜exp031）", None, "title"),
     ("タスク", "検索語と商品のペアの関連度 relevance（1〜3、複数人の評価の平均）を予測する。評価指標は RMSE", None),
     ("期間", "2026-10-13 〜 2026-10-28", None),
-    ("現在のベスト", "exp029_all：LightGBM 単体（全部の列）。CV 0.41812 / Private LB 0.42011 / Public LB 0.42207", "best"),
-    ("最初のベースライン", "exp001：CV 0.50579 / Private LB 0.50782（ベストまで −0.0877）", None),
-    ("ベストの構成", "前処理（正規化・SymSpell・ステミング）→ TF-IDF・BM25・単語一致・文字 n-gram・ブランド・属性値 → 埋め込み（mxbai-embed-large）→ 学習前の cross-encoder（mxbai-rerank-base）→ ファインチューニングした cross-encoder 5 種（bge-reranker-base ×2、v2-m3 ×2（種の平均）、DeBERTa ×1）→ 同じ検索語の中での相対値 → LightGBM（Optuna で調整、lr 0.02）", None),
+    ("現在のベスト", "exp031_all：LightGBM 単体（全部の列）。CV 0.41743 / Private LB 0.41990 / Public LB 0.42184", "best"),
+    ("最初のベースライン", "exp001：CV 0.50579 / Private LB 0.50782（ベストまで −0.0879）", None),
+    ("ベストの構成", "前処理（正規化・SymSpell・ステミング）→ TF-IDF・BM25・単語一致・文字 n-gram・ブランド・属性値 → 埋め込み（mxbai-embed-large）→ 学習前の cross-encoder（mxbai-rerank-base）→ ファインチューニングした cross-encoder 6 種（bge-reranker-base ×2、v2-m3 ×2（種の平均）、DeBERTa ×1、ModernBERT ×1）→ 同じ検索語の中での相対値 → LightGBM（Optuna で調整、lr 0.02）", None),
     ("CV の方針", "検索語単位の GroupKFold（5 分割）。test の 73% の行は train にない検索語で、train では 1 つの検索語が平均 6〜7 行出てくるため", None),
     ("データの要点", "test の 57% の行は train にない商品。11.6% は train のどの商品より新しい（product_uid > 206,650）。新しい商品ほど relevance が低く、誤差が大きい。同じ検索語でほぼ同じ商品の組でも評価のばらつきが RMSE 換算で 0.288 あり、ラベルのノイズが大きい", None),
     ("最大の課題", "ファインチューニングのスコアへの依存を強める変更（アンサンブル、種の平均、数値だけの特徴量）ほど、CV は良くなるのに LB は良くならない。CV では train より新しい商品を評価できない。採否は Public LB で判断している", None),
@@ -200,6 +200,7 @@ lessons = [
     ("train と test で特徴量の作り方をそろえる（OOF は 1 モデル、test も fold ごとに 1 モデル）と LB が改善した", "exp024"),
     ("ファインチューニングのスコアへの依存を強める変更（アンサンブル、種の平均、数値だけ）は、CV では良くても LB では効かない・悪化する。CV では train より新しい商品を評価できない", "exp023, exp025〜exp028"),
     ("一方、系統の違うモデル（DeBERTa）を加えると、CV 以上に LB が改善した。同じ系統を重ねるより、系統を増やすほうが頑健", "exp029"),
+    ("系統の違うモデルを加える効果は、加えるほど小さくなる（DeBERTa は LB −0.0024、次の ModernBERT は −0.0002）。同じ系統で入力だけ変えた版（DeBERTa タイトル）はさらに小さい", "exp029, exp030, exp031"),
     ("仮説（見た検索語のスコアの偏り）は LB で否定された。仮説は小さく試し、外れたら記録して戻す", "exp028"),
     ("Private LB を見て何度も選ぶと、test への過学習になる。採否は Public LB で判断する", "exp027〜"),
     ("8GB の GPU では、単語の埋め込み層の固定・8bit AdamW・バッチの分割・bf16 予測でメモリを抑えると、大きいモデルも現実的な時間で学習できる。あふれると数倍遅くなる", "exp021, exp022, exp029"),
