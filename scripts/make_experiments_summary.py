@@ -84,6 +84,9 @@ rows = [
     ("exp032_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 88 列だけ、参考）", "exp032_all", 0.41510, N, N, "参考", "未提出", "output/exp032/submission_num.csv"),
     ("exp033_all", "2026-10-28", "ファインチューニング", "exp029 ＋ DeBERTa（タイトル）・ModernBERT・Qwen3 の 3 つを全部", "exp029_all", 0.41705, 0.41978, 0.42182, "採用（ベスト）", "Public で exp031 を 0.00002 上回るだけで、LB の改善のほとんどは ModernBERT による。1 つずつの CV の改善の合計（0.0016）の 7 割（0.0011）。新しい学習なし", "output/exp033/submission_all.csv"),
     ("exp033_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 96 列だけ、参考）", "exp033_all", 0.41456, N, N, "参考", "未提出", "output/exp033/submission_num.csv"),
+    ("exp034_linear_all", "2026-11-02", "スタッキング", "30 メンバー（LGB・XGB・Cat・HGB・Ridge・カーネル Ridge・RF・ET・kNN・MLP など）の重み付き平均", "exp033_all", 0.41442, N, N, "LB 待ち", "重みは数値だけのメンバー（カーネル Ridge・HGB）に集中し、exp023 と同じ形。early stopping を学習側の 1 割に変更（これまでの CV は約 0.0004 楽観的だった）", "output/exp034/submission_linear_all.csv"),
+    ("exp034_lgb_trees", "2026-11-02", "スタッキング", "勾配ブースティング 11 メンバー + メタ特徴量（product_uid など）を浅い LightGBM で", "exp033_all", 0.41696, N, N, "LB 待ち", "2 段目が「新しい商品ほど予測を下げる」補正を学習（train にない商品で −0.07）。product_uid なしでは改善なし", "output/exp034/submission_lgb_trees.csv"),
+    ("exp034_lgb_all", "2026-11-02", "スタッキング", "30 メンバー + メタ特徴量を浅い LightGBM で", "exp033_all", 0.41441, N, N, "参考", "未提出", "output/exp034/submission_lgb_all.csv"),
 ]
 first = 2
 for i, r in enumerate(rows):
@@ -129,9 +132,9 @@ ov = wb.create_sheet("概要", 0)
 ov.column_dimensions["A"].width = 26
 ov.column_dimensions["B"].width = 95
 items = [
-    ("Home Depot Product Search Relevance：実験の振り返り（exp001〜exp033）", None, "title"),
+    ("Home Depot Product Search Relevance：実験の振り返り（exp001〜exp034）", None, "title"),
     ("タスク", "検索語と商品のペアの関連度 relevance（1〜3、複数人の評価の平均）を予測する。評価指標は RMSE", None),
-    ("期間", "2026-10-13 〜 2026-10-28", None),
+    ("期間", "2026-10-13 〜 2026-11-02", None),
     ("現在のベスト", "exp033_all：LightGBM 単体（全部の列）。CV 0.41705 / Private LB 0.41978 / Public LB 0.42182", "best"),
     ("最初のベースライン", "exp001：CV 0.50579 / Private LB 0.50782（ベストまで −0.0880）", None),
     ("ベストの構成", "前処理（正規化・SymSpell・ステミング）→ TF-IDF・BM25・単語一致・文字 n-gram・ブランド・属性値 → 埋め込み（mxbai-embed-large）→ 学習前の cross-encoder（mxbai-rerank-base）→ ファインチューニングした cross-encoder 8 種（bge-reranker-base ×2、v2-m3 ×2（種の平均）、DeBERTa ×2、ModernBERT ×1、Qwen3 ×1）→ 同じ検索語の中での相対値 → LightGBM（Optuna で調整、lr 0.02）", None),

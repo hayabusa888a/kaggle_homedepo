@@ -5,7 +5,7 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 - タスク：検索語と商品のペアに対する関連度 `relevance`（1〜3）を予測する
 - 評価指標：RMSE
 - 参考：全行を train の平均値（2.38）で予測した場合の RMSE は 0.53398
-- 振り返り用の一覧：[experiments_summary.xlsx](experiments_summary.xlsx)（exp001〜exp033、作成は `scripts/make_experiments_summary.py`）
+- 振り返り用の一覧：[experiments_summary.xlsx](experiments_summary.xlsx)（exp001〜exp034、作成は `scripts/make_experiments_summary.py`）
 
 ## 結果一覧
 
@@ -53,6 +53,9 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 | exp032（数値だけ） | 2026-10-28 | 同上で、数値の特徴量 88 列だけ（参考） | 0.41510 | 未提出 | `output/exp032/submission_num.csv` |
 | exp033（全部の列） | 2026-10-28 | exp029 ＋ DeBERTa（タイトル）・ModernBERT・Qwen3 の 3 つのスコアを全部 | 0.41705 | **0.41978** | `output/exp033/submission_all.csv` |
 | exp033（数値だけ） | 2026-10-28 | 同上で、数値の特徴量 96 列だけ（参考） | 0.41456 | 未提出 | `output/exp033/submission_num.csv` |
+| exp034（linear_all） | 2026-11-02 | スタッキング：30 メンバーの予測の重み付き平均 | 0.41442 | 未提出 | `output/exp034/submission_linear_all.csv` |
+| exp034（lgb_trees） | 2026-11-02 | スタッキング：勾配ブースティング 11 メンバーの予測 + メタ特徴量（商品の新しさなど）を浅い LightGBM で | 0.41696 | 未提出 | `output/exp034/submission_lgb_trees.csv` |
+| exp034（lgb_all） | 2026-11-02 | スタッキング：30 メンバーの予測 + メタ特徴量を浅い LightGBM で | 0.41441 | 未提出 | `output/exp034/submission_lgb_all.csv` |
 
 ## 共通の前提
 
@@ -2316,4 +2319,89 @@ exp030（DeBERTa タイトル）・exp031（ModernBERT）・exp032（Qwen3）は
 - 誤差の大部分は、ファインチューニングしたスコアの精度と、ラベルのノイズで決まっている。LightGBM はほぼ 8 本のスコアの組み合わせ器になっている
 - 改善の余地が大きいのは、**正解が低い行（1.00〜1.67、誤差の 40%）**と、**8 本の意見が割れる行**
 - **TF-IDF ベクトルを外す**（`num_emb`、約 2,100 列）は、CV がほぼ同じで、学習も大幅に速くなる。LB で確かめる価値がある
+
+## exp034：スタッキング（30 メンバー × 2 段目のモデル）
+
+### 目的
+
+exp023〜exp026 のアンサンブル（重み付き平均）は、CV は改善しても LB では LightGBM 単体に負けた。exp033 の特徴量（ファインチューニングしたスコア 8 本）でメンバーを増やして学習し直し、2 段目のモデルも変えて、スタッキングが LB で効くかを確かめる。
+
+### 方法
+
+**メンバー**（[exp/exp034_members.py](exp/exp034_members.py)、30 個。test の特徴量は exp024 と同じく fold ごとにそろえる）
+
+- 勾配ブースティング（全列）：LightGBM × 5（exp033 と同じ設定、種と列の割合を変えたもの、葉 63 枚、**Huber 損失、L1 損失**）、XGBoost × 2
+- 勾配ブースティング（数値 + 埋め込み、TF-IDF ベクトルなし）：**LightGBM、7 段階の多クラス分類として解いて期待値をとる LightGBM**、CatBoost × 2
+- 数値の特徴量だけ：**HistGradientBoosting**、Ridge、**カーネル Ridge（Nystroem で RBF カーネルを近似）**、ランダムフォレスト × 3、Extra Trees × 2、k-NN × 3、MLP × 2
+- そのほか：Ridge（数値 + 埋め込み）、k-NN（重要な 17 列）× 2、MLP（数値 + 埋め込み）× 2、**ファインチューニングした 8 本のスコアの単純平均**
+- 太字は今回加えたもの
+- **early stopping の変更**：exp023〜exp033 では、early stopping の判定に CV の検証 fold そのものを使っていたので、OOF の予測がわずかに楽観的だった。今回は学習側の fold から検索語の 1 割を取り分けて early stopping に使い、検証 fold は予測だけに使う。exp033 と同じ設定の LightGBM（`lgb_base`）の CV は 0.41705 → **0.41743**。これまでの CV は、early stopping の分だけ約 0.0004 楽観的だった
+- 所要時間：35 分（MLP を含む）
+
+**2 段目のモデル**（[exp/exp034_stack.py](exp/exp034_stack.py)）
+
+- linear：重みを 0 以上・合計 1 とした重み付き平均（exp023 と同じ）
+- lgb：浅い LightGBM（葉 7 枚）。メンバーの予測に加えて、メタ特徴量 6 つ（8 本のスコアの標準偏差・最大と最小の差、検索語の商品数、product_uid、検索語の単語がタイトルにある割合、検索語の単語数）を入力にする。early stopping は検索語の 1 割で行う
+- lgb_nouid：lgb から product_uid を除いたもの
+- メンバーの組み合わせ：trees（勾配ブースティング 11 個）と all（30 個）
+- 評価は入れ子の CV（外側の fold k の 2 段目のモデルは、ほかの 4 fold の OOF で学習して fold k を予測する）
+
+### 結果
+
+**メンバー単独の CV（上位と主なもの）**
+
+| メンバー | CV | lgb_base との相関 |
+|---|---|---|
+| kridge_num（カーネル Ridge、数値だけ） | **0.41534** | 0.983 |
+| hgb_num（HistGradientBoosting、数値だけ） | 0.41603 | 0.990 |
+| rf_mf03_leaf20（数値だけ） | 0.41679 | 0.993 |
+| ridge_num（数値だけ） | 0.41682 | 0.986 |
+| lgb_num_emb（TF-IDF ベクトルなし） | 0.41728 | 0.998 |
+| lgb_base（exp033 と同じ設定） | 0.41743 | 1 |
+| xgb_d4 / cat_d6 / xgb_d6 | 0.41748 / 0.41769 / 0.41775 | 0.995〜0.997 |
+| lgb_huber / lgb_class | 0.41809 / 0.41945 | 0.998 / 0.993 |
+| mlp_num_512 | 0.42077 | 0.963 |
+| knn_a_k100_unif | 0.42308 | 0.978 |
+| lgb_l1 | 0.42517 | 0.981 |
+| ft_mean（8 本の単純平均） | 0.42601 | 0.972 |
+| mlp_num_emb_512 | 0.44240 | 0.907 |
+
+- TF-IDF ベクトルを外した LightGBM（`lgb_num_emb`、2,144 列）は、全列の `lgb_base` と CV がほぼ同じ（0.41728 / 0.41743）で、学習は 2.5 倍速い
+- 埋め込みベクトルを入れた Ridge・MLP は、数値だけの版より大きく悪い
+
+**スタッキング（入れ子の CV）**
+
+| 方法 | メンバー | 入れ子の CV | test の予測の平均 | exp033 の提出との差（RMSE） |
+|---|---|---|---|---|
+| linear_trees | 11 | 0.41717 | 2.4155 | 0.0094 |
+| lgb_trees | 11 | 0.41696 | 2.4068 | 0.0386 |
+| lgb_nouid_trees | 11 | 0.41755 | 2.4167 | 0.0234 |
+| **linear_all** | 30 | **0.41442** | 2.4100 | 0.0373 |
+| **lgb_all** | 30 | **0.41441** | 2.4060 | 0.0482 |
+| lgb_nouid_all | 30 | 0.41488 | 2.4145 | 0.0394 |
+| （参考）lgb_base 単体 | 1 | 0.41743 | 2.4158 | 0.0104 |
+
+- linear_all の重み：kridge_num 0.368、hgb_num 0.347、ridge_num 0.102、mlp_num_512 0.095、mlp_num_256 0.074、rf_mf03_leaf20 0.014。**exp023〜exp026 と同じく、数値の特徴量だけを使うメンバーに重みが集中した**
+- linear_trees の重み：lgb_num_emb 0.355、xgb_d6 0.205、cat_d6 0.170、xgb_d4 0.166、lgb_base 0.103
+
+**2 段目の LightGBM による、商品の新しさの補正（test の予測の平均）**
+
+| product_uid | lgb_base | linear_trees | lgb_trees | lgb_nouid_trees |
+|---|---|---|---|---|
+| 〜150,000 | 2.432 | 2.432 | 2.443 | 2.435 |
+| 150,000〜180,000 | 2.383 | 2.383 | 2.370 | 2.382 |
+| 180,000〜195,000 | 2.307 | 2.307 | 2.272 | 2.303 |
+| 195,000〜206,650 | 2.308 | 2.309 | 2.271 | 2.305 |
+| **206,651〜（train にない）** | **2.515** | 2.514 | **2.446** | 2.517 |
+
+- メタ特徴量の product_uid を入れると、2 段目の LightGBM は「新しい商品ほど予測を下げる」補正を学習した（誤差分析で見た、新しい商品を高めに予測する偏りの補正）。入れ子の CV は 0.0006 改善した（0.41755 → 0.41696）
+- train の範囲外の商品では、train で最も新しい帯の補正をそのまま延長して、予測の平均を 0.07 下げている。これが正しいかは LB でしか確かめられない
+
+### 考察
+
+- 全メンバーのスタッキングは CV で −0.003 と大きく改善したが、改善は数値の特徴量だけを使うメンバー（カーネル Ridge、HistGradientBoosting）によるもので、exp023〜exp026 で LB に効かなかったのと同じ形
+- 勾配ブースティングだけのスタッキングは、商品の新しさの補正を除くと改善しない（lgb_nouid_trees 0.41755、lgb_base 0.41743）。同じ特徴量の木のモデルどうしは相関が 0.995 以上で、混ぜても得るものが少ない
+- 提出して確かめたいのは次の 2 点
+  1. **linear_all**：数値だけのメンバーに頼るスタッキングが、今回も LB で負けるか
+  2. **lgb_trees**：商品の新しさの補正が LB で効くか
 

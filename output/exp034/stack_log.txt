@@ -1,0 +1,127 @@
+2026-11-02 22:03:22 members: 30
+2026-11-02 22:03:22 single CV rmse / corr with lgb_base:
+                      rmse  corr_lgb_base
+kridge_num         0.41534        0.98322
+hgb_num            0.41603        0.99038
+rf_mf03_leaf20     0.41679        0.99284
+ridge_num          0.41682        0.98589
+rf_mf06_leaf50     0.41702        0.99316
+lgb_num_emb        0.41728        0.99829
+rf_sqrt_leaf10     0.41732        0.99215
+lgb_base           0.41743        1.00000
+xgb_d4             0.41748        0.99733
+et_mf05_leaf20     0.41750        0.99293
+lgb_seed7_ff025    0.41753        0.99813
+cat_d6             0.41769        0.99596
+xgb_d6             0.41775        0.99531
+et_mf08_leaf50     0.41789        0.99322
+lgb_leaves63       0.41791        0.99632
+cat_d8             0.41803        0.99545
+lgb_huber          0.41809        0.99763
+lgb_class          0.41945        0.99268
+mlp_num_512        0.42077        0.96289
+mlp_num_256        0.42149        0.95783
+knn_a_k100_unif    0.42308        0.97822
+lgb_l1             0.42517        0.98108
+ft_mean            0.42601        0.97248
+knn_num_k100_unif  0.42604        0.96148
+knn_num_k300_unif  0.42657        0.96510
+ridge_num_emb      0.42658        0.95745
+knn_num_k30_dist   0.42961        0.94277
+knn_a_k20_dist     0.43095        0.94622
+mlp_num_emb_1024   0.43588        0.92461
+mlp_num_emb_512    0.44240        0.90689
+2026-11-02 22:03:26 linear_trees: nested CV 0.41717, weights:
+lgb_num_emb     0.3552
+xgb_d6          0.2045
+cat_d6          0.1701
+xgb_d4          0.1662
+lgb_base        0.1030
+lgb_leaves63    0.0011
+2026-11-02 22:03:28 lgb_trees: nested CV 0.41696, best_iteration 282, gain share:
+lgb_num_emb        0.4429
+xgb_d6             0.1425
+lgb_huber          0.0781
+lgb_base           0.0766
+lgb_seed7_ff025    0.0712
+lgb_leaves63       0.0637
+cat_d6             0.0597
+xgb_d4             0.0428
+cat_d8             0.0079
+meta_uid           0.0067
+meta_q_n_words     0.0021
+meta_ft_range      0.0015
+meta_q_size        0.0013
+lgb_class          0.0010
+meta_ft_std        0.0010
+2026-11-02 22:03:30 lgb_nouid_trees: nested CV 0.41755, best_iteration 512, gain share:
+lgb_num_emb               0.4329
+xgb_d6                    0.1690
+lgb_base                  0.0788
+lgb_huber                 0.0748
+cat_d6                    0.0635
+lgb_seed7_ff025           0.0594
+lgb_leaves63              0.0581
+xgb_d4                    0.0426
+cat_d8                    0.0082
+meta_q_size               0.0028
+meta_ft_range             0.0023
+meta_ft_std               0.0020
+lgb_class                 0.0017
+meta_ratio_match_title    0.0014
+lgb_l1                    0.0014
+2026-11-02 22:03:33 linear_all: nested CV 0.41442, weights:
+kridge_num        0.3681
+hgb_num           0.3469
+ridge_num         0.1022
+mlp_num_512       0.0946
+mlp_num_256       0.0743
+rf_mf03_leaf20    0.0140
+2026-11-02 22:03:35 lgb_all: nested CV 0.41441, best_iteration 295, gain share:
+kridge_num          0.4208
+hgb_num             0.2985
+ridge_num           0.0695
+mlp_num_512         0.0665
+lgb_num_emb         0.0654
+mlp_num_256         0.0171
+rf_mf03_leaf20      0.0136
+rf_sqrt_leaf10      0.0104
+meta_uid            0.0063
+rf_mf06_leaf50      0.0060
+knn_num_k30_dist    0.0041
+cat_d6              0.0027
+lgb_base            0.0026
+xgb_d6              0.0020
+et_mf05_leaf20      0.0016
+2026-11-02 22:03:38 lgb_nouid_all: nested CV 0.41488, best_iteration 397, gain share:
+kridge_num          0.4508
+hgb_num             0.3337
+ridge_num           0.0602
+mlp_num_512         0.0592
+lgb_num_emb         0.0245
+mlp_num_256         0.0157
+rf_mf03_leaf20      0.0118
+rf_mf06_leaf50      0.0079
+knn_num_k30_dist    0.0067
+rf_sqrt_leaf10      0.0058
+cat_d6              0.0027
+meta_q_size         0.0027
+lgb_base            0.0019
+mlp_num_emb_1024    0.0019
+et_mf05_leaf20      0.0015
+2026-11-02 22:03:39 summary:
+           method  n_members  nested_cv  test_mean  rmse_vs_exp033_test
+     linear_trees         11    0.41717    2.41547              0.00944
+        lgb_trees         11    0.41696    2.40679              0.03863
+  lgb_nouid_trees         11    0.41755    2.41671              0.02339
+       linear_all         30    0.41442    2.40999              0.03734
+          lgb_all         30    0.41441    2.40604              0.04822
+    lgb_nouid_all         30    0.41488    2.41451              0.03942
+lgb_base (single)          1    0.41743    2.41584              0.01041
+2026-11-02 22:03:39 test pred mean by product_uid:
+                  lgb_base  linear_trees  lgb_trees  lgb_nouid_trees  linear_all  lgb_all  lgb_nouid_all
+(100000, 150000]    2.4323        2.4317     2.4432           2.4345      2.4266   2.4405         2.4318
+(150000, 180000]    2.3831        2.3830     2.3704           2.3822      2.3783   2.3703         2.3814
+(180000, 195000]    2.3068        2.3071     2.2718           2.3034      2.3023   2.2748         2.3033
+(195000, 206650]    2.3084        2.3087     2.2712           2.3047      2.3033   2.2743         2.3044
+(206650, 300000]    2.5145        2.5137     2.4456           2.5167      2.5047   2.4489         2.5120
