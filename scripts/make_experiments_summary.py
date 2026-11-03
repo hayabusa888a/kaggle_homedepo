@@ -85,12 +85,12 @@ rows = [
     ("exp033_all", "2026-10-28", "ファインチューニング", "exp029 ＋ DeBERTa（タイトル）・ModernBERT・Qwen3 の 3 つを全部", "exp029_all", 0.41705, 0.41978, 0.42182, "採用","Public で exp031 を 0.00002 上回るだけで、LB の改善のほとんどは ModernBERT による。1 つずつの CV の改善の合計（0.0016）の 7 割（0.0011）。新しい学習なし", "output/exp033/submission_all.csv"),
     ("exp033_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 96 列だけ、参考）", "exp033_all", 0.41456, N, N, "参考", "未提出", "output/exp033/submission_num.csv"),
     ("exp034_linear_all", "2026-11-02", "スタッキング", "30 メンバー（LGB・XGB・Cat・HGB・Ridge・カーネル Ridge・RF・ET・kNN・MLP など）の重み付き平均", "exp033_all", 0.41442, 0.42113, 0.42325, "不採用", "LB で Public +0.00143。CV −0.0026 なのに LB は悪化し、exp023〜026 と同じ失敗。重みは数値だけのメンバー（カーネル Ridge・HGB）に集中し、exp023 と同じ形。early stopping を学習側の 1 割に変更（これまでの CV は約 0.0004 楽観的だった）", "output/exp034/submission_linear_all.csv"),
-    ("exp034_lgb_trees", "2026-11-02", "スタッキング", "勾配ブースティング 11 メンバー + メタ特徴量（product_uid など）を浅い LightGBM で", "exp033_all", 0.41696, 0.41873, 0.42109, "採用（ベスト）", "LB で Public −0.00073、Private −0.00105 。CV は exp033 とほぼ同じ（0.41696 / 0.41705）なのに LB は大きく改善。2 段目が「新しい商品ほど予測を下げる」補正を学習（train にない商品で −0.07）。product_uid なしでは改善なし", "output/exp034/submission_lgb_trees.csv"),
+    ("exp034_lgb_trees", "2026-11-02", "スタッキング", "勾配ブースティング 11 メンバー + メタ特徴量（product_uid など）を浅い LightGBM で", "exp033_all", 0.41696, 0.41873, 0.42109, "採用", "LB で Public −0.00073、Private −0.00105 。CV は exp033 とほぼ同じ（0.41696 / 0.41705）なのに LB は大きく改善。2 段目が「新しい商品ほど予測を下げる」補正を学習（train にない商品で −0.07）。product_uid なしでは改善なし", "output/exp034/submission_lgb_trees.csv"),
     ("exp034_lgb_nouid_trees", "2026-11-02", "スタッキング", "lgb_trees から product_uid を除いたもの（効果の切り分け）", "exp033_all", 0.41755, 0.41960, 0.42177, "検証", "LB は exp033 とほぼ同じ（Public −0.00005）。lgb_trees の改善の 9 割は product_uid による新しい商品の補正と確定", "output/exp034/submission_lgb_nouid_trees.csv"),
     ("exp034_lgb_all", "2026-11-02", "スタッキング", "30 メンバー + メタ特徴量を浅い LightGBM で", "exp033_all", 0.41441, N, N, "参考", "未提出", "output/exp034/submission_lgb_all.csv"),
     ("exp035_single", "2026-11-03", "特徴量追加", "exp033 の特徴量に product_uid を加えた LightGBM 単体", "exp033_all", 0.41648, 0.41902, 0.42128, "採用", "1 段目だけでも exp034 の 2 段目とほぼ同じ補正（train にない商品で −0.07）を学び、LB Public −0.00054。ただし exp034 lgb_trees（−0.00073）には届かない", "output/exp035/submission_all.csv"),
-    ("exp035_linear_trees", "2026-11-03", "スタッキング", "product_uid 入りの木の 11 メンバーの重み付き平均", "exp035_single", 0.41656, N, N, "LB 待ち", "メンバーの CV は exp034 より 0.0005〜0.0007 良い（early stopping は学習側の 1 割）", "output/exp035/submission_linear_trees.csv"),
-    ("exp035_lgb_trees", "2026-11-03", "スタッキング", "product_uid 入りの木の 11 メンバー + メタ特徴量（product_uid など）を浅い LightGBM で", "exp034_lgb_trees", 0.41700, N, N, "LB 待ち", "1 段目と 2 段目の両方で補正し、train にない商品の予測が最も低い（2.434）", "output/exp035/submission_lgb_trees.csv"),
+    ("exp035_linear_trees", "2026-11-03", "スタッキング", "product_uid 入りの木の 11 メンバーの重み付き平均", "exp035_single", 0.41656, 0.41867, 0.42109, "参考", "LB は exp034 lgb_trees と同等（Public 同じ、Private −0.00006）。単体（Public 0.42128）より良い。メンバーの CV は exp034 より 0.0005〜0.0007 良い（early stopping は学習側の 1 割）", "output/exp035/submission_linear_trees.csv"),
+    ("exp035_lgb_trees", "2026-11-03", "スタッキング", "product_uid 入りの木の 11 メンバー + メタ特徴量（product_uid など）を浅い LightGBM で", "exp034_lgb_trees", 0.41700, 0.41871, 0.42103, "採用（ベスト）", "LB Public −0.00006 とごくわずかに更新。補正を強めても LB はほとんど変わらず、product_uid の補正はほぼ出し切った。1 段目と 2 段目の両方で補正し、train にない商品の予測が最も低い（2.434）", "output/exp035/submission_lgb_trees.csv"),
 ]
 first = 2
 for i, r in enumerate(rows):
@@ -121,7 +121,7 @@ for i, r in enumerate(rows):
 last_row = first + len(rows) - 1
 ws.cell(row=last_row + 2, column=2, value="凡例").font = f(True)
 notes = [
-    ("緑の行", "現在のベスト（exp034_lgb_trees）"), ("オレンジの行", "不採用（以降の実験の土台にしていない）"), ("灰色の行", "検証・参考のための実験"),
+    ("緑の行", "現在のベスト（exp035_lgb_trees）"), ("オレンジの行", "不採用（以降の実験の土台にしていない）"), ("灰色の行", "検証・参考のための実験"),
     ("青い数字", "Kaggle に提出して得た LB（ユーザーから共有された値）。空欄は未提出、または Public LB を記録していない"),
     ("LB−CV・変化の列", "数式で計算（比較対象は「比較対象」列の実験名を「実験」列から探す）。LB の変化は、両方に Private LB があるときだけ表示"),
     ("CV", "検索語単位の GroupKFold（5 分割）の RMSE。exp023〜は入れ子の CV（アンサンブル）または LightGBM 単体の OOF"),
@@ -139,9 +139,9 @@ items = [
     ("Home Depot Product Search Relevance：実験の振り返り（exp001〜exp035）", None, "title"),
     ("タスク", "検索語と商品のペアの関連度 relevance（1〜3、複数人の評価の平均）を予測する。評価指標は RMSE", None),
     ("期間", "2026-10-13 〜 2026-11-03", None),
-    ("現在のベスト", "exp034_lgb_trees：勾配ブースティング 11 個のスタッキング（2 段目は浅い LightGBM + メタ特徴量）。CV 0.41696 / Private LB 0.41873 / Public LB 0.42109", "best"),
+    ("現在のベスト", "exp035_lgb_trees：product_uid を加えた特徴量の勾配ブースティング 11 個のスタッキング（2 段目は浅い LightGBM + メタ特徴量）。CV 0.41700 / Private LB 0.41871 / Public LB 0.42103", "best"),
     ("最初のベースライン", "exp001：CV 0.50579 / Private LB 0.50782（ベストまで −0.0891）", None),
-    ("ベストの構成", "前処理（正規化・SymSpell・ステミング）→ TF-IDF・BM25・単語一致・文字 n-gram・ブランド・属性値 → 埋め込み（mxbai-embed-large）→ 学習前の cross-encoder（mxbai-rerank-base）→ ファインチューニングした cross-encoder 8 種（bge-reranker-base ×2、v2-m3 ×2（種の平均）、DeBERTa ×2、ModernBERT ×1、Qwen3 ×1）→ 同じ検索語の中での相対値 → LightGBM・XGBoost・CatBoost の 11 個 → 2 段目の浅い LightGBM（11 個の予測 + product_uid などのメタ特徴量 6 つ）", None),
+    ("ベストの構成", "前処理（正規化・SymSpell・ステミング）→ TF-IDF・BM25・単語一致・文字 n-gram・ブランド・属性値 → 埋め込み（mxbai-embed-large）→ 学習前の cross-encoder（mxbai-rerank-base）→ ファインチューニングした cross-encoder 8 種（bge-reranker-base ×2、v2-m3 ×2（種の平均）、DeBERTa ×2、ModernBERT ×1、Qwen3 ×1）→ 同じ検索語の中での相対値 + product_uid → LightGBM・XGBoost・CatBoost の 11 個 → 2 段目の浅い LightGBM（11 個の予測 + product_uid などのメタ特徴量 6 つ）", None),
     ("CV の方針", "検索語単位の GroupKFold（5 分割）。test の 73% の行は train にない検索語で、train では 1 つの検索語が平均 6〜7 行出てくるため", None),
     ("データの要点", "test の 57% の行は train にない商品。11.6% は train のどの商品より新しい（product_uid > 206,650）。新しい商品ほど relevance が低く、誤差が大きい。同じ検索語でほぼ同じ商品の組でも評価のばらつきが RMSE 換算で 0.288 あり、ラベルのノイズが大きい", None),
     ("最大の課題", "ファインチューニングのスコアへの依存を強める変更（アンサンブル、種の平均、数値だけの特徴量）ほど、CV は良くなるのに LB は良くならない。CV では train より新しい商品を評価できない。採否は Public LB で判断している", None),

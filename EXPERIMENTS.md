@@ -57,8 +57,8 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 | exp034（lgb_trees） | 2026-11-02 | スタッキング：勾配ブースティング 11 メンバーの予測 + メタ特徴量（商品の新しさなど）を浅い LightGBM で | 0.41696 | **0.41873（Public 0.42109）** | `output/exp034/submission_lgb_trees.csv` |
 | exp034（lgb_nouid_trees） | 2026-11-02 | lgb_trees から product_uid を除いたもの（効果の切り分け） | 0.41755 | 0.41960（Public 0.42177） | `output/exp034/submission_lgb_nouid_trees.csv` |
 | exp035（単体） | 2026-11-03 | exp033 の特徴量に product_uid を加えた LightGBM 単体 | 0.41648 | 0.41902（Public 0.42128） | `output/exp035/submission_all.csv` |
-| exp035（linear_trees） | 2026-11-03 | product_uid 入りの木の 11 メンバーの重み付き平均 | 0.41656 | 未提出 | `output/exp035/submission_linear_trees.csv` |
-| exp035（lgb_trees） | 2026-11-03 | product_uid 入りの木の 11 メンバー + メタ特徴量（product_uid など）を浅い LightGBM で | 0.41700 | 未提出 | `output/exp035/submission_lgb_trees.csv` |
+| exp035（linear_trees） | 2026-11-03 | product_uid 入りの木の 11 メンバーの重み付き平均 | 0.41656 | 0.41867（Public 0.42109） | `output/exp035/submission_linear_trees.csv` |
+| exp035（lgb_trees） | 2026-11-03 | product_uid 入りの木の 11 メンバー + メタ特徴量（product_uid など）を浅い LightGBM で | 0.41700 | **0.41871（Public 0.42103）** | `output/exp035/submission_lgb_trees.csv` |
 | exp034（lgb_all） | 2026-11-02 | スタッキング：30 メンバーの予測 + メタ特徴量を浅い LightGBM で | 0.41441 | 未提出 | `output/exp034/submission_lgb_all.csv` |
 
 ## 共通の前提
@@ -2473,3 +2473,18 @@ exp034 の LB の改善は、2 段目の LightGBM が product_uid を使って�
 
 - 1 段目の LightGBM だけでも、exp034 の 2 段目とほぼ同じ強さの補正（train にない商品で 2.514 → 2.447）を学んだ。LB は exp033 から Public −0.00054 と改善したが、exp034 lgb_trees（−0.00073）には届かなかった。CV は exp035 単体のほうが良いのに LB は逆で、浅い 2 段目で補正するほうが test で安定するのかもしれない
 - exp035 lgb_trees は 1 段目と 2 段目の両方で補正するので、train にない商品の予測が最も低い（2.434）。補正を強めると LB が良くなるかを確かめられる
+
+### LB
+
+| 提出 | 入れ子の CV | Private LB | Public LB |
+|---|---|---|---|
+| exp033 | 0.41705 | 0.41978 | 0.42182 |
+| exp034 lgb_trees（2 段目だけに product_uid） | 0.41696 | 0.41873 | 0.42109 |
+| exp035 単体（1 段目だけに product_uid） | 0.41648 | 0.41902 | 0.42128 |
+| exp035 linear_trees（1 段目に product_uid、重み付き平均） | 0.41656 | **0.41867** | 0.42109 |
+| **exp035 lgb_trees（1 段目と 2 段目の両方）** | 0.41700 | 0.41871 | **0.42103** |
+
+- **exp035 lgb_trees が Public 0.42103 で新しいベスト**。ただし exp034 lgb_trees からの改善は Public −0.00006、Private −0.00002 とごくわずか
+- exp035 linear_trees も Private 0.41867、Public 0.42109 で、exp034 lgb_trees とほぼ同じ
+- 1 段目の単体（Public 0.42128）より、木のモデルを混ぜたもののほうが良い。単体だけで補正するより、複数のモデルで平均するほうが test で安定する
+- 補正を強めても（train にない商品で 2.446 → 2.434）LB はほとんど変わらない。product_uid による新しい商品の補正は、この形ではほぼ出し切った
