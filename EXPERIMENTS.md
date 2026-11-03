@@ -55,6 +55,7 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 | exp033（数値だけ） | 2026-10-28 | 同上で、数値の特徴量 96 列だけ（参考） | 0.41456 | 未提出 | `output/exp033/submission_num.csv` |
 | exp034（linear_all） | 2026-11-02 | スタッキング：30 メンバーの予測の重み付き平均 | 0.41442 | 0.42113（Public 0.42325） | `output/exp034/submission_linear_all.csv` |
 | exp034（lgb_trees） | 2026-11-02 | スタッキング：勾配ブースティング 11 メンバーの予測 + メタ特徴量（商品の新しさなど）を浅い LightGBM で | 0.41696 | **0.41873（Public 0.42109）** | `output/exp034/submission_lgb_trees.csv` |
+| exp034（lgb_nouid_trees） | 2026-11-02 | lgb_trees から product_uid を除いたもの（効果の切り分け） | 0.41755 | 0.41960（Public 0.42177） | `output/exp034/submission_lgb_nouid_trees.csv` |
 | exp034（lgb_all） | 2026-11-02 | スタッキング：30 メンバーの予測 + メタ特徴量を浅い LightGBM で | 0.41441 | 未提出 | `output/exp034/submission_lgb_all.csv` |
 
 ## 共通の前提
@@ -2412,8 +2413,10 @@ exp023〜exp026 のアンサンブル（重み付き平均）は、CV は改善�
 | exp033（全部の列、これまでのベスト） | 0.41705 | 0.41978 | 0.42182 |
 | linear_all | **0.41442** | 0.42113 | 0.42325 |
 | **lgb_trees** | 0.41696 | **0.41873** | **0.42109** |
+| lgb_nouid_trees（product_uid なし） | 0.41755 | 0.41960 | 0.42177 |
 
 - **lgb_trees は Private 0.41873、Public 0.42109 で、exp033 から Private で −0.00105、Public で −0.00073 改善した。新しいベスト**。CV はほぼ同じ（0.41696 / 0.41705）なので、改善のほとんどは CV では測れない部分、つまり train にない新しい商品の予測を下げる補正によるものと考えられる
 - linear_all は CV が最も良い（−0.0026）のに、LB は Private +0.00135、Public +0.00143 と悪化した。**数値だけのメンバーに重みが集中するスタッキングは LB で負ける、という exp023〜exp026 の結果が今回も再現した**
+- 切り分けのために提出した lgb_nouid_trees（product_uid だけを除いたもの）は Private 0.41960、Public 0.42177 で、exp033 とほぼ同じ（−0.00018 / −0.00005）。**lgb_trees の改善（Public −0.00073）のうち 9 割（−0.00068）は product_uid による、新しい商品の補正だと確定した**。木のモデルどうしを混ぜること自体の効果はごく小さい
 - 学び：CV を良くする方向より、CV で測れない test の偏り（新しい商品の過大予測）を直す方向のほうが LB に効く
 

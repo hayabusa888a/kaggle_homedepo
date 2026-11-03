@@ -86,7 +86,8 @@ rows = [
     ("exp033_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 96 列だけ、参考）", "exp033_all", 0.41456, N, N, "参考", "未提出", "output/exp033/submission_num.csv"),
     ("exp034_linear_all", "2026-11-02", "スタッキング", "30 メンバー（LGB・XGB・Cat・HGB・Ridge・カーネル Ridge・RF・ET・kNN・MLP など）の重み付き平均", "exp033_all", 0.41442, 0.42113, 0.42325, "不採用", "LB で Public +0.00143。CV −0.0026 なのに LB は悪化し、exp023〜026 と同じ失敗。重みは数値だけのメンバー（カーネル Ridge・HGB）に集中し、exp023 と同じ形。early stopping を学習側の 1 割に変更（これまでの CV は約 0.0004 楽観的だった）", "output/exp034/submission_linear_all.csv"),
     ("exp034_lgb_trees", "2026-11-02", "スタッキング", "勾配ブースティング 11 メンバー + メタ特徴量（product_uid など）を浅い LightGBM で", "exp033_all", 0.41696, 0.41873, 0.42109, "採用（ベスト）", "LB で Public −0.00073、Private −0.00105 。CV は exp033 とほぼ同じ（0.41696 / 0.41705）なのに LB は大きく改善。2 段目が「新しい商品ほど予測を下げる」補正を学習（train にない商品で −0.07）。product_uid なしでは改善なし", "output/exp034/submission_lgb_trees.csv"),
-    ("exp034_lgb_all", "2026-11-02", "スタッキング", "30 メンバー + メタ特徴量を浅い LightGBM で", "exp033_all", 0.41441, N, N, "参考", "未提出", "output/exp034/submission_lgb_all.csv"),
+    ("exp034_lgb_nouid_trees", "2026-11-02", "スタッキング", "lgb_trees から product_uid を除いたもの（効果の切り分け）", "exp033_all", 0.41755, 0.41960, 0.42177, "検証", "LB は exp033 とほぼ同じ（Public −0.00005）。lgb_trees の改善の 9 割は product_uid による新しい商品の補正と確定", "output/exp034/submission_lgb_nouid_trees.csv"),
+    ("exp034_lgb_all","2026-11-02", "スタッキング", "30 メンバー + メタ特徴量を浅い LightGBM で", "exp033_all", 0.41441, N, N, "参考", "未提出", "output/exp034/submission_lgb_all.csv"),
 ]
 first = 2
 for i, r in enumerate(rows):
