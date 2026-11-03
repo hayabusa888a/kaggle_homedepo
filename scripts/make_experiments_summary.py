@@ -82,10 +82,10 @@ rows = [
     ("exp031_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 88 列だけ、参考）", "exp031_all", 0.41496, N, N, "参考", "未提出", "output/exp031/submission_num.csv"),
     ("exp032_all", "2026-10-28", "ファインチューニング", "exp029 ＋ ファインチューニングした Qwen3-Reranker-0.6B（LLM 系、タイトル）", "exp029_all", 0.41759, 0.42004, 0.42201, "採用", "LB はごくわずかに改善（Public −0.00006）。CV の改善ほど LB には効かず。単独 0.44286 と弱めだが、ほかとの相関が最も低い（0.86〜0.90）。モデル固有の入力の形が必要。gradient checkpointing なしではメモリがあふれ 30W に。学習は 6 時間", "output/exp032/submission_all.csv"),
     ("exp032_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 88 列だけ、参考）", "exp032_all", 0.41510, N, N, "参考", "未提出", "output/exp032/submission_num.csv"),
-    ("exp033_all", "2026-10-28", "ファインチューニング", "exp029 ＋ DeBERTa（タイトル）・ModernBERT・Qwen3 の 3 つを全部", "exp029_all", 0.41705, 0.41978, 0.42182, "採用（ベスト）", "Public で exp031 を 0.00002 上回るだけで、LB の改善のほとんどは ModernBERT による。1 つずつの CV の改善の合計（0.0016）の 7 割（0.0011）。新しい学習なし", "output/exp033/submission_all.csv"),
+    ("exp033_all", "2026-10-28", "ファインチューニング", "exp029 ＋ DeBERTa（タイトル）・ModernBERT・Qwen3 の 3 つを全部", "exp029_all", 0.41705, 0.41978, 0.42182, "採用","Public で exp031 を 0.00002 上回るだけで、LB の改善のほとんどは ModernBERT による。1 つずつの CV の改善の合計（0.0016）の 7 割（0.0011）。新しい学習なし", "output/exp033/submission_all.csv"),
     ("exp033_num", "2026-10-28", "特徴量選択", "同上（数値の特徴量 96 列だけ、参考）", "exp033_all", 0.41456, N, N, "参考", "未提出", "output/exp033/submission_num.csv"),
-    ("exp034_linear_all", "2026-11-02", "スタッキング", "30 メンバー（LGB・XGB・Cat・HGB・Ridge・カーネル Ridge・RF・ET・kNN・MLP など）の重み付き平均", "exp033_all", 0.41442, N, N, "LB 待ち", "重みは数値だけのメンバー（カーネル Ridge・HGB）に集中し、exp023 と同じ形。early stopping を学習側の 1 割に変更（これまでの CV は約 0.0004 楽観的だった）", "output/exp034/submission_linear_all.csv"),
-    ("exp034_lgb_trees", "2026-11-02", "スタッキング", "勾配ブースティング 11 メンバー + メタ特徴量（product_uid など）を浅い LightGBM で", "exp033_all", 0.41696, N, N, "LB 待ち", "2 段目が「新しい商品ほど予測を下げる」補正を学習（train にない商品で −0.07）。product_uid なしでは改善なし", "output/exp034/submission_lgb_trees.csv"),
+    ("exp034_linear_all", "2026-11-02", "スタッキング", "30 メンバー（LGB・XGB・Cat・HGB・Ridge・カーネル Ridge・RF・ET・kNN・MLP など）の重み付き平均", "exp033_all", 0.41442, 0.42113, 0.42325, "不採用", "LB で Public +0.00143。CV −0.0026 なのに LB は悪化し、exp023〜026 と同じ失敗。重みは数値だけのメンバー（カーネル Ridge・HGB）に集中し、exp023 と同じ形。early stopping を学習側の 1 割に変更（これまでの CV は約 0.0004 楽観的だった）", "output/exp034/submission_linear_all.csv"),
+    ("exp034_lgb_trees", "2026-11-02", "スタッキング", "勾配ブースティング 11 メンバー + メタ特徴量（product_uid など）を浅い LightGBM で", "exp033_all", 0.41696, 0.41873, 0.42109, "採用（ベスト）", "LB で Public −0.00073、Private −0.00105 。CV は exp033 とほぼ同じ（0.41696 / 0.41705）なのに LB は大きく改善。2 段目が「新しい商品ほど予測を下げる」補正を学習（train にない商品で −0.07）。product_uid なしでは改善なし", "output/exp034/submission_lgb_trees.csv"),
     ("exp034_lgb_all", "2026-11-02", "スタッキング", "30 メンバー + メタ特徴量を浅い LightGBM で", "exp033_all", 0.41441, N, N, "参考", "未提出", "output/exp034/submission_lgb_all.csv"),
 ]
 first = 2
@@ -117,7 +117,7 @@ for i, r in enumerate(rows):
 last_row = first + len(rows) - 1
 ws.cell(row=last_row + 2, column=2, value="凡例").font = f(True)
 notes = [
-    ("緑の行", "現在のベスト（exp033_all）"), ("オレンジの行", "不採用（以降の実験の土台にしていない）"), ("灰色の行", "検証・参考のための実験"),
+    ("緑の行", "現在のベスト（exp034_lgb_trees）"), ("オレンジの行", "不採用（以降の実験の土台にしていない）"), ("灰色の行", "検証・参考のための実験"),
     ("青い数字", "Kaggle に提出して得た LB（ユーザーから共有された値）。空欄は未提出、または Public LB を記録していない"),
     ("LB−CV・変化の列", "数式で計算（比較対象は「比較対象」列の実験名を「実験」列から探す）。LB の変化は、両方に Private LB があるときだけ表示"),
     ("CV", "検索語単位の GroupKFold（5 分割）の RMSE。exp023〜は入れ子の CV（アンサンブル）または LightGBM 単体の OOF"),
@@ -134,10 +134,10 @@ ov.column_dimensions["B"].width = 95
 items = [
     ("Home Depot Product Search Relevance：実験の振り返り（exp001〜exp034）", None, "title"),
     ("タスク", "検索語と商品のペアの関連度 relevance（1〜3、複数人の評価の平均）を予測する。評価指標は RMSE", None),
-    ("期間", "2026-10-13 〜 2026-11-02", None),
-    ("現在のベスト", "exp033_all：LightGBM 単体（全部の列）。CV 0.41705 / Private LB 0.41978 / Public LB 0.42182", "best"),
-    ("最初のベースライン", "exp001：CV 0.50579 / Private LB 0.50782（ベストまで −0.0880）", None),
-    ("ベストの構成", "前処理（正規化・SymSpell・ステミング）→ TF-IDF・BM25・単語一致・文字 n-gram・ブランド・属性値 → 埋め込み（mxbai-embed-large）→ 学習前の cross-encoder（mxbai-rerank-base）→ ファインチューニングした cross-encoder 8 種（bge-reranker-base ×2、v2-m3 ×2（種の平均）、DeBERTa ×2、ModernBERT ×1、Qwen3 ×1）→ 同じ検索語の中での相対値 → LightGBM（Optuna で調整、lr 0.02）", None),
+    ("期間", "2026-10-13 〜 2026-11-03", None),
+    ("現在のベスト", "exp034_lgb_trees：勾配ブースティング 11 個のスタッキング（2 段目は浅い LightGBM + メタ特徴量）。CV 0.41696 / Private LB 0.41873 / Public LB 0.42109", "best"),
+    ("最初のベースライン", "exp001：CV 0.50579 / Private LB 0.50782（ベストまで −0.0891）", None),
+    ("ベストの構成", "前処理（正規化・SymSpell・ステミング）→ TF-IDF・BM25・単語一致・文字 n-gram・ブランド・属性値 → 埋め込み（mxbai-embed-large）→ 学習前の cross-encoder（mxbai-rerank-base）→ ファインチューニングした cross-encoder 8 種（bge-reranker-base ×2、v2-m3 ×2（種の平均）、DeBERTa ×2、ModernBERT ×1、Qwen3 ×1）→ 同じ検索語の中での相対値 → LightGBM・XGBoost・CatBoost の 11 個 → 2 段目の浅い LightGBM（11 個の予測 + product_uid などのメタ特徴量 6 つ）", None),
     ("CV の方針", "検索語単位の GroupKFold（5 分割）。test の 73% の行は train にない検索語で、train では 1 つの検索語が平均 6〜7 行出てくるため", None),
     ("データの要点", "test の 57% の行は train にない商品。11.6% は train のどの商品より新しい（product_uid > 206,650）。新しい商品ほど relevance が低く、誤差が大きい。同じ検索語でほぼ同じ商品の組でも評価のばらつきが RMSE 換算で 0.288 あり、ラベルのノイズが大きい", None),
     ("最大の課題", "ファインチューニングのスコアへの依存を強める変更（アンサンブル、種の平均、数値だけの特徴量）ほど、CV は良くなるのに LB は良くならない。CV では train より新しい商品を評価できない。採否は Public LB で判断している", None),
@@ -210,6 +210,7 @@ lessons = [
     ("一方、系統の違うモデル（DeBERTa）を加えると、CV 以上に LB が改善した。同じ系統を重ねるより、系統を増やすほうが頑健", "exp029"),
     ("系統の違うモデルを加える効果は、加えるほど小さくなる（DeBERTa は LB −0.0024、次の ModernBERT は −0.0002）。同じ系統で入力だけ変えた版（DeBERTa タイトル）はさらに小さい", "exp029, exp030, exp031"),
     ("スコアの相関が低い（性質が違う）だけでは LB に効くとは限らない。単独で弱いモデル（Qwen3-0.6B）は CV では効いたが LB ではごくわずか。単独の強さと性質の違いの両方が要る", "exp031, exp032"),
+    ("スタッキングも、数値だけのメンバーに頼る重み付き平均は CV −0.0026 なのに LB で悪化した。一方、木のモデルだけを 2 段目の LightGBM で混ぜ、product_uid で「新しい商品ほど下げる」補正を学ばせると、CV はほぼ同じでも LB が −0.0007〜−0.0011 改善した。CV で測れない test の偏り（新しい商品）を直すほうが効く", "exp034"),
     ("仮説（見た検索語のスコアの偏り）は LB で否定された。仮説は小さく試し、外れたら記録して戻す", "exp028"),
     ("Private LB を見て何度も選ぶと、test への過学習になる。採否は Public LB で判断する", "exp027〜"),
     ("8GB の GPU では、単語の埋め込み層の固定・8bit AdamW・バッチの分割・bf16 予測でメモリを抑えると、大きいモデルも現実的な時間で学習できる。あふれると数倍遅くなる", "exp021, exp022, exp029"),
