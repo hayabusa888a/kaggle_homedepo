@@ -11,6 +11,8 @@
   - all: すべて
 評価は入れ子の CV（外側の fold k の 2 段目のモデルは、ほかの 4 fold の OOF で学習して fold k を予測する）。
 test は全部の OOF で学習した 2 段目のモデルで予測する。メタ特徴量は fold ごとの test の特徴量で作り、5 つの予測を平均する。
+    python exp/exp034_stack.py                # exp034
+    python exp/exp034_stack.py --exp=exp035   # exp035（product_uid を加えた特徴量の木のメンバー）
 """
 import sys
 from pathlib import Path
@@ -70,7 +72,10 @@ def main():
                for k in range(5)]
 
     rows, preds = [], {}
-    for set_name, cols in [("trees", [c for c in TREES if c in oof]), ("all", list(oof.columns))]:
+    sets = [("trees", [c for c in TREES if c in oof]), ("all", list(oof.columns))]
+    if set(sets[0][1]) == set(sets[1][1]):  # 木のメンバーしかないとき（exp035）は trees だけ
+        sets = sets[:1]
+    for set_name, cols in sets:
         P, P_test = oof[cols].to_numpy(), test[cols].to_numpy()
         # linear
         nested = np.zeros(len(y))

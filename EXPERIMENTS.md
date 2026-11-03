@@ -5,7 +5,7 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 - タスク：検索語と商品のペアに対する関連度 `relevance`（1〜3）を予測する
 - 評価指標：RMSE
 - 参考：全行を train の平均値（2.38）で予測した場合の RMSE は 0.53398
-- 振り返り用の一覧：[experiments_summary.xlsx](experiments_summary.xlsx)（exp001〜exp034、作成は `scripts/make_experiments_summary.py`）
+- 振り返り用の一覧：[experiments_summary.xlsx](experiments_summary.xlsx)（exp001〜exp035、作成は `scripts/make_experiments_summary.py`）
 
 ## 結果一覧
 
@@ -56,6 +56,9 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 | exp034（linear_all） | 2026-11-02 | スタッキング：30 メンバーの予測の重み付き平均 | 0.41442 | 0.42113（Public 0.42325） | `output/exp034/submission_linear_all.csv` |
 | exp034（lgb_trees） | 2026-11-02 | スタッキング：勾配ブースティング 11 メンバーの予測 + メタ特徴量（商品の新しさなど）を浅い LightGBM で | 0.41696 | **0.41873（Public 0.42109）** | `output/exp034/submission_lgb_trees.csv` |
 | exp034（lgb_nouid_trees） | 2026-11-02 | lgb_trees から product_uid を除いたもの（効果の切り分け） | 0.41755 | 0.41960（Public 0.42177） | `output/exp034/submission_lgb_nouid_trees.csv` |
+| exp035（単体） | 2026-11-03 | exp033 の特徴量に product_uid を加えた LightGBM 単体 | 0.41648 | 0.41902（Public 0.42128） | `output/exp035/submission_all.csv` |
+| exp035（linear_trees） | 2026-11-03 | product_uid 入りの木の 11 メンバーの重み付き平均 | 0.41656 | 未提出 | `output/exp035/submission_linear_trees.csv` |
+| exp035（lgb_trees） | 2026-11-03 | product_uid 入りの木の 11 メンバー + メタ特徴量（product_uid など）を浅い LightGBM で | 0.41700 | 未提出 | `output/exp035/submission_lgb_trees.csv` |
 | exp034（lgb_all） | 2026-11-02 | スタッキング：30 メンバーの予測 + メタ特徴量を浅い LightGBM で | 0.41441 | 未提出 | `output/exp034/submission_lgb_all.csv` |
 
 ## 共通の前提
@@ -2420,3 +2423,53 @@ exp023〜exp026 のアンサンブル（重み付き平均）は、CV は改善�
 - 切り分けのために提出した lgb_nouid_trees（product_uid だけを除いたもの）は Private 0.41960、Public 0.42177 で、exp033 とほぼ同じ（−0.00018 / −0.00005）。**lgb_trees の改善（Public −0.00073）のうち 9 割（−0.00068）は product_uid による、新しい商品の補正だと確定した**。木のモデルどうしを混ぜること自体の効果はごく小さい
 - 学び：CV を良くする方向より、CV で測れない test の偏り（新しい商品の過大予測）を直す方向のほうが LB に効く
 
+
+## exp035：product_uid を 1 段目の特徴量にも入れる
+
+### 目的
+
+exp034 の LB の改善は、2 段目の LightGBM が product_uid を使って「新しい商品ほど予測を下げる」補正を学んだことによるものだった（lgb_nouid_trees との比較で確定）。product_uid を 1 段目の LightGBM の特徴量にも入れて、ほかの特徴量と組み合わせた補正を学べるようにする。
+
+### 方法
+
+- 特徴量：exp033 の数値の特徴量の末尾に product_uid を 1 列加える（[exp/exp035_build_features.py](exp/exp035_build_features.py)、`data/features/exp035`）
+- LightGBM 単体：exp033 と同じ設定（[exp/exp031_run.py](exp/exp031_run.py) `exp035`。early stopping は検証 fold で行うので、exp033 の CV と同じ条件で比べられる）
+- スタッキング：exp034 の木の 11 メンバーを exp035 の特徴量で学習し直し（`python exp/exp034_members.py --exp=exp035 ...`、early stopping は学習側の 1 割）、exp034 と同じ 2 段目のモデルで混ぜる（`python exp/exp034_stack.py --exp=exp035`）。メンバーの学習は 25 分
+
+### 結果
+
+**LightGBM 単体**
+
+| | CV | Private LB | Public LB |
+|---|---|---|---|
+| exp033 | 0.41705 | 0.41978 | 0.42182 |
+| **exp035 単体** | **0.41648** | 0.41902 | 0.42128 |
+| exp034 lgb_trees（2 段目だけに product_uid） | 0.41696 | **0.41873** | **0.42109** |
+
+**スタッキング（入れ子の CV。メンバーの early stopping は学習側の 1 割なので、上の表の CV より約 0.0004 厳しい）**
+
+| 方法 | 入れ子の CV | exp034 の同じ方法 |
+|---|---|---|
+| lgb_base（単体、メンバー） | 0.41674 | 0.41743 |
+| linear_trees | **0.41656** | 0.41717 |
+| lgb_trees | 0.41700 | 0.41696 |
+| lgb_nouid_trees | 0.41694 | 0.41755 |
+
+- 木のメンバーはどれも exp034 より CV が 0.0005〜0.0007 良くなった（例：lgb_base 0.41743 → 0.41674、xgb_d4 0.41748 → 0.41681）
+- 1 段目に product_uid が入ったので、2 段目で product_uid を使っても CV はもう良くならない（lgb_trees 0.41700、lgb_nouid_trees 0.41694）
+- linear_trees の重み：xgb_d6 0.306、lgb_base 0.271、xgb_d4 0.220、cat_d6 0.084、cat_d8 0.058、lgb_huber 0.057
+
+**test の予測の平均（product_uid の帯ごと）**
+
+| product_uid | exp033 | exp034 lgb_trees | exp035 単体 | exp035 linear_trees | exp035 lgb_trees |
+|---|---|---|---|---|---|
+| 〜150,000 | 2.432 | 2.443 | 2.440 | 2.441 | 2.443 |
+| 150,000〜180,000 | 2.383 | 2.370 | 2.371 | 2.371 | 2.369 |
+| 180,000〜195,000 | 2.307 | 2.272 | 2.276 | 2.277 | 2.270 |
+| 195,000〜206,650 | 2.309 | 2.271 | 2.278 | 2.278 | 2.269 |
+| **206,651〜（train にない）** | 2.514 | 2.446 | 2.447 | 2.447 | **2.434** |
+
+### 考察
+
+- 1 段目の LightGBM だけでも、exp034 の 2 段目とほぼ同じ強さの補正（train にない商品で 2.514 → 2.447）を学んだ。LB は exp033 から Public −0.00054 と改善したが、exp034 lgb_trees（−0.00073）には届かなかった。CV は exp035 単体のほうが良いのに LB は逆で、浅い 2 段目で補正するほうが test で安定するのかもしれない
+- exp035 lgb_trees は 1 段目と 2 段目の両方で補正するので、train にない商品の予測が最も低い（2.434）。補正を強めると LB が良くなるかを確かめられる

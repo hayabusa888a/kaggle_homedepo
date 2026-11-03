@@ -6,6 +6,7 @@ early stopping に使い、検証 fold は予測だけに使う（OOF の予測�
 結果は output/exp034/members/<名前>.npz（oof, test）。保存済みのメンバーは学習し直さない。
     python exp/exp034_members.py                         # MLP 以外のすべて
     .venv-gpu/Scripts/python.exe exp/exp034_members.py --mlp
+    python exp/exp034_members.py --exp=exp035 lgb_base ...  # exp035 の特徴量で、指定したメンバーだけ（output/exp035/members）
 """
 import sys
 import time
@@ -20,14 +21,16 @@ from scipy import sparse
 import exp023_members as m23
 from src.utils import OUTPUT_DIR, ROOT, get_logger, rmse
 
-m23.FEAT_DIR = ROOT / "data" / "features" / "exp033"
+# 実験名（--exp=...）ごとの特徴量のフォルダ。exp035 は exp033 に product_uid を加えたもの
+EXP = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--exp=")), "exp034")
+m23.FEAT_DIR = ROOT / "data" / "features" / {"exp034": "exp033", "exp035": "exp035"}[EXP]
 m23.KNN_COLS_A = ["ft_ce_large_title_desc", "ft_ce_large_title", "ft_ce_title_desc", "ft_ce_title",
                   "ft_ce_deberta_title_desc", "ft_ce_deberta_title", "ft_ce_modernbert_title_desc", "ft_ce_qwen3_title",
                   "ce_title", "ce_desc", "emb_cos_title", "emb_cos_desc", "ratio_match_title", "cos_title",
                   "q_ft_ce_large_title_desc_diff_max", "q_ft_ce_large_title_desc_diff_mean", "q_size"]
 import exp024_members as m24  # noqa: E402
 
-OUT_DIR = OUTPUT_DIR / "exp034"
+OUT_DIR = OUTPUT_DIR / EXP
 MEMBER_DIR = OUT_DIR / "members"
 FT_COLS = ["ft_ce_title", "ft_ce_title_desc", "ft_ce_large_title", "ft_ce_large_title_desc",
            "ft_ce_deberta_title_desc", "ft_ce_deberta_title", "ft_ce_modernbert_title_desc", "ft_ce_qwen3_title"]

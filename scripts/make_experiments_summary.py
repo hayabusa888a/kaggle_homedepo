@@ -87,7 +87,10 @@ rows = [
     ("exp034_linear_all", "2026-11-02", "スタッキング", "30 メンバー（LGB・XGB・Cat・HGB・Ridge・カーネル Ridge・RF・ET・kNN・MLP など）の重み付き平均", "exp033_all", 0.41442, 0.42113, 0.42325, "不採用", "LB で Public +0.00143。CV −0.0026 なのに LB は悪化し、exp023〜026 と同じ失敗。重みは数値だけのメンバー（カーネル Ridge・HGB）に集中し、exp023 と同じ形。early stopping を学習側の 1 割に変更（これまでの CV は約 0.0004 楽観的だった）", "output/exp034/submission_linear_all.csv"),
     ("exp034_lgb_trees", "2026-11-02", "スタッキング", "勾配ブースティング 11 メンバー + メタ特徴量（product_uid など）を浅い LightGBM で", "exp033_all", 0.41696, 0.41873, 0.42109, "採用（ベスト）", "LB で Public −0.00073、Private −0.00105 。CV は exp033 とほぼ同じ（0.41696 / 0.41705）なのに LB は大きく改善。2 段目が「新しい商品ほど予測を下げる」補正を学習（train にない商品で −0.07）。product_uid なしでは改善なし", "output/exp034/submission_lgb_trees.csv"),
     ("exp034_lgb_nouid_trees", "2026-11-02", "スタッキング", "lgb_trees から product_uid を除いたもの（効果の切り分け）", "exp033_all", 0.41755, 0.41960, 0.42177, "検証", "LB は exp033 とほぼ同じ（Public −0.00005）。lgb_trees の改善の 9 割は product_uid による新しい商品の補正と確定", "output/exp034/submission_lgb_nouid_trees.csv"),
-    ("exp034_lgb_all","2026-11-02", "スタッキング", "30 メンバー + メタ特徴量を浅い LightGBM で", "exp033_all", 0.41441, N, N, "参考", "未提出", "output/exp034/submission_lgb_all.csv"),
+    ("exp034_lgb_all", "2026-11-02", "スタッキング", "30 メンバー + メタ特徴量を浅い LightGBM で", "exp033_all", 0.41441, N, N, "参考", "未提出", "output/exp034/submission_lgb_all.csv"),
+    ("exp035_single", "2026-11-03", "特徴量追加", "exp033 の特徴量に product_uid を加えた LightGBM 単体", "exp033_all", 0.41648, 0.41902, 0.42128, "採用", "1 段目だけでも exp034 の 2 段目とほぼ同じ補正（train にない商品で −0.07）を学び、LB Public −0.00054。ただし exp034 lgb_trees（−0.00073）には届かない", "output/exp035/submission_all.csv"),
+    ("exp035_linear_trees", "2026-11-03", "スタッキング", "product_uid 入りの木の 11 メンバーの重み付き平均", "exp035_single", 0.41656, N, N, "LB 待ち", "メンバーの CV は exp034 より 0.0005〜0.0007 良い（early stopping は学習側の 1 割）", "output/exp035/submission_linear_trees.csv"),
+    ("exp035_lgb_trees", "2026-11-03", "スタッキング", "product_uid 入りの木の 11 メンバー + メタ特徴量（product_uid など）を浅い LightGBM で", "exp034_lgb_trees", 0.41700, N, N, "LB 待ち", "1 段目と 2 段目の両方で補正し、train にない商品の予測が最も低い（2.434）", "output/exp035/submission_lgb_trees.csv"),
 ]
 first = 2
 for i, r in enumerate(rows):
@@ -133,7 +136,7 @@ ov = wb.create_sheet("概要", 0)
 ov.column_dimensions["A"].width = 26
 ov.column_dimensions["B"].width = 95
 items = [
-    ("Home Depot Product Search Relevance：実験の振り返り（exp001〜exp034）", None, "title"),
+    ("Home Depot Product Search Relevance：実験の振り返り（exp001〜exp035）", None, "title"),
     ("タスク", "検索語と商品のペアの関連度 relevance（1〜3、複数人の評価の平均）を予測する。評価指標は RMSE", None),
     ("期間", "2026-10-13 〜 2026-11-03", None),
     ("現在のベスト", "exp034_lgb_trees：勾配ブースティング 11 個のスタッキング（2 段目は浅い LightGBM + メタ特徴量）。CV 0.41696 / Private LB 0.41873 / Public LB 0.42109", "best"),
