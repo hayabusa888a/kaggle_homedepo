@@ -91,6 +91,9 @@ rows = [
     ("exp035_single", "2026-11-03", "特徴量追加", "exp033 の特徴量に product_uid を加えた LightGBM 単体", "exp033_all", 0.41648, 0.41902, 0.42128, "採用", "1 段目だけでも exp034 の 2 段目とほぼ同じ補正（train にない商品で −0.07）を学び、LB Public −0.00054。ただし exp034 lgb_trees（−0.00073）には届かない", "output/exp035/submission_all.csv"),
     ("exp035_linear_trees", "2026-11-03", "スタッキング", "product_uid 入りの木の 11 メンバーの重み付き平均", "exp035_single", 0.41656, 0.41867, 0.42109, "参考", "LB は exp034 lgb_trees と同等（Public 同じ、Private −0.00006）。単体（Public 0.42128）より良い。メンバーの CV は exp034 より 0.0005〜0.0007 良い（early stopping は学習側の 1 割）", "output/exp035/submission_linear_trees.csv"),
     ("exp035_lgb_trees", "2026-11-03", "スタッキング", "product_uid 入りの木の 11 メンバー + メタ特徴量（product_uid など）を浅い LightGBM で", "exp034_lgb_trees", 0.41700, 0.41871, 0.42103, "採用（ベスト）", "LB Public −0.00006 とごくわずかに更新。補正を強めても LB はほとんど変わらず、product_uid の補正はほぼ出し切った。1 段目と 2 段目の両方で補正し、train にない商品の予測が最も低い（2.434）", "output/exp035/submission_lgb_trees.csv"),
+    ("exp036_single", "2026-11-04", "特徴量追加", "exp035 に商品単位の特徴量 6 列（出現行数・属性数・説明文の長さ・商品ごとのスコアの平均など）を加えた LightGBM 単体", "exp035_single", 0.41627, N, N, "LB 待ち", "CV −0.0002。train にない商品はほとんど 1 回しか出てこない（行数 1.18）。新しい商品の予測はわずかに上がった", "output/exp036/submission_all.csv"),
+    ("exp036_linear_trees", "2026-11-04", "スタッキング", "同じ特徴量の木の 11 メンバーの重み付き平均", "exp035_linear_trees", 0.41642, N, N, "参考", "未提出", "output/exp036/submission_linear_trees.csv"),
+    ("exp036_lgb_trees", "2026-11-04", "スタッキング", "同じ特徴量の木の 11 メンバー + メタ特徴量を浅い LightGBM で", "exp035_lgb_trees", 0.41678, N, N, "LB 待ち", "CV −0.0002", "output/exp036/submission_lgb_trees.csv"),
 ]
 first = 2
 for i, r in enumerate(rows):
@@ -136,9 +139,9 @@ ov = wb.create_sheet("概要", 0)
 ov.column_dimensions["A"].width = 26
 ov.column_dimensions["B"].width = 95
 items = [
-    ("Home Depot Product Search Relevance：実験の振り返り（exp001〜exp035）", None, "title"),
+    ("Home Depot Product Search Relevance：実験の振り返り（exp001〜exp036）", None, "title"),
     ("タスク", "検索語と商品のペアの関連度 relevance（1〜3、複数人の評価の平均）を予測する。評価指標は RMSE", None),
-    ("期間", "2026-10-13 〜 2026-11-03", None),
+    ("期間", "2026-10-13 〜 2026-11-04", None),
     ("現在のベスト", "exp035_lgb_trees：product_uid を加えた特徴量の勾配ブースティング 11 個のスタッキング（2 段目は浅い LightGBM + メタ特徴量）。CV 0.41700 / Private LB 0.41871 / Public LB 0.42103", "best"),
     ("最初のベースライン", "exp001：CV 0.50579 / Private LB 0.50782（ベストまで −0.0891）", None),
     ("ベストの構成", "前処理（正規化・SymSpell・ステミング）→ TF-IDF・BM25・単語一致・文字 n-gram・ブランド・属性値 → 埋め込み（mxbai-embed-large）→ 学習前の cross-encoder（mxbai-rerank-base）→ ファインチューニングした cross-encoder 8 種（bge-reranker-base ×2、v2-m3 ×2（種の平均）、DeBERTa ×2、ModernBERT ×1、Qwen3 ×1）→ 同じ検索語の中での相対値 + product_uid → LightGBM・XGBoost・CatBoost の 11 個 → 2 段目の浅い LightGBM（11 個の予測 + product_uid などのメタ特徴量 6 つ）", None),

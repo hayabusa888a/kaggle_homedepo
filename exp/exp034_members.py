@@ -23,7 +23,7 @@ from src.utils import OUTPUT_DIR, ROOT, get_logger, rmse
 
 # 実験名（--exp=...）ごとの特徴量のフォルダ。exp035 は exp033 に product_uid を加えたもの
 EXP = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--exp=")), "exp034")
-m23.FEAT_DIR = ROOT / "data" / "features" / {"exp034": "exp033", "exp035": "exp035"}[EXP]
+m23.FEAT_DIR = ROOT / "data" / "features" / {"exp034": "exp033", "exp035": "exp035", "exp036": "exp036"}[EXP]
 m23.KNN_COLS_A = ["ft_ce_large_title_desc", "ft_ce_large_title", "ft_ce_title_desc", "ft_ce_title",
                   "ft_ce_deberta_title_desc", "ft_ce_deberta_title", "ft_ce_modernbert_title_desc", "ft_ce_qwen3_title",
                   "ce_title", "ce_desc", "emb_cos_title", "emb_cos_desc", "ratio_match_title", "cos_title",

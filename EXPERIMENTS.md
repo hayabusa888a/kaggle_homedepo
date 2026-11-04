@@ -5,7 +5,7 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 - タスク：検索語と商品のペアに対する関連度 `relevance`（1〜3）を予測する
 - 評価指標：RMSE
 - 参考：全行を train の平均値（2.38）で予測した場合の RMSE は 0.53398
-- 振り返り用の一覧：[experiments_summary.xlsx](experiments_summary.xlsx)（exp001〜exp035、作成は `scripts/make_experiments_summary.py`）
+- 振り返り用の一覧：[experiments_summary.xlsx](experiments_summary.xlsx)（exp001〜exp036、作成は `scripts/make_experiments_summary.py`）
 
 ## 結果一覧
 
@@ -59,6 +59,9 @@ Kaggle「Home Depot Product Search Relevance」の実験内容と結果の記録
 | exp035（単体） | 2026-11-03 | exp033 の特徴量に product_uid を加えた LightGBM 単体 | 0.41648 | 0.41902（Public 0.42128） | `output/exp035/submission_all.csv` |
 | exp035（linear_trees） | 2026-11-03 | product_uid 入りの木の 11 メンバーの重み付き平均 | 0.41656 | 0.41867（Public 0.42109） | `output/exp035/submission_linear_trees.csv` |
 | exp035（lgb_trees） | 2026-11-03 | product_uid 入りの木の 11 メンバー + メタ特徴量（product_uid など）を浅い LightGBM で | 0.41700 | **0.41871（Public 0.42103）** | `output/exp035/submission_lgb_trees.csv` |
+| exp036（単体） | 2026-11-04 | exp035 に商品単位の特徴量 6 列（行数・属性数・説明文の長さ・商品ごとのスコアの平均など）を加えた LightGBM 単体 | 0.41627 | 未提出 | `output/exp036/submission_all.csv` |
+| exp036（linear_trees） | 2026-11-04 | 同じ特徴量の木の 11 メンバーの重み付き平均 | 0.41642 | 未提出 | `output/exp036/submission_linear_trees.csv` |
+| exp036（lgb_trees） | 2026-11-04 | 同じ特徴量の木の 11 メンバー + メタ特徴量を浅い LightGBM で | 0.41678 | 未提出 | `output/exp036/submission_lgb_trees.csv` |
 | exp034（lgb_all） | 2026-11-02 | スタッキング：30 メンバーの予測 + メタ特徴量を浅い LightGBM で | 0.41441 | 未提出 | `output/exp034/submission_lgb_all.csv` |
 
 ## 共通の前提
@@ -2488,3 +2491,51 @@ exp034 の LB の改善は、2 段目の LightGBM が product_uid を使って�
 - exp035 linear_trees も Private 0.41867、Public 0.42109 で、exp034 lgb_trees とほぼ同じ
 - 1 段目の単体（Public 0.42128）より、木のモデルを混ぜたもののほうが良い。単体だけで補正するより、複数のモデルで平均するほうが test で安定する
 - 補正を強めても（train にない商品で 2.446 → 2.434）LB はほとんど変わらない。product_uid による新しい商品の補正は、この形ではほぼ出し切った
+
+## exp036：商品単位の特徴量を加える
+
+### 目的
+
+product_uid による補正は、train より新しい商品には train で最も新しい帯の値を当てはめるしかない。新しい商品の性質により近い、商品単位の情報を特徴量として与える。
+
+### 方法
+
+- 特徴量：exp035 の数値の特徴量の末尾に 6 列加える（[exp/exp036_build_features.py](exp/exp036_build_features.py)）。どれもラベルを使わず、train + test を合わせて商品ごとに集計する
+  - `prod_n_rows`：その商品が train + test に出てくる行数
+  - `prod_n_attr` / `prod_n_bullets`：属性データの行数 / そのうち箇条書き（Bullet）の数
+  - `prod_n_desc_chars`：説明文の文字数
+  - `prod_ft_mean`：その商品の全部の行での、ファインチューニングした 8 本のスコアの平均の平均（train は OOF、test は fold ごとのスコア）
+  - `prod_ft_diff`：この行の 8 本の平均 − `prod_ft_mean`
+- LightGBM 単体（exp033 と同じ設定）と、木の 11 メンバー + 2 段目（exp035 と同じ手順、`--exp=exp036`）
+
+### 結果
+
+**加えた特徴量**
+
+| 列 | train の平均 | test の平均 | train にない商品の平均 | 正解との相関 |
+|---|---|---|---|---|
+| prod_n_rows | 4.07 | 4.14 | **1.18** | −0.033 |
+| prod_n_attr | 19.0 | 20.6 | 21.4 | −0.052 |
+| prod_n_bullets | 5.51 | 5.96 | 6.17 | −0.071 |
+| prod_n_desc_chars | 886 | 888 | 814 | 0.043 |
+| prod_ft_mean | 0.704 | 0.713 | **0.766** | **0.494** |
+| prod_ft_diff | −0.006 | 0.002 | 0.000 | 0.347 |
+
+- train にない商品は、ほとんどが 1 回しか出てこない（prod_n_rows 1.18）。1 行しかないので prod_ft_diff は 0 になる
+
+**CV**
+
+| | exp035 | exp036 |
+|---|---|---|
+| LightGBM 単体 | 0.41648 | **0.41627** |
+| lgb_base（メンバー、early stopping は学習側の 1 割） | 0.41674 | 0.41661 |
+| linear_trees | 0.41656 | **0.41642** |
+| lgb_trees | 0.41700 | 0.41678 |
+| lgb_nouid_trees | 0.41694 | 0.41686 |
+
+**test の予測の平均（train にない商品）**：単体 2.447 → 2.451、lgb_trees 2.434 → 2.436
+
+### 考察
+
+- CV の改善は 0.0001〜0.0002 と小さい。新しい商品の予測は、むしろわずかに上がった（prod_ft_mean が高い商品なので、予測が上がる方向に働く）
+- 2 段目で product_uid を使う効果は CV ではほぼなくなった（lgb_trees 0.41678、lgb_nouid_trees 0.41686）
